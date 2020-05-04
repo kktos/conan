@@ -461,9 +461,11 @@ La38d               lda $0346,x
                     
 ; A397
 animConanJump       jsr Sa3ad
+
                     ldx #$00
                     stx L7930
 La39f               jsr Sa3cb
+
                     jsr Sa3fe
                     ldx #$30
                     jsr La361
@@ -471,8 +473,8 @@ La39f               jsr Sa3cb
                     
 Sa3ad               ldx #$6b
                     ldy #$9c
-                    lda #$0b
-                    jsr LB300
+                    lda #$0b ; conan-stand-left
+                    jsr drawSpriteM
                     rts
                     
 Sa3b7               ldx L7930
@@ -483,7 +485,7 @@ Sa3b7               ldx L7930
                     lda L7780,x
                     tax
                     pla
-                    jsr LB300
+                    jsr drawSpriteM
                     rts
                     
 Sa3cb               ldx L7930

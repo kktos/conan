@@ -95,7 +95,9 @@ L10a0               jsr LA000
                     jsr S1d7f
                     jsr S179e
                     jsr S1891
+
                     jsr S10d5
+
                     jsr S1160
                     jsr S141e
                     jsr S1593
@@ -105,31 +107,43 @@ L10a0               jsr LA000
                     jsr S1b63
                     jsr S1cb0
                     jsr S1d88
+
                     jsr S1e41
+                    
                     jmp L10a0
                     
 S10d5               lda $c000
-                    sta $030b
-                    cmp $038b
+                    sta keypressed
+
+                    cmp $038b ; D3/53/S
                     beq L1154
-                    cmp $038f
-                    beq L1123
-                    cmp $038a
-                    beq L1108
+
+                    cmp keyPause ; 9B/1B/esc
+                    beq onKeyPause ; pause
+
+                    cmp keyRestart ; 8D/0D/return
+                    beq onKeyRestart ; restart level
+
                     cmp $038c
-                    beq L1142
+                    beq L1142 ; joystick only
+
                     cmp $038d
-                    beq L114b
-                    cmp $0384
+                    beq L114b ; keyboard only
+
+                    cmp keyLeft ; 88/08/left arrow
                     bne L10fc
+
                     bit $c010
-L10fc               cmp $0385
+
+L10fc               cmp keyRight ;95/15/right arrow
                     bne L1104
+
                     bit $c010
 L1104               jsr S1cc0
                     rts
-                    
-L1108               jsr S1e23
+
+; 1108                    
+onKeyRestart        jsr S1e23
                     bit $c010
                     jmp L1097
                     
@@ -139,10 +153,11 @@ L1111               bit $c010
                     bit $c057
                     bit $c054
                     jmp L108f
-                    
-L1123               bit $c010
+
+; 1123                    
+onKeyPause          bit $c010
 L1126               lda $c000
-                    sta $030b
+                    sta keypressed
                     bmi L1139
                     ldx $037b
                     bpl L1126
@@ -150,8 +165,8 @@ L1126               lda $c000
                     bpl L1126
                     rts
                     
-L1139               cmp $038f
-                    bne L1123
+L1139               cmp keyPause ; 9B/1B/esc
+                    bne onKeyPause
                     bit $c010
                     rts
                     
@@ -205,43 +220,43 @@ L1190               jsr S11a3
                     
 S11a3               ldx $0378
                     bne L11fd
-                    ldx $030b
+                    ldx keypressed
                     bpl L11fd
-                    cpx $038f
+                    cpx keyPause
                     beq L11fd
-                    cpx $0384
+                    cpx keyLeft
                     bne L11bd
                     bit $c010
                     jmp L11fe
                     
-L11bd               cpx $0385
+L11bd               cpx keyRight
                     bne L11c8
                     bit $c010
                     jmp L1204
                     
-L11c8               cpx $0386
+L11c8               cpx keyUp
                     bne L11d0
-                    jmp L1487
+                    jmp onKeyUp
                     
-L11d0               cpx $0387
+L11d0               cpx keyDown
                     bne L11d8
-                    jmp L1492
+                    jmp onKeyDown
                     
 L11d8               nop
-                    cpx $0389
+                    cpx keyAxe
                     bne L11e4
                     bit $c010
-                    jmp L16d2
+                    jmp onKeyAxe
                     
-L11e4               cpx $0388
+L11e4               cpx keyJump
                     bne L11ef
                     bit $c010
-                    jmp L13d0
+                    jmp onKeyJump
                     
 L11ef               ldx #$00
                     stx $0306
                     stx $0307
-                    stx $030b
+                    stx keypressed
                     bit $c010
 L11fd               rts
                     
@@ -304,7 +319,7 @@ L1262               lda $030a
                     clc
                     adc #$04
 L126d               tax
-                    lda $030b,x
+                    lda keypressed,x
                     sta $0305
                     rts
                     
@@ -357,7 +372,8 @@ L12cf               rts
 L12d0               lda $0302
                     ldx $0300
                     ldy $0301
-                    jsr LB300
+                    jsr drawSpriteM
+                    
                     ldx #$00
                     stx $b3f6
                     lda $0305
@@ -366,7 +382,7 @@ L12d0               lda $0302
                     stx $0300
                     ldy $0304
                     sty $0301
-                    jsr LB300
+                    jsr drawSpriteM
                     rts
                     
 S12f7               ldx $037e
@@ -386,12 +402,14 @@ L1312               ldx $ad80
                     ldy $ad81
                     sty $0301
                     sty $0304
+
 L1324               lda $ad83
                     sta $0308
                     lda $ad82
                     sta $0302
                     sta $0305
-                    jsr LB300
+                    jsr drawSpriteM
+
                     ldx #$00
                     stx $0306
                     stx $0307
@@ -463,8 +481,9 @@ L13c5               ldx #$00
                     ldx #$08
                     stx $0316
 L13cf               rts
-                    
-L13d0               inc $031f
+
+; 13D0                    
+onKeyJump           inc $031f
                     lda $0307
                     sec
                     sbc #$05
@@ -548,14 +567,16 @@ L1480               stx $0379
                     
 L1485               sec
                     rts
-                    
-L1487               ldx $0309
+
+; 1487                    
+onKeyUp             ldx $0309
                     beq L149d
                     ldx #$fe
                     stx $0307
                     rts
                     
-L1492               ldx $0309
+; 1492                    
+onKeyDown           ldx $0309
                     beq L14b3
                     ldx #$02
                     stx $0307
@@ -663,15 +684,16 @@ L156a               ldx $0317
                     stx $0309
 L1574               rts
                     
-S1575               ldx $030b
+S1575               ldx keypressed
                     bpl L1592
-                    cpx $0386
+
+                    cpx keyUp
                     bne L1582
-                    jmp L1487
+                    jmp onKeyUp
                     
-L1582               cpx $0387
+L1582               cpx keyDown
                     bne L158a
-                    jmp L1492
+                    jmp onKeyDown
                     
 L158a               ldx #$00
                     stx $0306
@@ -821,8 +843,9 @@ L16bd               ldx #$00
                     stx $0304
                     jsr S12b4
 L16d1               rts
-                    
-L16d2               ldx $0309
+
+; 16D2                    
+onKeyAxe            ldx $0309
                     bne L1701
                     ldx $0314
                     bne L1701
@@ -964,7 +987,7 @@ S1807               ldx $031a
                     sty $b3f6
                     ldy $031b
                     lda $031c
-                    jsr LB300
+                    jsr drawSpriteM
                     rts
                     
 L1819               jsr S184d
@@ -994,7 +1017,7 @@ L184c               rts
 S184d               ldx $031a
                     ldy $031b
                     lda $031c
-                    jsr LB300
+                    jsr drawSpriteM
                     rts
                     
 S185a               ldx #$ff
@@ -1063,9 +1086,10 @@ L18d9               ldx #$07
                     jsr S197a
 L18e6               ldx $034c
                     jsr init
+
                     ldx #$00
                     stx $0318
-                    stx $030b
+                    stx keypressed
                     bit $c010
                     jmp S12f7
                     
@@ -1094,7 +1118,7 @@ S1926               lda LAD30,x
                     sta $033b
                     lda LAD40,x
                     ldx $033b
-                    jsr LAE00
+                    jsr drawSprite
                     rts
                     
 S193a               inc $033c
@@ -1106,7 +1130,7 @@ S193a               inc $033c
                     ldx LAD84
                     ldy LAD85
                     lda LAD86
-                    jsr LAE00
+                    jsr drawSprite
 L1952               rts
                     
 S1953               jsr S1441
@@ -1134,7 +1158,7 @@ S197a               lda $0345,x
                     cmp #$00
                     bne L198b
                     lda #$0a
-L198b               jsr LAE00
+L198b               jsr drawSprite
                     rts
                     
 L198f               jsr $0a2d
@@ -1154,7 +1178,7 @@ S19aa               ldx $034f
                     sta $0302
                     ldx $0300
                     ldy $0301
-                    jsr LB300
+                    jsr drawSpriteM
                     rts
                     
 L19bd               inc $034f
@@ -1225,7 +1249,7 @@ init2               sta rangeIdx
                     tay
                     ldx #$75
                     stx rwts.hibuf
-                    ; T0S1-8 / M7500-7CFF
+                    ; 12 T0S1-8 / M7500-7CFF
                     jsr loadRange
                     
                     ; unpack & display
@@ -1235,28 +1259,28 @@ init2               sta rangeIdx
                     ldy rangeIdx
                     ldx #$75
                     stx rwts.hibuf
-                    ; T0S9-C / M7500-78FF
+                    ; 13 T0S9-C / M7500-78FF
                     jsr loadRange
                     inc rangeIdx
                     
                     ldy rangeIdx
                     ldx #$79
                     stx rwts.hibuf
-                    ; T0SD/ M7900-79FF
+                    ; 14 T0SD/ M7900-79FF
                     jsr loadRange
                     inc rangeIdx
                     
                     ldy rangeIdx
                     ldx #$7a
                     stx rwts.hibuf
-                    ; T0SE-T2SF / M7A00-9BFF
+                    ; 15 T0SE-T2SF / M7A00-9BFF
                     jsr loadRange
                     inc rangeIdx
                     
                     ldy rangeIdx
                     ldx #$a0
                     stx rwts.hibuf
-                    ; T3S0-T3SB / MA000-ABFF
+                    ; 16 T3S0-T3SB / MA000-ABFF
                     jsr loadRange
                     inc rangeIdx
                     
@@ -1569,31 +1593,31 @@ L1d01               ldy $037d
                     cpx #$00
                     bne L1d15
                     ldx #$ff
-                    stx $030b
+                    stx keypressed
 L1d15               rts
                     
-L1d16               ldx $0388
-                    stx $030b
+L1d16               ldx keyJump
+                    stx keypressed
                     rts
                     
-L1d1d               ldx $0389
-                    stx $030b
+L1d1d               ldx keyAxe
+                    stx keypressed
                     rts
                     
-L1d24               ldx $0386
-                    stx $030b
+L1d24               ldx keyUp
+                    stx keypressed
                     rts
                     
-L1d2b               ldx $0387
-                    stx $030b
+L1d2b               ldx keyDown
+                    stx keypressed
                     rts
                     
-L1d32               ldx $0384
-                    stx $030b
+L1d32               ldx keyLeft
+                    stx keypressed
                     rts
                     
-L1d39               ldx $0385
-                    stx $030b
+L1d39               ldx keyRight
+                    stx keypressed
                     rts
                     
 S1d40               bit $c010
@@ -1639,7 +1663,7 @@ S1d91               txa
                     clc
                     adc #$26
                     ldy #$b9
-                    jsr LAE00
+                    jsr drawSprite
                     rts
                     
 S1da1               ldx #$05

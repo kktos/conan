@@ -46,7 +46,7 @@ L0259               lda $1000,x
                     inx
                     bne L0259
 
-; load disk[9000-9FFF] to MEM[7000-7FFF]
+; 08 load disk[9000-9FFF] to MEM[7000-7FFF]
                     ldx #$0f
                     stx rwts.sec
                     ldx #$7f
@@ -55,31 +55,31 @@ L0259               lda $1000,x
                     stx rwts.trk
                     jsr readTrack
 
-; load disk[8000-8FFF] to MEM[6000-6FFF]
+; 08 load disk[8000-8FFF] to MEM[6000-6FFF]
                     dec rwts.trk
                     jsr readTrack
 
-; load disk[7000-7FFF] to MEM[5000-5FFF]
+; 08 load disk[7000-7FFF] to MEM[5000-5FFF]
                     dec rwts.trk
                     jsr readTrack
 
-; load disk[6000-6FFF] to MEM[4000-4FFF]
+; 08 load disk[6000-6FFF] to MEM[4000-4FFF]
                     dec rwts.trk
                     jsr readTrack
 
-; load disk[5000-5FFF] to MEM[1000-1FFF]
+; 09 load disk[5000-5FFF] to MEM[1000-1FFF]
                     dec rwts.trk
                     ldx #$1f
                     stx rwts.hibuf
                     jsr readTrack
 
-; load disk[4000-4CFF] to MEM[0300-0FFF]
+; 10 load disk[4000-4CFF] to MEM[0300-0FFF]
                     dec rwts.trk
                     ldx #$0c
                     stx rwts.sec
                     jsr S0235
 
-; load disk[3000-3FFF] to MEM[A700-B6FF]
+; 11 load disk[3000-3FFF] to MEM[A700-B6FF]
                     ldx #$b6
                     stx rwts.hibuf
                     ldx #$03
@@ -152,7 +152,7 @@ L02be               sta ($1a),y
                     dec rwts.trk
                     jsr readTrack
 
-; load disk[4000-40FF] to MEM[1000-10FF]
+; 07 load disk[4000-40FF] to MEM[1000-10FF]
                     ldx #$10
                     stx rwts.hibuf
                     ldx #$04

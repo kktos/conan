@@ -234,91 +234,97 @@ $B2E0  00 02 04 06 01 03 05 00 02 04 06 01 03 05 00 02
 $B2F0  04 06 01 03 05 00 02 04 06 01 03 05 00 02 04 06
 
                   * = B300
-B300   8C F0 B3   STY $B3F0
-B303   A8         TAY
-B304   B9 FF B5   LDA $B5FF,Y
-B307   85 1C      STA $1C
-B309   B9 7F B6   LDA $B67F,Y
-B30C   85 1D      STA $1D
-B30E   A0 00      LDY #$00
-B310   8C F7 B3   STY $B3F7
-B313   B1 1C      LDA ($1C),Y
-B315   8D F1 B3   STA $B3F1
-B318   8D F3 B3   STA $B3F3
-B31B   C8         INY
-B31C   B1 1C      LDA ($1C),Y
-B31E   8D F4 B3   STA $B3F4
-B321   8E F5 B3   STX $B3F5
-B324   10 1E      BPL $B344
-B326   EE F7 B3   INC $B3F7
-B329   29 7F      AND #$7F
-B32B   8D F4 B3   STA $B3F4
-B32E   BD 00 B2   LDA $B200,X
-B331   0A         ASL A
-B332   18         CLC
-B333   69 02      ADC #$02
-B335   A8         TAY
-B336   B1 1C      LDA ($1C),Y
-B338   8D 82 B3   STA $B382
-B33B   C8         INY
-B33C   B1 1C      LDA ($1C),Y
-B33E   8D 83 B3   STA $B383
-B341   4C 57 B3   JMP $B357
-B344   BD 00 AF   LDA $AF00,X
-B347   0A         ASL A
-B348   18         CLC
-B349   69 02      ADC #$02
-B34B   A8         TAY
-B34C   B1 1C      LDA ($1C),Y
-B34E   8D 82 B3   STA $B382
-B351   C8         INY
-B352   B1 1C      LDA ($1C),Y
-B354   8D 83 B3   STA $B383
-B357   AC F0 B3   LDY $B3F0
-B35A   B9 00 B4   LDA $B400,Y
-B35D   85 1C      STA $1C
-B35F   B9 00 B5   LDA $B500,Y
-B362   85 1D      STA $1D
-B364   AE F5 B3   LDX $B3F5
-B367   AC F7 B3   LDY $B3F7
-B36A   F0 07      BEQ $B373
-B36C   BD 00 B0   LDA $B000,X
-B36F   A8         TAY
-B370   4C 77 B3   JMP $B377
-B373   BD 00 B1   LDA $B100,X
-B376   A8         TAY
-B377   C0 28      CPY #$28
-B379   B0 0D      BCS $B388
-B37B   B1 1C      LDA ($1C),Y
-B37D   30 09      BMI $B388
-B37F   D0 2D      BNE $B3AE
-B381   AD FF FF   LDA $FFFF
-B384   51 1C      EOR ($1C),Y
-B386   91 1C      STA ($1C),Y
-B388   EE 82 B3   INC $B382
-B38B   D0 03      BNE $B390
-B38D   EE 83 B3   INC $B383
-B390   C8         INY
-B391   C0 4A      CPY #$4A
-B393   D0 02      BNE $B397
-B395   A0 00      LDY #$00
-B397   CE F1 B3   DEC $B3F1
-B39A   D0 DB      BNE $B377
-B39C   AE F3 B3   LDX $B3F3
-B39F   8E F1 B3   STX $B3F1
-B3A2   CE F4 B3   DEC $B3F4
-B3A5   F0 06      BEQ $B3AD
-B3A7   EE F0 B3   INC $B3F0
-B3AA   4C 57 B3   JMP $B357
-B3AD   60         RTS
-B3AE   AE 82 B3   LDX $B382
-B3B1   8E BB B3   STX $B3BB
-B3B4   AE 83 B3   LDX $B383
-B3B7   8E BC B3   STX $B3BC
-B3BA   2D FF FF   AND $FFFF
-B3BD   F0 C2      BEQ $B381
-B3BF   EE F6 B3   INC $B3F6
-B3C2   4C 81 B3   JMP $B381
+drawSpriteM         sty LB3F0
+                    tay
+                    lda LB5ff,y
+                    sta $1c
+                    lda LB67f,y
+                    sta $1d
+                    ldy #$00
+                    sty LB3F7
+                    lda ($1c),y
+                    sta LB3F1
+                    sta LB3F3
+                    iny
+                    lda ($1c),y
+                    sta LB3F4
+                    stx LB3F5
+                    bpl Lb344
+                    inc LB3F7
+                    and #$7f
+                    sta LB3F4
+                    lda LB200,x
+                    asl a
+                    clc
+                    adc #$02
+                    tay
+                    lda ($1c),y
+                    sta mask + 1
+                    iny
+                    lda ($1c),y
+                    sta mask + 2
+                    jmp Lb357
+                    
+Lb344               lda LAF00,x
+                    asl a
+                    clc
+                    adc #$02
+                    tay
+                    lda ($1c),y
+                    sta mask + 1
+                    iny
+                    lda ($1c),y
+                    sta mask + 2
+
+Lb357               ldy LB3F0
+                    lda hgrLo,y
+                    sta $1c
+                    lda hgrHi,y
+                    sta $1d
+                    ldx LB3F5
+                    ldy LB3F7
+                    beq Lb373
+                    lda LB000,x
+                    tay
+                    jmp Lb377
+                    
+Lb373               lda LB100,x
+                    tay
+Lb377               cpy #$28
+                    bcs Lb388
+                    lda ($1c),y
+                    bmi Lb388
+                    bne Lb3ae
+mask                lda $ffff
+                    eor ($1c),y
+                    sta ($1c),y
+Lb388               inc mask + 1
+                    bne Lb390
+                    inc mask + 2
+Lb390               iny
+                    cpy #$4a
+                    bne Lb397
+                    ldy #$00
+Lb397               dec LB3F1
+                    bne Lb377
+                    ldx LB3F3
+                    stx LB3F1
+                    dec LB3F4
+                    beq Lb3ad
+                    inc LB3F0
+                    jmp Lb357
+                    
+Lb3ad               rts
+                    
+Lb3ae               ldx mask + 1
+                    stx mask2 + 1
+                    ldx mask + 2
+                    stx mask2 + 2
+mask2               and $ffff
+                    beq mask
+                    inc $b3f6
+                    jmp mask
+
 B3C5   B3         ???
 B3C6   4C 83 B3   JMP $B383
 
