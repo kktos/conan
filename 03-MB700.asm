@@ -1,0 +1,151 @@
+                  * = B700
+B700   A2 02      LDX #$02
+B702   8E F1 B7   STX $B7F1
+B705   A2 01      LDX #$01
+B707   8E EC B7   STX $B7EC
+B70A   8E F4 B7   STX $B7F4
+B70D   CA         DEX
+B70E   8E ED B7   STX $B7ED
+B711   86 48      STX $48
+B713   8E EB B7   STX $B7EB
+
+B716   A0 E8      LDY #$E8
+B718   A9 B7      LDA #$B7
+B71A   20 B5 B7   JSR $B7B5
+B71D   EE ED B7   INC $B7ED
+B720   EE F1 B7   INC $B7F1
+B723   A2 00      LDX #$00
+B725   86 48      STX $48
+
+B727   A0 E8      LDY #$E8
+B729   A9 B7      LDA #$B7
+B72B   20 B5 B7   JSR $B7B5
+B72E   4C 00 02   JMP $0200
+
+B731   A9 00      LDA #$00
+B733   8D F4 B7   STA $B7F4
+B736   A9 10      LDA #$10
+B738   8D EC B7   STA $B7EC
+
+B73B   A9 B7      LDA #$B7
+B73D   A0 E8      LDY #$E8
+B73F   20 B5 B7   JSR $B7B5
+B742   BD 89 C0   LDA $C089,X
+B745   A9 01      LDA #$01
+B747   8D F4 B7   STA $B7F4
+B74A   A0 FF      LDY #$FF
+B74C   8C AB B7   STY $B7AB
+B74F   EE AB B7   INC $B7AB
+B752   A9 00      LDA #$00
+B754   85 3E      STA $3E
+B756   85 3F      STA $3F
+B758   85 48      STA $48
+B75A   A0 04      LDY #$04
+B75C   C6 3E      DEC $3E
+B75E   D0 04      BNE $B764
+B760   C6 3F      DEC $3F
+B762   F0 30      BEQ $B794
+B764   BD 8C C0   LDA $C08C,X
+B767   EA         NOP
+B768   10 FA      BPL $B764
+B76A   D9 A5 B7   CMP $B7A5,Y
+B76D   D0 EB      BNE $B75A
+B76F   88         DEY
+B770   10 F2      BPL $B764
+B772   A0 08      LDY #$08
+B774   BD 8C C0   LDA $C08C,X
+B777   85 2C      STA $2C
+B779   10 F9      BPL $B774
+B77B   88         DEY
+B77C   D0 F6      BNE $B774
+B77E   20 AC B7   JSR $B7AC
+B781   AC AB B7   LDY $B7AB
+B784   D0 05      BNE $B78B
+B786   8D AA B7   STA $B7AA
+B789   F0 C4      BEQ $B74F
+B78B   CD AA B7   CMP $B7AA
+B78E   D0 0F      BNE $B79F
+B790   C0 18      CPY #$18
+B792   D0 BB      BNE $B74F
+B794   BA         TSX
+B795   A9 BE      LDA #$BE
+B797   9D 02 01   STA $0102,X
+B79A   A9 AE      LDA #$AE
+B79C   4C C8 BF   JMP $BFC8
+B79F   BC 88 C0   LDY $C088,X
+B7A2   4C 00 A0   JMP $A000
+B7A5   AD BD BA   LDA $BABD
+B7A8   B7         ???
+B7A9   D5 00      CMP $00,X
+B7AB   00         BRK
+B7AC   BD 8C C0   LDA $C08C,X
+B7AF   EA         NOP
+B7B0   10 FA      BPL $B7AC
+B7B2   60         RTS
+B7B3   DF         ???
+B7B4   60         RTS
+
+;02:$B7EA: DRIVE NUMBER TO USE
+;03:$B7EB: VOLUME NUMBER ($OO=ANYTHING)
+;04:$B7EC: TRACK NUMBER TO READ
+;05:$B7ED: SECTOR NUMBER TO READ
+;08:$B7FO: ID-BYTE OF BUFFER TO READ/WRITE
+;$B7Fl: HI-BYTE OF BUFFER TO READ/WRITE
+;$B7F3: PARTIAL SECI'OR READ(O=WHOLE SCT)
+;$B7F4: COMMAND CODE (O=SEEK, l=RD, 2=WRr)
+;$B7F5: ERROR CODE (VALID IF CARRY SET) 
+
+// read/write
+B7B5   08         PHP
+B7B6   78         SEI
+B7B7   20 00 BD   JSR $BD00
+B7BA   B0 03      BCS $B7BF
+B7BC   28         PLP
+B7BD   18         CLC
+B7BE   60         RTS
+B7BF   28         PLP
+B7C0   38         SEC
+B7C1   60         RTS
+
+B7C2   AD BC B5   LDA $B5BC
+B7C5   8D F1 B7   STA $B7F1
+B7C8   A9 00      LDA #$00
+B7CA   8D F0 B7   STA $B7F0
+B7CD   AD F9 B5   LDA $B5F9
+B7D0   49 FF      EOR #$FF
+B7D2   8D EB B7   STA $B7EB
+B7D5   60         RTS
+B7D6   A9 00      LDA #$00
+B7D8   A8         TAY
+B7D9   91 42      STA ($42),Y
+B7DB   C8         INY
+B7DC   D0 FB      BNE $B7D9
+B7DE   60         RTS
+B7DF   00         BRK
+B7E0   1B         ???
+B7E1   02         ???
+B7E2   0A         ASL A
+B7E3   1B         ???
+B7E4   E8         INX
+B7E5   B7         ???
+B7E6   00         BRK
+B7E7   B6 01      LDX $01,Y
+B7E9   60         RTS
+B7EA   01 FE      ORA ($FE,X)
+B7EC   00         BRK
+B7ED   01 FB      ORA ($FB,X)
+B7EF   B7         ???
+B7F0   00         BRK
+B7F1   B7         ???
+B7F2   00         BRK
+B7F3   00         BRK
+B7F4   02         ???
+B7F5   03         ???
+B7F6   FE 60 01   INC $0160,X
+B7F9   00         BRK
+B7FA   00         BRK
+B7FB   00         BRK
+B7FC   01 EF      ORA ($EF,X)
+B7FE   D8         CLD
+B7FF   00         BRK
+B800              .END

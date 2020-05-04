@@ -1,0 +1,114 @@
+;02:$B7EA: DRIVE NUMBER TO USE
+;03:$B7EB: VOLUME NUMBER ($OO=ANYTHING)
+;04:$B7EC: TRACK NUMBER TO READ
+;05:$B7ED: SECTOR NUMBER TO READ
+;08:$B7FO: ID-BYTE OF BUFFER TO READ/WRITE
+;$B7Fl: HI-BYTE OF BUFFER TO READ/WRITE
+;$B7F3: PARTIAL SECI'OR READ(O=WHOLE SCT)
+;$B7F4: COMMAND CODE (O=SEEK, l=RD, 2=WRr)
+;$B7F5: ERROR CODE (VALID IF CARRY SET) 
+
+rwts.slot equ $B7E9
+rwts.drv equ $B7EA
+rwts.vol equ $B7EB
+rwts.trk equ $B7EC
+rwts.sec equ $B7ED
+rwts.lodtab equ $B7EE
+rwts.hidtab equ $B7EF
+rwts.lobuf equ $B7F0
+rwts.hibuf equ $B7F1
+rwts.cmd equ $B7F4
+rwts.err equ $B7F5
+rwts.lstvol equ $B7F6
+rwts.lstslot equ $B7F7
+rwts.lstdrv equ $B7F8
+
+rwts equ $B7B5
+
+L0900 equ $0900
+L0980 equ $0980
+
+L0AD7 equ $0AD7
+
+L1000 equ $1000
+L1001 equ $1001
+L1002 equ $1002
+L1003 equ $1003
+L1004 equ $1004
+L1084 equ $1084
+
+L7780 equ $7780
+L7781 equ $7781
+
+L7800 equ $7800
+L7801 equ $7801
+L7880 equ $7880
+L7881 equ $7881
+
+L7900 equ $7900
+L7901 equ $7901
+L7902 equ $7902
+L7903 equ $7903
+L7904 equ $7904
+L7905 equ $7905
+L7906 equ $7906
+L7907 equ $7907
+L7908 equ $7908
+L7909 equ $7909
+L790A equ $790A
+
+L7910 equ $7910
+L7930 equ $7930
+L7931 equ $7931
+L7932 equ $7932
+L7933 equ $7933
+L7934 equ $7934
+
+L8200 equ $8200
+L8300 equ $8300
+
+LA000 equ $A000
+LA07F equ $A07f
+LA080 equ $A080
+
+LAC00 equ $AC00
+LAC20 equ $AC20
+LAC40 equ $AC40
+LAC60 equ $AC60
+LAC80 equ $AC80
+LACA0 equ $ACA0
+LACC0 equ $ACC0
+LACF0 equ $ACF0
+
+LAD20 equ $AD20
+LAD30 equ $AD30
+LAD40 equ $AD40
+
+LAD84 equ $AD84
+LAD85 equ $AD85
+LAD86 equ $AD86
+
+LAD87 equ $AD87
+LAD88 equ $AD88
+
+LAE00 equ $AE00
+
+LAF00 equ $AF00
+LB000 equ $B000
+LB100 equ $B100
+LB200 equ $B200
+
+LB300 equ $B300
+LB3F0 equ $B3F0
+LB3F1 equ $B3F1
+LB3F2 equ $B3F2
+LB3F3 equ $B3F3
+LB3F4 equ $B3F4
+LB3F5 equ $B3F5
+LB3F7 equ $B3F7
+
+hgrLo equ $B400
+hgrHi equ $B500
+
+LB5ff equ $B5FF
+LB67f equ $B67F
