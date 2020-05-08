@@ -79,8 +79,9 @@ L1085               dex
                     rts
                     
 L108c               jsr L1a00
+
 L108f               ldx #$00
-                    jsr init
+                    jsr loadLevel
                     
                     ; anim conan jump / high score
                     jsr LA000
@@ -96,7 +97,7 @@ L10a0               jsr LA000
                     jsr S179e
                     jsr S1891
 
-                    jsr S10d5
+                    jsr readUserInput
 
                     jsr S1160
                     jsr S141e
@@ -112,7 +113,7 @@ L10a0               jsr LA000
                     
                     jmp L10a0
                     
-S10d5               lda $c000
+readUserInput       lda $c000
                     sta keypressed
 
                     cmp $038b ; D3/53/S
@@ -139,7 +140,7 @@ L10fc               cmp keyRight ;95/15/right arrow
                     bne L1104
 
                     bit $c010
-L1104               jsr S1cc0
+L1104               jsr readJoystick
                     rts
 
 ; 1108                    
@@ -159,8 +160,9 @@ onKeyPause          bit $c010
 L1126               lda $c000
                     sta keypressed
                     bmi L1139
-                    ldx $037b
-                    bpl L1126
+                    ldx inputMode ; 01:kbd ff:joystick
+                    bpl L1126 ; if kbd
+
                     lda $c061
                     bpl L1126
                     rts
@@ -170,13 +172,13 @@ L1139               cmp keyPause ; 9B/1B/esc
                     bit $c010
                     rts
                     
-L1142               ldx #$ff
-                    stx $037b
+L1142               ldx #$ff ; input = joystick
+                    stx inputMode
                     bit $c010
                     rts
                     
-L114b               ldx #$01
-                    stx $037b
+L114b               ldx #$01 ; input = keyboard
+                    stx inputMode
                     bit $c010
                     rts
                     
@@ -1062,7 +1064,7 @@ L18a7               rts
 L18a8               jsr $0a00
 S18ab               ldx $037e
                     bne L18c1
-                    ldx $034c
+                    ldx level
                     stx $037f
 L18b6               dec $037f
                     bmi L18c1
@@ -1072,20 +1074,21 @@ L18b6               dec $037f
 L18c1               ldx $037e
                     beq L18d9
                     ldx #$07
-                    stx $034c
+                    stx level
                     jsr S197a
-                    dec $034c
+                    dec level
                     ldx #$07
                     jsr S197a
                     jmp L18e6
                     
 L18d9               ldx #$07
                     jsr S197a
-                    inc $034c
+                    inc level
                     ldx #$07
                     jsr S197a
-L18e6               ldx $034c
-                    jsr init
+
+L18e6               ldx level
+                    jsr loadLevel
 
                     ldx #$00
                     stx $0318
@@ -1199,7 +1202,7 @@ L19db               bit $c010
                     
 S19df               ldx #$06
                     jsr S197a
-                    dec playerLifeCount
+                    dec playerLifeCount ; cheat
                     bmi L19ef
                     ldx #$06
                     jsr S197a
@@ -1228,7 +1231,7 @@ S1a11               jsr L1a00
                     stx $0349
                     stx $034a
                     stx playerAxeCount
-                    stx $034c
+                    stx level
                     inx
                     stx $034d
                     inx
@@ -1236,7 +1239,7 @@ S1a11               jsr L1a00
                     jsr L1a00
                     rts
                     
-init                stx $0381
+loadLevel           stx $0381
                     lda #$00
 L1a3c               dex
                     bmi init2
@@ -1244,12 +1247,15 @@ L1a3c               dex
                     adc #$06
                     jmp L1a3c
                     
-                    ; load welcome screen
+; load welcome screen
+; 1A45
 init2               sta rangeIdx
                     tay
                     ldx #$75
                     stx rwts.hibuf
-                    ; 12 T0S1-8 / M7500-7CFF
+                    ; R0
+                    ; L0:12 T0S1-8 / M7500-7CFF
+                    ; L1:   T3SE-T4S5 / M7500-7CFF
                     jsr loadRange
                     
                     ; unpack & display
@@ -1259,44 +1265,56 @@ init2               sta rangeIdx
                     ldy rangeIdx
                     ldx #$75
                     stx rwts.hibuf
-                    ; 13 T0S9-C / M7500-78FF
+                    ; R1
+                    ; L0:13 T0S9-C / M7500-78FF
+                    ; L1:   T4S6 / M7500-75FF
                     jsr loadRange
                     inc rangeIdx
                     
                     ldy rangeIdx
                     ldx #$79
                     stx rwts.hibuf
-                    ; 14 T0SD/ M7900-79FF
+                    ; R2
+                    ; L0:14 T0SD/ M7900-79FF
+                    ; L1:   T4S7/ M7900-79FF
                     jsr loadRange
                     inc rangeIdx
                     
                     ldy rangeIdx
                     ldx #$7a
                     stx rwts.hibuf
-                    ; 15 T0SE-T2SF / M7A00-9BFF
+                    ; R3
+                    ; L0:15 T0SE-T2SF / M7A00-9BFF
+                    ; L1:   T4S8-T4SF / M7A00-81FF
                     jsr loadRange
                     inc rangeIdx
                     
                     ldy rangeIdx
                     ldx #$a0
                     stx rwts.hibuf
-                    ; 16 T3S0-T3SB / MA000-ABFF
+                    ; R4
+                    ; L0:16 T3S0-T3SB / MA000-ABFF
+                    ; L1:   T5S0-T5S8 / MA000-A7FF
                     jsr loadRange
                     inc rangeIdx
                     
                     ldy rangeIdx
                     ldx #$ac
                     stx rwts.hibuf
-                    ; T3SC / MAC00-ACFF
+                    ; R5
+                    ; L0: T3SC / MAC00-ACFF
+                    ; L1: T5S9 / MAC00-ACFF
                     jsr loadRange
                     rts
-                    
+
+; L1A9B                    
 unpackToHgr         ldx #$00
                     stx $1c
-                    stx $0365
-                    stx $0366
-                    ldx #$75
+                    stx Xpos
+                    stx Ypos
+                    ldx #$75 ; packed img at $7500
                     stx $1d
+
 L1aa9               jsr S1ab6
                     cmp #$fe
                     beq L1b03
@@ -1320,23 +1338,23 @@ S1ac5               sta $0369
                     sta ($1a),y
                     jmp L1ae7
                     
-S1ad5               ldx $0366
-                    lda LB500,x
+S1ad5               ldx Ypos
+                    lda hgrHi,x
                     sta $1b
-                    lda LB400,x
+                    lda hgrLo,x
                     clc
-                    adc $0365
+                    adc Xpos
                     sta $1a
                     rts
                     
-L1ae7               inc $0366
-                    ldx $0366
+L1ae7               inc Ypos
+                    ldx Ypos
                     cpx #$b7
                     bne L1b02
                     ldx #$00
-                    stx $0366
-                    inc $0365
-                    ldx $0365
+                    stx Ypos
+                    inc Xpos
+                    ldx Xpos
                     cpx #$28
                     bne L1b02
                     pla
@@ -1367,7 +1385,7 @@ readSector          ldx track
                     
 S1b38               ldx #$09
                     jsr S197a
-                    dec playerAxeCount
+                    dec playerAxeCount ; cheat
                     bmi L1b48
                     ldx #$09
                     jsr S197a
@@ -1508,9 +1526,9 @@ L1c52               inc $0375
                     rts
                     
 S1c5d               ldx $0374
-                    lda LB400,x
+                    lda hgrLo,x
                     sta $1a
-                    lda LB500,x
+                    lda hgrHi,x
                     sta $1b
                     rts
                     
@@ -1519,7 +1537,7 @@ S1c6b               jsr S1e97
                     asl a
                     asl a
                     sta rwts.sec
-                    lda $034c
+                    lda level
                     clc
                     adc #$1a
                     sta rwts.trk
@@ -1553,8 +1571,9 @@ S1cb0               inc $037a
                     sta $037a
 L1cbf               rts
                     
-S1cc0               ldx $037b
-                    bpl L1cbf
+readJoystick        ldx inputMode ; 01:kbd ff:joystick
+                    bpl L1cbf ; if kdb
+
                     ldx $0309
                     beq L1ccf
                     ldx #$00
@@ -1742,14 +1761,15 @@ L1e37               lda $0346,x
                     bpl L1e37
 L1e40               rts
                     
-S1e41               ldx $034c
+S1e41               ldx level
                     cpx #$09
                     bne L1e40
-                    dec $034c
+                    dec level
                     jmp L1111
                     
-S1e4e               lda $037b
-                    bpl L1e5a
+S1e4e               lda inputMode ; 01:kbd ff:joystick
+                    bpl L1e5a ; if kbd
+
                     lda $c061
                     bpl L1e5a
                     sec

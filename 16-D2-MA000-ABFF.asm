@@ -14,7 +14,7 @@ Sa003               sty yPos
                     iny
                     lda ($1c),y
                     sta LB3F4
-                    stx xPos
+                    stx Ypos
                     bpl La047
                     inc LB3F7
                     and #$7f
@@ -47,7 +47,7 @@ La05a               ldy yPos
                     sta $1c
                     lda hgrHi,y
                     sta $1d
-                    ldx xPos
+                    ldx Ypos
                     ldy LB3F7
                     beq La076
 
@@ -107,17 +107,19 @@ La0d7               rts
 ; A0D8                    
 drawTitleBitmap     ldx #$00
                     stx $1c
-                    stx $0365
-                    stx $0366
-                    ldx #$a6
+                    stx Xpos
+                    stx Ypos
+                    ldx #$a6 ; LA600 -> ($1C)
                     stx $1d
-La0e6               jsr Sa0f3
-                    cmp #$fe
+
+La0e6               jsr readPakVal
+                    cmp #$fe ; packed ?
                     beq La140
+
                     jsr Sa102
                     jmp La0e6
                     
-Sa0f3               ldy #$00
+readPakVal          ldy #$00
                     lda ($1c),y
                     jsr Sa0fb
                     rts
@@ -128,39 +130,40 @@ Sa0fb               inc $1c
 La101               rts
                     
 Sa102               sta $0369
-                    jsr Sa112
+                    jsr getPixelAddr
                     lda $0369
                     ldy #$00
                     sta ($1a),y
                     jmp La124
                     
-Sa112               ldx $0366
+getPixelAddr        ldx Ypos
                     lda hgrHi,x
                     sta $1b
                     lda hgrLo,x
                     clc
-                    adc $0365
+                    adc Xpos
                     sta $1a
                     rts
                     
-La124               inc $0366
-                    ldx $0366
-                    cpx #$b7
+La124               inc Ypos
+                    ldx Ypos
+                    cpx #$b7 ; 183
                     bne La13f
                     ldx #$00
-                    stx $0366
-                    inc $0365
-                    ldx $0365
-                    cpx #$28
+                    stx Ypos
+                    inc Xpos
+                    ldx Xpos
+                    cpx #$28 ; 40
                     bne La13f
                     pla
                     pla
 La13f               rts
                     
-La140               jsr Sa0f3
+La140               jsr readPakVal ; value
                     sta $0367
-                    jsr Sa0f3
+                    jsr readPakVal ; count
                     sta $0368
+
 La14c               lda $0367
                     jsr Sa102
                     dec $0368
@@ -575,7 +578,7 @@ drawHiScore         ldx #$28
                     jsr Sa47b
                     rts
                     
-drawHSvalue         ldx #$4b ; xpos
+drawHSvalue         ldx #$4b ; Ypos
                     stx L7908
                     ldy #$8c ; y pos
                     sty L7909
