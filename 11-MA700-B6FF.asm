@@ -243,16 +243,17 @@ drawSpriteM         sty LB3F0
                     ldy #$00
                     sty LB3F7
                     lda ($1c),y
-                    sta LB3F1
-                    sta LB3F3
+                    sta dsWidth   ; width
+                    sta dsWidthInit
                     iny
                     lda ($1c),y
-                    sta LB3F4
-                    stx LB3F5
+                    sta dsHeight   ; height
+                    stx dsHeightInit
                     bpl Lb344
+                    
                     inc LB3F7
                     and #$7f
-                    sta LB3F4
+                    sta dsHeight
                     lda LB200,x
                     asl a
                     clc
@@ -281,7 +282,7 @@ Lb357               ldy LB3F0
                     sta $1c
                     lda hgrHi,y
                     sta $1d
-                    ldx LB3F5
+                    ldx dsHeightInit
                     ldy LB3F7
                     beq Lb373
                     lda LB000,x
@@ -305,11 +306,11 @@ Lb390               iny
                     cpy #$4a
                     bne Lb397
                     ldy #$00
-Lb397               dec LB3F1
+Lb397               dec dsWidth
                     bne Lb377
-                    ldx LB3F3
-                    stx LB3F1
-                    dec LB3F4
+                    ldx dsWidthInit
+                    stx dsWidth
+                    dec dsHeight
                     beq Lb3ad
                     inc LB3F0
                     jmp Lb357
@@ -331,7 +332,14 @@ B3C6   4C 83 B3   JMP $B383
 $B3C9                             03 05 00 02 04 06 01
 $B3D0  00 80 00 80 00 80 00 80 00 20 40 60 80 A0 C0 E0
 $B3E0  04 04 05 05 06 06 07 07 08 08 08 08 08 08 08 08
-$B3F0  03 05 00 02 04 06 01 03 00 02 04 06 06 03 05 05
+
+LB3F0               db 03
+dsWidthInit         db 05
+LB3F2               db 05
+dsWidthInit         db 05
+dsHeightInit        db 05
+dsHeightInit        db 05
+;$B3F0  03 05 00 02 04 06 01 03 00 02 04 06 06 03 05 05
 
 ; hires addr lo
 $B400  00 00 00 00 00 00 00 00 80 80 80 80 80 80 80 80

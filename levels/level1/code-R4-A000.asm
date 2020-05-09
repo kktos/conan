@@ -4,6 +4,7 @@ La000               jsr Sa017
                     ldx $7902
                     bne La016
                     jsr Sa0e6
+
                     jsr Sa09b
                     jsr Sa1b0
 La016               rts
@@ -11,13 +12,13 @@ La016               rts
 Sa017               ldx $7902
                     bne La05c
                     ldx $7900
-                    lda $a600,x
+                    lda batXposTbl,x
                     cmp $a601,x
                     bne La03b
-                    lda $a700,x
+                    lda batYposTbl,x
                     cmp $a701,x
                     bne La03b
-                    lda $a800,x
+                    lda batSpriteTbl,x
                     cmp $a801,x
                     bne La03b
                     inc $7900
@@ -29,11 +30,11 @@ La03b               jsr Sa045
                     rts
                     
 Sa045               ldx $7900
-                    lda $a700,x
+                    lda batYposTbl,x
                     tay
-                    lda $a600,x
+                    lda batXposTbl,x
                     sta $7901
-                    lda $a800,x
+                    lda batSpriteTbl,x
                     ldx $7901
                     jsr $b300
                     rts
@@ -69,36 +70,41 @@ La095               ldx #$ff
                     rts
                     
 Sa09b               ldx $7900
-                    lda $0300
+                    lda spriteX
                     sec
                     sbc #$06
-                    cmp $a600,x
+                    cmp batXposTbl,x
                     bcs La0e5
                     clc
                     adc #$0c
-                    cmp $a600,x
+                    cmp batXposTbl,x
                     bcc La0e5
-                    lda $0301
+                    lda spriteY
                     sec
                     sbc #$08
-                    cmp $a700,x
+                    cmp batYposTbl,x
                     bcs La0e5
                     clc
                     adc #$13
-                    cmp $a700,x
+                    cmp batYposTbl,x
                     bcc La0e5
-                    ldx $034f
+
+                    ldx playerDeadAnimIdx
                     bne La0e5
+
                     ldx #$01
-                    stx $034f
-                    ldx $0300
-                    ldy $0301
-                    lda $0302
-                    jsr $b300
-                    ldx $0300
-                    ldy $0301
+                    stx playerDeadAnimIdx
+
+                    ldx spriteX
+                    ldy spriteY
+                    lda spriteID
+                    jsr $b300 ; clear player current sprite
+
+                    ldx spriteX
+                    ldy spriteY
                     lda #$19
-                    jsr $b300
+                    jsr $b300 ; player death sprite 1st frame
+
 La0e5               rts
                     
 Sa0e6               ldx $0318
@@ -107,34 +113,37 @@ Sa0e6               ldx $0318
                     lda $031a
                     sec
                     sbc #$0c
-                    cmp $a600,x
+                    cmp batXposTbl,x
                     bcs La139
                     clc
                     adc #$10
-                    cmp $a600,x
+                    cmp batXposTbl,x
                     bcc La139
                     lda $031b
                     sec
                     sbc #$0d
-                    cmp $a700,x
+                    cmp batYposTbl,x
                     bcs La139
                     clc
                     adc #$13
-                    cmp $a700,x
+                    cmp batYposTbl,x
                     bcc La139
+
                     ldx #$01
                     stx $7902
                     ldx $7900
-                    lda $a600,x
+                    lda batXposTbl,x
                     sta $7903
-                    lda $a700,x
+                    lda batYposTbl,x
                     sta $7904
-                    lda $a800,x
+                    lda batSpriteTbl,x
                     sta $7905
                     ldx #$01
                     stx $7909
                     jsr $106a
+                    
                     jsr $0a58
+
 La139               rts
                     
 Sa13a               ldx #$00
@@ -164,16 +173,20 @@ La167               inx
                     adc #$08
                     cmp $7904
                     bcs La167
+
                     clc
                     adc #$08
                     cmp $7904
                     bcc La167
+
                     lda $ac00,x
                     cmp $7903
                     bcs La167
+
                     lda $ac20,x
                     cmp $7903
                     bcc La167
+
                     stx $790c
                     jsr Sa13a
                     ldx #$08
@@ -189,7 +202,7 @@ La167               inx
                     jsr Sa13a
 La1af               rts
                     
-Sa1b0               ldx $0300
+Sa1b0               ldx spriteX
                     cpx #$7a
                     bcc La1d1
                     ldx $0309

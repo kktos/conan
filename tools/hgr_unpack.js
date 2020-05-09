@@ -73,3 +73,4 @@ outFile.write( Buffer.from(outBuf) );
 
 outFile.end();
 
+process.stdout.write(`unpacked: ${filename}\n`);

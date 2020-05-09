@@ -153,3 +153,5 @@ outFile.write( tempBuf );
 outFile.write( Buffer.from(outBuf) );
 
 outFile.end();
+
+process.stdout.write(`converted: ${filename}\n`);
