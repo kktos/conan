@@ -117,6 +117,11 @@ L9600               00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
                     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
                     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 1f 
                     
+                    ;
+                    ; called during intro screen if key R is pressed
+                    ; dialog to setup keys
+                    ;
+
 L9700               jsr S9721
 L9703               rts
                     

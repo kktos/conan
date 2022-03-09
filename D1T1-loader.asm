@@ -1,321 +1,136 @@
-                  * = B601
-B601   A5 27      LDA $27
-B603   C9 09      CMP #$09
-B605   D0 18      BNE $B61F
-B607   A5 2B      LDA $2B
-B609   4A         LSR A
-B60A   4A         LSR A
-B60B   4A         LSR A
-B60C   4A         LSR A
-B60D   09 C0      ORA #$C0
-B60F   85 3F      STA $3F
-B611   A9 5C      LDA #$5C
-B613   85 3E      STA $3E
-B615   18         CLC
-B616   AD FE 08   LDA $08FE
-B619   6D FF 08   ADC $08FF
-B61C   8D FE 08   STA $08FE
-B61F   AE FF 08   LDX $08FF
-B622   30 15      BMI $B639
-B624   BD 4D 08   LDA $084D,X
-B627   85 3D      STA $3D
-B629   CE FF 08   DEC $08FF
-B62C   AD FE 08   LDA $08FE
-B62F   85 27      STA $27
-B631   CE FE 08   DEC $08FE
-B634   A6 2B      LDX $2B
-B636   6C 3E 00   JMP ($003E)
-B639   EE FE 08   INC $08FE
-B63C   EE FE 08   INC $08FE
-B63F   20 89 FE   JSR $FE89
-B642   20 93 FE   JSR $FE93
-B645   20 2F FB   JSR $FB2F
-B648   A6 2B      LDX $2B
-B64A   4C B4 08   JMP $08B4
-B64D   00         BRK
-B64E   0D 0B 09   ORA $090B
-B651   07         ???
-B652   05 03      ORA $03
-B654   01 0E      ORA ($0E,X)
-B656   0C         ???
-B657   0A         ASL A
-B658   08         PHP
-B659   06 04      ASL $04
-B65B   02         ???
-B65C   0F         ???
-B65D   00         BRK
-B65E   20 64 A7   JSR $A764
-B661   B0 08      BCS $B66B
-B663   A9 00      LDA #$00
-B665   A8         TAY
-B666   8D 5D B6   STA $B65D
-B669   91 40      STA ($40),Y
-B66B   AD C5 B5   LDA $B5C5
-B66E   4C D2 A6   JMP $A6D2
-B671   AD 5D B6   LDA $B65D
-B674   F0 08      BEQ $B67E
-B676   EE BD B5   INC $B5BD
-B679   D0 03      BNE $B67E
-B67B   EE BE B5   INC $B5BE
-B67E   A9 00      LDA #$00
-B680   8D 5D B6   STA $B65D
-B683   4C 46 A5   JMP $A546
-B686   8D BC B5   STA $B5BC
-B689   20 A8 A6   JSR $A6A8
-B68C   20 EA A2   JSR $A2EA
-B68F   4C 7D A2   JMP $A27D
-B692   A0 13      LDY #$13
-B694   B1 42      LDA ($42),Y
-B696   D0 14      BNE $B6AC
-B698   C8         INY
-B699   C0 17      CPY #$17
-B69B   D0 F7      BNE $B694
-B69D   A0 19      LDY #$19
-B69F   B1 42      LDA ($42),Y
-B6A1   99 A4 B5   STA $B5A4,Y
-B6A4   C8         INY
-B6A5   C0 1D      CPY #$1D
-B6A7   D0 F6      BNE $B69F
-B6A9   4C BC A6   JMP $A6BC
-B6AC   A2 FF      LDX #$FF
-B6AE   8E 5D B6   STX $B65D
-B6B1   D0 F6      BNE $B6A9
-B6B3   00         BRK
-B6B4   A9 00      LDA #$00
-B6B6   8D 78 04   STA $0478
-B6B9   8D F8 04   STA $04F8
-B6BC   8D 7E 04   STA $047E
-B6BF   8D FE 04   STA $04FE
-B6C2   6C FD 08   JMP ($08FD)
-B6C5   00         BRK
-B6C6   00         BRK
-B6C7   00         BRK
-B6C8   00         BRK
-B6C9   00         BRK
-B6CA   00         BRK
-B6CB   00         BRK
-B6CC   00         BRK
-B6CD   00         BRK
-B6CE   00         BRK
-B6CF   00         BRK
-B6D0   20 58 FC   JSR $FC58
-B6D3   A9 C2      LDA #$C2
-B6D5   20 ED FD   JSR $FDED
-B6D8   A9 01      LDA #$01
-B6DA   20 DA FD   JSR $FDDA
-B6DD   A9 AD      LDA #$AD
-B6DF   20 ED FD   JSR $FDED
-B6E2   A9 00      LDA #$00
-B6E4   20 DA FD   JSR $FDDA
-B6E7   60         RTS
-B6E8   00         BRK
-B6E9   00         BRK
-B6EA   00         BRK
-B6EB   00         BRK
-B6EC   00         BRK
-B6ED   00         BRK
-B6EE   00         BRK
-B6EF   00         BRK
-B6F0   00         BRK
-B6F1   00         BRK
-B6F2   00         BRK
-B6F3   00         BRK
-B6F4   00         BRK
-B6F5   00         BRK
-B6F6   00         BRK
-B6F7   00         BRK
-B6F8   00         BRK
-B6F9   00         BRK
-B6FA   00         BRK
-B6FB   00         BRK
-B6FC   00         BRK
-B6FD   00         BRK
-B6FE   B6 09      LDX $09,Y
+		.namespace loader
 
-// load pert 2
-B700   8E 8D B7   STX $B78D
-B703   8E 9B B7   STX $B79B
-B706   8A         TXA
-B707   48         PHA
-B708   4A         LSR A
-B709   4A         LSR A
-B70A   4A         LSR A
-B70B   4A         LSR A
-B70C   AA         TAX
-B70D   A9 00      LDA #$00
-B70F   9D 78 04   STA $0478,X
-B712   9D F8 04   STA $04F8,X
-B715   A9 9D      LDA #$9D
-B717   8D 92 B7   STA $B792
-B71A   A9 B7      LDA #$B7
-B71C   8D 93 B7   STA $B793
+		.org $B700
 
-// load disk[2800-2FFF] mem[4000-4FFF]
-B71F   A9 B7      LDA #$B7
-B721   A0 8C      LDY #$8C
-B723   78         SEI
-B724   20 00 BD   JSR $BD00
-B727   CE 91 B7   DEC $B791
-B72A   CE 95 B7   DEC $B795
-B72D   AD 95 B7   LDA $B795
-B730   C9 40      CMP #$40
-B732   B0 EB      BCS $B71F
+;
+; https://apple2.org.za/gswv/a2zine/GS.WorldView/Resources/DOS.3.3.ANATOMY/BOOT.PROCESS.txt
+;
 
-// load disk[2800-2FFF] mem[1D00-1FFF]
-B734   A9 1F      LDA #$1F
-B736   8D 95 B7   STA $B795
-B739   A9 B7      LDA #$B7
-B73B   A0 8C      LDY #$8C
-B73D   78         SEI
-B73E   20 00 BD   JSR $BD00
-B741   CE 91 B7   DEC $B791
-B744   CE 95 B7   DEC $B795
-B747   AD 95 B7   LDA $B795
-B74A   C9 1D      CMP #$1D
-B74C   B0 EB      BCS $B739
+BOOT1               stx local_rwts_slot
+                    stx local_rwts_lstslot
+                    txa
+                    pha
+                    lsr a
+                    lsr a
+                    lsr a
+                    lsr a
+                    tax
+                    lda #$00
+                    sta $0478,x
+                    sta $04f8,x
+                    lda #$9d
+                    sta LB792
+                    lda #$b7
+                    sta LB793
 
-// unpack cracker splash screen
-B74E   20 40 1F   JSR $1F40
-B751   AD 57 C0   LDA $C057
-B754   AD 54 C0   LDA $C054
-B757   AD 52 C0   LDA $C052
-B75A   AD 50 C0   LDA $C050
-// display cracker splash screen
-B75D   20 00 1D   JSR $1D00
+;
+; START CRACKERS PAGE
+;
 
-// load disk[0A00-0Bff] mem[4000-41FF]
-B760   A9 00      LDA #$00
-B762   8D 90 B7   STA $B790
-B765   A9 0B      LDA #$0B
-B767   8D 91 B7   STA $B791
-B76A   A9 41      LDA #$41
-B76C   8D 95 B7   STA $B795
-B76F   A9 B7      LDA #$B7
-B771   A0 8C      LDY #$8C
-B773   78         SEI
-B774   20 00 BD   JSR $BD00
-B777   CE 91 B7   DEC $B791
-B77A   CE 95 B7   DEC $B795
-B77D   A9 B7      LDA #$B7
-B77F   A0 8C      LDY #$8C
-B781   78         SEI
-B782   20 00 BD   JSR $BD00
+; load disk[2800-2FFF] mem[4000-4FFF]
 
-B785   A9 00      LDA #$00
-B787   85 48      STA $48
-B789   4C 00 41   JMP $4100
+Lb71f               lda #>local_rwts_iob
+                    ldy #<local_rwts_iob
+                    sei
+                    jsr rwts
 
-B78C   01 60      ORA ($60,X)
-B78E   01 00      ORA ($00,X)
-B790   02         ???
-B791   0F         ???
-B792   FF         ???
-B793   FF         ???
-B794   00         BRK
-B795   47         ???
-B796   00         BRK
-B797   00         BRK
-B798   01 00      ORA ($00,X)
-B79A   00         BRK
-B79B   60         RTS
-B79C   01 00      ORA ($00,X)
-B79E   01 EF      ORA ($EF,X)
-B7A0   D8         CLD
-B7A1   00         BRK
-B7A2   00         BRK
-B7A3   00         BRK
-B7A4   00         BRK
-B7A5   00         BRK
-B7A6   00         BRK
-B7A7   00         BRK
-B7A8   00         BRK
-B7A9   00         BRK
-B7AA   00         BRK
-B7AB   00         BRK
-B7AC   00         BRK
-B7AD   00         BRK
-B7AE   00         BRK
-B7AF   00         BRK
-B7B0   00         BRK
-B7B1   00         BRK
-B7B2   00         BRK
-B7B3   00         BRK
-B7B4   00         BRK
-B7B5   00         BRK
-B7B6   00         BRK
-B7B7   00         BRK
-B7B8   00         BRK
-B7B9   00         BRK
-B7BA   00         BRK
-B7BB   00         BRK
-B7BC   00         BRK
-B7BD   00         BRK
-B7BE   00         BRK
-B7BF   00         BRK
-B7C0   00         BRK
-B7C1   00         BRK
-B7C2   00         BRK
-B7C3   00         BRK
-B7C4   00         BRK
-B7C5   00         BRK
-B7C6   00         BRK
-B7C7   00         BRK
-B7C8   00         BRK
-B7C9   00         BRK
-B7CA   00         BRK
-B7CB   00         BRK
-B7CC   00         BRK
-B7CD   00         BRK
-B7CE   00         BRK
-B7CF   00         BRK
-B7D0   00         BRK
-B7D1   00         BRK
-B7D2   00         BRK
-B7D3   00         BRK
-B7D4   00         BRK
-B7D5   00         BRK
-B7D6   00         BRK
-B7D7   00         BRK
-B7D8   00         BRK
-B7D9   00         BRK
-B7DA   00         BRK
-B7DB   00         BRK
-B7DC   00         BRK
-B7DD   00         BRK
-B7DE   00         BRK
-B7DF   00         BRK
-B7E0   00         BRK
-B7E1   00         BRK
-B7E2   00         BRK
-B7E3   00         BRK
-B7E4   00         BRK
-B7E5   00         BRK
-B7E6   00         BRK
-B7E7   00         BRK
-B7E8   00         BRK
-B7E9   00         BRK
-B7EA   00         BRK
-B7EB   00         BRK
-B7EC   00         BRK
-B7ED   00         BRK
-B7EE   00         BRK
-B7EF   00         BRK
-B7F0   00         BRK
-B7F1   00         BRK
-B7F2   00         BRK
-B7F3   00         BRK
-B7F4   00         BRK
-B7F5   00         BRK
-B7F6   00         BRK
-B7F7   00         BRK
-B7F8   00         BRK
-B7F9   00         BRK
-B7FA   00         BRK
-B7FB   00         BRK
-B7FC   00         BRK
-B7FD   00         BRK
-B7FE   00         BRK
-B7FF   00         BRK
+                    dec local_rwts_sector
+                    dec local_rwts_hibuf
+                    lda local_rwts_hibuf
+                    cmp #$40
+                    bcs Lb71f
+
+; load disk[2800-2FFF] mem[1D00-1FFF]
+
+                    lda #$1f
+                    sta local_rwts_hibuf
+Lb739               lda #>local_rwts_iob
+                    ldy #<local_rwts_iob
+                    sei
+                    jsr rwts
+
+                    dec local_rwts_sector
+                    dec local_rwts_hibuf
+                    lda local_rwts_hibuf
+                    cmp #$1d
+                    bcs Lb739
+
+; unpack cracker splash screen
+                    jsr $1f40
+
+                    lda $c057
+                    lda $c054
+                    lda $c052
+                    lda $c050
+
+; display cracker splash screen
+                    jsr $1d00
+
+;
+; END CRACKERS PAGE
+;
+
+; load disk[0A00-0Bff] mem[4000-41FF]
+
+                    lda #$00
+                    sta local_rwts_track
+                    lda #$0b
+                    sta local_rwts_sector
+                    lda #$41
+                    sta local_rwts_hibuf
+                    lda #>local_rwts_iob
+                    ldy #<local_rwts_iob
+                    sei
+                    jsr rwts
+
+                    dec local_rwts_sector
+                    dec local_rwts_hibuf
+                    lda #>local_rwts_iob
+                    ldy #<local_rwts_iob
+                    sei
+                    jsr rwts
+
+                    lda #$00
+                    sta $48
+                    jmp L4100
+
+local_rwts_iob:
+                    .DB $01
+local_rwts_slot     .DB $60
+                    .DB $01
+                    .DB $00
+local_rwts_track    .DB $02
+local_rwts_sector   .DB $0f
+LB792               .DB $ff
+LB793               .DB $ff
+local_rwts_lobuf    .DB $00
+local_rwts_hibuf    .DB $47
+                    .DB $00
+                    .DB $00
+                    .DB $01
+                    .DB $00
+                    .DB $00
+local_rwts_lstslot  .DB $60
+
+                    .DB $01
+                    .DB $00
+                    .DB $01
+                    .DB $ef
+                    .DB $d8
+
+		.align $100
+
+		.if 0
+                    .DB $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00
+                    .DB $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00
+                    .DB $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00
+                    .DB $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00
+                    .DB $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00
+                    .DB $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00
+		.end
+
+                    .if 0
+
 B800   A2 00      LDX #$00
 B802   A0 02      LDY #$02
 B804   88         DEY
@@ -1437,4 +1252,5 @@ BFF7   BA         TSX
 BFF8   8E 9B B3   STX $B39B
 BFFB   A9 09      LDA #$09
 BFFD   4C 85 B3   JMP $B385
-C000              .END
+
+              .END
