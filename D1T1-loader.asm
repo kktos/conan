@@ -29,7 +29,9 @@ BOOT1               stx local_rwts_slot
 
 ; load disk[2800-2FFF] mem[4000-4FFF]
 
-Lb71f               lda #>local_rwts_iob
+Lb71f
+		bra boot1_2
+		    ; lda #>local_rwts_iob
                     ldy #<local_rwts_iob
                     sei
                     jsr rwts
@@ -71,7 +73,7 @@ Lb739               lda #>local_rwts_iob
 ;
 
 ; load disk[0A00-0Bff] mem[4000-41FF]
-
+boot1_2
                     lda #$00
                     sta local_rwts_track
                     lda #$0b

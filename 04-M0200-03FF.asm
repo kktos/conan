@@ -117,7 +117,7 @@ L02be               sta ($1a),y
                     bit $c052
                     bit $c057
 
-; load disk[A000-AFFF] to MEM[6000-6FFF]
+; 05.0 load disk[A000-AFFF] to MEM[6000-6FFF]
 ; first screen
                     ldx #$0f
                     stx rwts_sec
@@ -139,14 +139,14 @@ L02be               sta ($1a),y
                     stx $0810
                     jsr unpack
 
-; load disk[F000-FFFF] to MEM[A000-AFFF]
+; 05.1 load disk[F000-FFFF] to MEM[A000-AFFF]
                     ldx #$0f
                     stx rwts_trk
                     ldx #$af
                     stx rwts_buf+1
                     jsr readTrack
 
-; load disk[E000-EFFF] to MEM[9000-9FFF]
+; 06 load disk[E000-EFFF] to MEM[9000-9FFF]
                     dec rwts_trk
                     jsr readTrack
 
@@ -164,6 +164,7 @@ L02be               sta ($1a),y
 
 ; 07 load disk[4000-40FF] to MEM[1000-10FF]
 ; will be relocated to $0300 -> L0257
+; 07-vectors-page03.asm
                     ldx #$10
                     stx rwts_buf+1
                     ldx #$04

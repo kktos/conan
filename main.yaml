@@ -1,0 +1,25 @@
+
+BOOT1:		{ start: 0x800, end: 0x8FF }
+LOADER:		{ start: 0xB700, end: 0xBFFF }
+BOOT3:		{ start: 0xB700, end: 0xB7FF }
+BOOT2:		{ start: 0x4100, end: 0x45FF }
+WELCOME:	{ start: 0x0200, end: 0x11FF }
+
+PAD1:		{ start: 0x0000, end: 0x1FFF }
+
+VARIABLES:	{ start: 0x0300, end: 0x12FF }
+GAME1:		{ start: 0x1000, end: 0x1FFF }
+
+DATA6:		{ start: 0x4000, end: 0x4FFF }
+DATA7:		{ start: 0x5000, end: 0x5FFF }
+DATA8:		{ start: 0x6000, end: 0x6FFF }
+DATA9:		{ start: 0x7000, end: 0x7FFF }
+
+DATA1:		{ start: 0x6000, end: 0x6FFF }
+PAD3:		{ start: 0x0000, end: 0x0FFF }
+DATA2:		{ start: 0x7000, end: 0x7FFF }
+
+INTRO:		{ start: 0x8000, end: 0x8FFF }
+
+DATA3:		{ start: 0x9000, end: 0x9FFF }
+DATA4:		{ start: 0xA000, end: 0xAFFF }
