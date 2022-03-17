@@ -12,18 +12,18 @@
 
 .segment BOOT1
 	;
-	; load T0S0 - T0S9
-	; into $B600 - $BF00
+	; load loader
+	; load T0S0 - T0S9 into $B600:$BF00
 	;
-	.include "D1T1-boot.asm"
+	.include "boot/00-boot.asm"
 
 
 .segment LOADER
 	;
-	; load T0SA-B disk[0A00-0Bff] mem[4000-41FF]
+	; load T0SA-B disk[0A00-0BFF] into $4000:41FF
 	;
 	; T0S1
-	.include "D1T1-loader.asm"
+	.include "boot/01-loader.asm"
 
 	; T0S2-S9
         .fill .SEGMENTEND-*+1 $55
@@ -34,18 +34,20 @@
 	;
 
 	; T0SB
-	.include "03-M4100.asm"
+	.include "boot/03-boot2.M4100.asm"
 
 	; T0SC-SF
 	.fill .SEGMENTEND-*+1 $55
 
 .segment BOOT3
 	;
+	; load welcome
 	; load T1S0-T1S1 -> $0200:03FF
+	; jmp welcome
 	;
 
 	; T0SA
-	.include "03-MB700.asm"
+	.include "boot/04-boot3.MB700.asm"
 
 
 	;
@@ -53,7 +55,18 @@
 	;
 
 .segment WELCOME
-	.include "04-M0200-03FF.asm"
+	;
+	; load intro
+	; load TB to TF in $6000:AFFF and T4S0:$1000->$0300
+	; run intro
+	;
+	; load T6 to T9 in $4000:7FFF
+	; load T5 in $1000:1FFF -> game1
+	; load T4 in $0300:0FFF
+	; load T3 in $A700:B6FF
+	; jump game1
+	;
+	.include "welcome/04-M0200-03FF.asm"
 
 	; T0S2-SF
 	.fill .SEGMENTEND-*+1 $55
@@ -70,13 +83,15 @@
 	;
 .segment VARIABLES
 	.include "07-variables-page03.asm"
+	.include "game1/helpers.asm"
+
 	.fill .SEGMENTEND-*+1 $55
 
 	;
 	; TRACK $05
 	;
 .segment GAME1
-	.include "09-M1000-1FFF.asm"
+	.include "game1/main.asm"
 
 	;
 	; TRACK $06
@@ -125,13 +140,13 @@
 	; TRACK $0D
 	;
 .segment INTRO
-	.include "06-TDS0-F-M8000-8FFF.asm"
+	.include "intro/06-TDS0-F-M8000-8FFF.asm"
 
 	;
 	; TRACK $0E
 	;
-.segment DATA3
-	.include "06-TES0-F-M9000-9FFF.asm"
+.segment SETUP
+	.include "intro/setupKeysDlg/dialog.asm"
 
 	;
 	; TRACK $0F

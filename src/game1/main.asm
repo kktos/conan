@@ -1,8 +1,44 @@
 ;
-; disk 5000-5FFF
+; disk 5000-5FFF into $1000:1FFF
 ;
 
 		.namespace game1
+
+; highscoreses
+startLevel 	=	$A000
+LAC00 		=	$AC00
+LAC20 		=	$AC20
+LAC40 		=	$AC40
+LAC60 		=	$AC60
+LAC80 		=	$AC80
+LACA0 		=	$ACA0
+LACC0 		=	$ACC0
+LACF0 		=	$ACF0
+
+LAD20		=	$AD20
+LAD30		=	$AD30
+LAD40		=	$AD40
+
+LAD84 		=	$AD84
+LAD85 		=	$AD85
+LAD86 		=	$AD86
+LAD87 		=	$AD87
+LAD88 		=	$AD88
+
+L0A00		=	$0A00
+L0A2D		=	$0A2D
+L0A50		=	$0A50
+L0AD7		= 	$0AD7
+
+drawSpriteM	=	$B300
+drawSprite	=	$AE00
+
+L0900		=	$0900
+L0980		=	$0980
+
+hgrHi		=	$B500
+hgrLo		=	$B400
+
 		.org $1000
 L1001=*+1
 L1002=*+2
@@ -86,16 +122,21 @@ L1085		dex
 L108c		jsr L1a00
 
 L108f		ldx #$00
+		; sprites 	$7500:78FF
+		; data 		$7900:78FF
+		; data 		$7A00:9BFF
+		; code 		$A000:ABFF
+		; data 		$AC00:ADFF
 		jsr loadLevel
 
 		; anim conan jump / high score
-		jsr LA000
+		jsr startLevel
 
 L1097		jsr S1d40
 		jsr S1a11
 		jsr S18ab
 
-L10a0		jsr LA000
+L10a0		jsr startLevel
 		ldx #$00
 		stx L0383
 		jsr S1d7f
@@ -130,10 +171,10 @@ readUserInput	lda $c000
 		cmp keyRestart ; 8D/0D/return
 		beq onKeyRestart ; restart level
 
-		cmp L038C
+		cmp keyJoystick
 		beq L1142 ; joystick only
 
-		cmp L038D
+		cmp keyKeyboard
 		beq L114b ; keyboard only
 
 		cmp keyLeft ; 88/08/left arrow
@@ -864,7 +905,7 @@ L1702		lda playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
 		clc
 		adc #$02
 L1711		tay
-		lda L0334,y
+		lda axeAnimIDs,y
 		sta spriteIDNew
 		lda spriteX
 		ldx playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
@@ -1261,7 +1302,7 @@ init2		sta rangeIdx
 		; L8:	T19SC-T1AS5 / M7500-
 		; L9:	T1ASF-T00S0 / M7500-
 		ldx #$75
-		stx rwts_hibuf
+		stx rwts_buf+1
 		jsr loadRange
 
 		; unpack & display
@@ -1277,7 +1318,7 @@ init2		sta rangeIdx
 		; L1:	T4S6 / M7500-75FF
 		; L2:	T6S5 / M7500-75FF
 		ldx #$75
-		stx rwts_hibuf
+		stx rwts_buf+1
 		jsr loadRange
 
 		inc rangeIdx
@@ -1290,7 +1331,7 @@ init2		sta rangeIdx
 		; L1:	T4S7/ M7900-79FF
 		; L2:	T6S6/ M7900-79FF
 		ldx #$79
-		stx rwts_hibuf
+		stx rwts_buf+1
 		jsr loadRange
 
 		inc rangeIdx
@@ -1303,7 +1344,7 @@ init2		sta rangeIdx
 		; L1:	T4S8-T4SF / M7A00-81FF
 		; L2:	T6S7-T7S6 / M7A00-89FF
 		ldx #$7a
-		stx rwts_hibuf
+		stx rwts_buf+1
 		jsr loadRange
 
 		inc rangeIdx
@@ -1316,7 +1357,7 @@ init2		sta rangeIdx
 		; L1:	T5S0-T5S8 / MA000-A7FF
 		; L2:	T7S7-T7SC / MA000-A5FF
 		ldx #$a0
-		stx rwts_hibuf
+		stx rwts_buf+1
 		jsr loadRange
 
 		inc rangeIdx
@@ -1329,7 +1370,7 @@ init2		sta rangeIdx
 		; L1: T5S9-T5SA / MAC00-ADFF
 		; L2: T7SD-T7SE / MAC00-ADFF
 		ldx #$ac
-		stx rwts_hibuf
+		stx rwts_buf+1
 		jsr loadRange
 		rts
 
@@ -1569,9 +1610,9 @@ S1c6b		jsr S1e97
 		adc #$1a
 		sta rwts_trk
 		ldx #$75
-		stx rwts_hibuf
+		stx rwts_buf+1
 		ldx #$00
-		stx rwts_lobuf
+		stx rwts_buf
 		jsr S1f0d
 		jsr S1bf7
 		bit $c010
@@ -1869,7 +1910,7 @@ loadRange	lda L0900,y
 		lda L0980,y
 		sta sectorend
 		ldx #$00
-		stx rwts_lobuf
+		stx rwts_buf
 		; check if ptrs =. exit of true
 L1ee1		ldx sector
 		cpx sectorend
@@ -1880,7 +1921,7 @@ L1ee1		ldx sector
 		rts
 
 L1ef2		jsr readSector
-		inc rwts_hibuf
+		inc rwts_buf+1
 		inc sector
 		ldx sector
 		cpx #$10
@@ -1891,7 +1932,7 @@ L1ef2		jsr readSector
 		jmp L1ee1
 
 S1f0d		jsr S1f1e
-		inc rwts_hibuf
+		inc rwts_buf+1
 		inc rwts_sec
 		ldx rwts_sec
 		cpx #$10
@@ -1932,7 +1973,7 @@ S1f2d		ldx playerDeadAnimIdx
 		pla
 		pla
 		rts
-L1f64
+;L1f64
 	.hex
 	c2 ce c5 a0 ce cf d7 c9 ce 8d a0 cc
 	c4 d8 a0 a4 b3 b0 b0 8d a0 c3 d0 d8 a0 a4 c1 c4

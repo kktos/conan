@@ -20,6 +20,6 @@ PAD3:		{ start: 0x0000, end: 0x0FFF }
 DATA2:		{ start: 0x7000, end: 0x7FFF }
 
 INTRO:		{ start: 0x8000, end: 0x8FFF }
+SETUP:		{ start: 0x9000, end: 0x9FFF }
 
-DATA3:		{ start: 0x9000, end: 0x9FFF }
 DATA4:		{ start: 0xA000, end: 0xAFFF }

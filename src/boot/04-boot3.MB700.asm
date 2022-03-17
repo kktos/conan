@@ -8,6 +8,8 @@
 		.export rwts_trk
 		.export rwts_sec
 
+LA000		= $A000
+
 		.org $B700
 
 ;
@@ -24,26 +26,28 @@ BOOT3:
 		stx rwts_sec
 		stx $48
 		stx rwts_vol
-		ldy #$e8
-		lda #$b7
+		ldy #<rwts_iob
+		lda #>rwts_iob
 		jsr enterwts
 
 		inc rwts_sec
 		inc rwts_buf+1
 		ldx #$00
 		stx $48
-		ldy #$e8
-		lda #$b7
+		ldy #<rwts_iob
+		lda #>rwts_iob
 		jsr enterwts
 
-		jmp L0200
+		jmp welcome
+
+
 
 Lb731		lda #$00
 		sta rwts_cmd
 		lda #$10
 		sta rwts_trk
-		lda #$b7
-		ldy #$e8
+		ldy #<rwts_iob
+		lda #>rwts_iob
 		jsr enterwts
 
 		lda $c089,x
@@ -90,7 +94,7 @@ Lb794		tsx
 		jmp $bfc8
 
 Lb79f		ldy $c088,x
-		jmp $a000
+		jmp LA000
 
 Lb7a5
 		.DB $ad
@@ -159,9 +163,10 @@ rwts_drv       	.DB $01
 rwts_vol       	.DB $fe
 rwts_trk       	.DB $00
 rwts_sec       	.DB $01
-rwts_lodtab    	.DB $fb
-rwts_hidtab    	.DB $b7
-rwts_buf     	.dw $b700
+
+rwts_dtab    	.dw LB7FB
+rwts_buf     	.dw $B700
+
 		.DB $00
 		.DB $00
 rwts_cmd       	.DB $02
@@ -169,7 +174,13 @@ rwts_err       	.DB $03
 rwts_lstvol    	.DB $fe
 rwts_lstslot   	.DB $60
 rwts_lstdrv    	.DB $01
-		.DB $00, $00, $00, $01, $ef, $d8, $00
+; $B7F9
+		.DB $00, $00
+; $B7FB
+LB7FB		.DB $00, $01
+; $B7FD
+		.dw $D8EF
+		.db $00
 
 
 
