@@ -4,8 +4,14 @@
 
 		.namespace game1
 
+		.export scoreAdd75
+		.export scoreAdd100
+		.export scoreAdd250
+		.export tone
+
 ; highscoreses
 startLevel 	=	$A000
+
 LAC00 		=	$AC00
 LAC20 		=	$AC20
 LAC40 		=	$AC40
@@ -19,37 +25,30 @@ LAD20		=	$AD20
 LAD30		=	$AD30
 LAD40		=	$AD40
 
+LAD80 		=	$AD80
+LAD81 		=	$AD81
+LAD82 		=	$AD82
+LAD83 		=	$AD83
+
 LAD84 		=	$AD84
 LAD85 		=	$AD85
 LAD86 		=	$AD86
 LAD87 		=	$AD87
 LAD88 		=	$AD88
 
-L0A00		=	$0A00
-L0A2D		=	$0A2D
-L0A50		=	$0A50
-L0AD7		= 	$0AD7
-
-drawSpriteM	=	$B300
-drawSprite	=	$AE00
-
-L0900		=	$0900
-L0980		=	$0980
-
-hgrHi		=	$B500
-hgrLo		=	$B400
-
 		.org $1000
+
 L1001=*+1
 L1002=*+2
-L1000		jmp L108c
+gameStart	jmp L108c
 
-L1004=*+1
-L1003		lda $c000
-		bpl L1003
+;L1004=*+1
+!		lda sys.KBD
+		bpl !-
+
 		jmp L102d
 
-L100b		bit $c010
+L100b		bit sys.KBDSTRB
 		stx $1c
 		ldx #$3e
 		stx $1d
@@ -57,57 +56,68 @@ L100b		bit $c010
 		sta ($1c),y
 		lda ($22),y
 		dex
-		bne L1003
+		bne !-
 		dec $1b
 		inc $1b
 		ldx $1d
 		cpx #$3d
-		bne L1003
+		bne !-
 		bit $c030
 		bit $c030
+
 L102d		jmp L108c
 
-L1030		jsr drawScore
+;1030
+scoreAdd1	jsr drawScore
 		rts
 
-L1034		jsr S1dbe
+;1034
+scoreAdd10	jsr drawScore10
 		rts
 
-S1038		jsr S1ddb
+;1038
+scoreAdd100	jsr drawScore100
 		rts
 
-L103c		jsr S1df8
+;103C
+scoreAdd1000	jsr drawScore1000
 		rts
 
-L1040		jsr L1030
-		jsr L1030
-		jsr L1030
-		jsr L1030
-		jsr L1030
+;1040
+scoreAdd5	jsr scoreAdd1
+		jsr scoreAdd1
+		jsr scoreAdd1
+		jsr scoreAdd1
+		jsr scoreAdd1
 		rts
 
-L1050		jsr L1034
-		jsr L1034
-		jsr L1040
+;1050
+scoreAdd25	jsr scoreAdd10
+		jsr scoreAdd10
+		jsr scoreAdd5
 		rts
 
-L105a		jsr L1034
-		jsr L1034
-		jsr L1034
-		jsr L1034
-		jsr L1034
+;105A
+scoreAdd50	jsr scoreAdd10
+		jsr scoreAdd10
+		jsr scoreAdd10
+		jsr scoreAdd10
+		jsr scoreAdd10
 		rts
 
-L106a		jsr L105a
-		jsr L1050
+;106A
+scoreAdd75	jsr scoreAdd50
+		jsr scoreAdd25
 		rts
 
-L1071		jsr S1038
-		jsr S1038
-		jsr L105a
+;1071
+scoreAdd250	jsr scoreAdd100
+		jsr scoreAdd100
+		jsr scoreAdd50
 		rts
 
-S107b		txa
+;107B
+tone		txa
 L107c		ldx L0380
 		pha
 		lda $c020,x
@@ -139,7 +149,7 @@ L1097		jsr S1d40
 L10a0		jsr startLevel
 		ldx #$00
 		stx L0383
-		jsr S1d7f
+		jsr readJoyX
 		jsr S179e
 		jsr S1891
 
@@ -153,13 +163,13 @@ L10a0		jsr startLevel
 		jsr S193a
 		jsr S1b63
 		jsr S1cb0
-		jsr S1d88
+		jsr readJoyY
 
 		jsr S1e41
 
 		jmp L10a0
 
-readUserInput	lda $c000
+readUserInput	lda sys.KBD
 		sta keypressed
 
 		cmp L038B ; D3/53/S
@@ -180,293 +190,304 @@ readUserInput	lda $c000
 		cmp keyLeft ; 88/08/left arrow
 		bne L10fc
 
-		bit $c010
+		bit sys.KBDSTRB
 
 L10fc		cmp keyRight ;95/15/right arrow
 		bne L1104
 
-		bit $c010
+		bit sys.KBDSTRB
 L1104		jsr readJoystick
 		rts
 
 ; 1108
 onKeyRestart	jsr S1e23
-		bit $c010
+		bit sys.KBDSTRB
 		jmp L1097
 
-L1111		bit $c010
-		bit $c050
-		bit $c052
-		bit $c057
-		bit $c054
+L1111		bit sys.KBDSTRB
+		bit sys.TEXTOFF
+		bit sys.MIXEDOFF
+		bit sys.HIRESON
+		bit sys.PAGE2OFF
 		jmp L108f
 
 ; 1123
-onKeyPause	bit $c010
-L1126		lda $c000
-		sta keypressed
-		bmi L1139
-		ldx inputMode ; 01:kbd ff:joystick
-		bpl L1126 ; if kbd
+onKeyPause		bit sys.KBDSTRB
+L1126			lda sys.KBD
+			sta keypressed
+			bmi L1139
+			ldx inputMode ; 01:kbd ff:joystick
+			bpl L1126 ; if kbd
 
-		lda $c061
-		bpl L1126
-		rts
+			lda sys.BUTNO
+			bpl L1126
+			rts
 
-L1139		cmp keyPause ; 9B/1B/esc
-		bne onKeyPause
-		bit $c010
-		rts
+L1139			cmp keyPause ; 9B/1B/esc
+			bne onKeyPause
+			bit sys.KBDSTRB
+			rts
 
-L1142		ldx #$ff ; input = joystick
-		stx inputMode
-		bit $c010
-		rts
+L1142			ldx #$ff ; input = joystick
+			stx inputMode
+			bit sys.KBDSTRB
+			rts
 
-L114b		ldx #$01 ; input = keyboard
-		stx inputMode
-		bit $c010
-		rts
+L114b			ldx #$01 ; input = keyboard
+			stx inputMode
+			bit sys.KBDSTRB
+			rts
 
-L1154		bit $c010
-		lda L0380
-		eor #$10
-		sta L0380
-		rts
+L1154			bit sys.KBDSTRB
+			lda L0380
+			eor #$10
+			sta L0380
+			rts
 
-S1160		ldx playerDeadAnimIdx
-		beq L1168
-		jmp L198f
+S1160			ldx playerDeadAnimIdx
+			beq L1168
+			jmp L198f
 
-L1168		ldx L0314
-		beq L1170
-		jmp L15ab
+L1168			ldx L0314
+			beq L1170
+			jmp L15ab
 
-L1170		ldx L0315
-		beq L1178
-		jmp S1381
+L1170			ldx L0315
+			beq L1178
+			jmp S1381
 
-L1178		ldx L031F
-		beq L1180
-		jmp L13e5
+L1178			ldx L031F
+			beq L1180
+			jmp L13e5
 
-L1180		ldx L0309
-		beq L1188
-		jmp L1553
+L1180			ldx L0309
+			beq L1188
+			jmp L1553
 
-L1188		ldx playerAxeState ; 00:off / FF: on / 01:back to player
-		bpl L1190
-		jmp L1702
+L1188			ldx playerAxeState ; 00:off / FF: on / 01:back to player
+			bpl L1190
+			jmp L1702
 
-L1190		jsr S11a3
-		jsr S134e
-		jsr S135d
-		jsr S1233
-		jsr S129c
-		jsr drawNewSprite
-		rts
+L1190			jsr S11a3
+			jsr S134e
+			jsr S135d
+			jsr S1233
+			jsr S129c
+			jsr drawNewSprite
+			rts
 
-S11a3		ldx L0378
-		bne L11fd
-		ldx keypressed
-		bpl L11fd
-		cpx keyPause
-		beq L11fd
-		cpx keyLeft
-		bne L11bd
-		bit $c010
-		jmp L11fe
+S11a3			ldx L0378
+			bne L11fd
 
-L11bd		cpx keyRight
-		bne L11c8
-		bit $c010
-		jmp L1204
+			ldx keypressed
+			bpl L11fd
 
-L11c8		cpx keyUp
-		bne L11d0
-		jmp onKeyUp
+			cpx keyPause
+			beq L11fd
 
-L11d0		cpx keyDown
-		bne L11d8
-		jmp onKeyDown
+			cpx keyLeft
+			bne L11bd
 
-L11d8		nop
-		cpx keyAxe
-		bne L11e4
-		bit $c010
-		jmp onKeyAxe
+			bit sys.KBDSTRB
+			jmp onKeyLeft
 
-L11e4		cpx keyJump
-		bne L11ef
-		bit $c010
-		jmp onKeyJump
+L11bd			cpx keyRight
+			bne L11c8
+			bit sys.KBDSTRB
+			jmp onKeyRight
 
-L11ef		ldx #$00
-		stx L0306
-		stx L0307
-		stx keypressed
-		bit $c010
-L11fd		rts
+L11c8			cpx keyUp
+			bne L11d0
+			jmp onKeyUp
 
-L11fe		jsr S120a
-		bcc L121d
-		rts
+L11d0			cpx keyDown
+			bne L11d8
+			jmp onKeyDown
 
-L1204		jsr S120a
-		bcc L1228
-		rts
+L11d8			nop
+			cpx keyAxe
+			bne L11e4
+			bit sys.KBDSTRB
+			jmp onKeyAxe
 
-S120a		ldx L031F
-		bne L121b
-		ldx L0309
-		bne L121b
-		ldx L0314
-		bne L121b
-		clc
-		rts
+L11e4			cpx keyJump
+			bne L11ef
+			bit sys.KBDSTRB
+			jmp onKeyJump
 
-L121b		sec
-		rts
+L11ef			ldx #$00
+			stx L0306
+			stx L0307
+			stx keypressed
+			bit sys.KBDSTRB
+L11fd			rts
 
-L121d		dec L0306
-		ldx L0306
-		cpx #$fd
-		beq L1228
-		rts
+onKeyLeft		jsr S120a
+			bcc L121d
+			rts
 
-L1228		inc L0306
-		ldx L0306
-		cpx #$03
-		beq L121d
-		rts
+onKeyRight		jsr S120a
+			bcc L1228
+			rts
 
-S1233		ldx L0309
-		beq L123f
-		ldx L0333
-		stx spriteIDNew
-		rts
+S120a			ldx L031F
+			bne L121b
+			ldx L0309
+			bne L121b
+			ldx L0314
+			bne L121b
+			clc
+			rts
 
-L123f		ldx L031F
-		bne L128b
-		lda L0306
-		beq L1275
-		ror a
-		bcs L1256
-		lda L030A
-		cmp #$03
-		bne L1256
-		dec L030A
-L1256		lda L030A
-		cmp #$01
-		bne L1262
-		ldx #$04
-		stx L030A
-L1262		lda L030A
-		ldy L0308
-		bmi L126d
-		clc
-		adc #$04
-L126d		tax
-		lda keypressed,x
-		sta spriteIDNew
-		rts
+L121b			sec
+			rts
 
-L1275		ldx #$04
-		stx L030A
-		ldy L0308
-		bmi L1285
-		ldx #$0c
-		stx spriteIDNew
-		rts
+L121d			dec L0306
+			ldx L0306
+			cpx #$fd
+			beq L1228
+			rts
 
-L1285		ldx #$0b
-		stx spriteIDNew
-		rts
+L1228			inc L0306
+			ldx L0306
+			cpx #$03
+			beq L121d
+			rts
 
-L128b		ldx L0308
-		bmi L1296
-		ldx #$10
-		stx spriteIDNew
-		rts
+S1233			ldx L0309
+			beq L123f
+			ldx L0333
+			stx spriteIDNew
+			rts
 
-L1296		ldx #$0e
-		stx spriteIDNew
-		rts
+L123f			ldx L031F
+			bne L128b
 
-S129c		lda spriteX
-		clc
-		adc L0306
-		sta spriteXNew
-		lda spriteY
-		clc
-		adc L0307
-		sta spriteYNew
-		jsr S1681
-		rts
+			lda L0306
+			beq L1275
 
-drawNewSprite	lda L0306
-		bne L12d0
-		lda L0307
-		bne L12d0
-		lda L0309
-		bne L12cf
-		lda spriteID
-		cmp #$0d
-		bcs L12d0
-		cmp spriteIDNew
-		bne L12d0
-L12cf		rts
+			ror a
+			bcs L1256
 
-L12d0		lda spriteID ; clear current sprite
-		ldx spriteX
-		ldy spriteY
-		jsr drawSpriteM
+			lda L030A
+			cmp #$03
+			bne L1256
 
-		ldx #$00
-		stx $b3f6
-		lda spriteIDNew ; get new sprite info
-		sta spriteID
-		ldx spriteXNew
-		stx spriteX
-		ldy spriteYNew
-		sty spriteY
-		jsr drawSpriteM
-		rts
+			dec L030A
+L1256			lda L030A
+			cmp #$01
+			bne L1262
 
-S12f7		ldx L037E
-		beq L1312
-		stx spriteX
-		stx spriteXNew
-		ldy #$00
-		sty L037E
-		ldy #$e0
-		sty spriteY
-		sty spriteYNew
-		jmp L1324
+			ldx #$04
+			stx L030A
+L1262			lda L030A
+			ldy L0308
+			bmi L126d
 
-L1312		ldx $ad80
-		stx spriteX
-		stx spriteXNew
-		ldy $ad81
-		sty spriteY
-		sty spriteYNew
+			clc
+			adc #$04
+L126d			tax
+			lda keypressed,x
+			sta spriteIDNew
+			rts
 
-L1324		lda $ad83
-		sta L0308
-		lda $ad82
-		sta spriteID
-		sta spriteIDNew
-		jsr drawSpriteM
+L1275			ldx #$04
+			stx L030A
+			ldy L0308
+			bmi L1285
+			ldx #$0c
+			stx spriteIDNew
+			rts
 
-		ldx #$00
-		stx L0306
-		stx L0307
-		stx L0309
-		stx L031F
-		stx L031E
-		stx L0314
-		stx L0315
-		rts
+L1285			ldx #$0b
+			stx spriteIDNew
+			rts
+
+L128b			ldx L0308
+			bmi L1296
+			ldx #$10
+			stx spriteIDNew
+			rts
+
+L1296			ldx #$0e
+			stx spriteIDNew
+			rts
+
+S129c			lda spriteX
+			clc
+			adc L0306
+			sta spriteXNew
+			lda spriteY
+			clc
+			adc L0307
+			sta spriteYNew
+			jsr S1681
+			rts
+
+drawNewSprite		lda L0306
+			bne L12d0
+			lda L0307
+			bne L12d0
+			lda L0309
+			bne L12cf
+			lda spriteID
+			cmp #$0d
+			bcs L12d0
+			cmp spriteIDNew
+			bne L12d0
+L12cf			rts
+
+L12d0			lda spriteID ; clear current sprite
+			ldx spriteX
+			ldy spriteY
+			jsr spritelib.drawSpriteM
+
+			ldx #$00
+			stx spritelib.LB3F6
+			lda spriteIDNew ; get new sprite info
+			sta spriteID
+			ldx spriteXNew
+			stx spriteX
+			ldy spriteYNew
+			sty spriteY
+			jsr spritelib.drawSpriteM
+			rts
+
+S12f7			ldx L037E
+			beq L1312
+
+			stx spriteX
+			stx spriteXNew
+			ldy #$00
+			sty L037E
+			ldy #$e0
+			sty spriteY
+			sty spriteYNew
+			jmp L1324
+
+L1312			ldx LAD80
+			stx spriteX
+			stx spriteXNew
+			ldy LAD81
+			sty spriteY
+			sty spriteYNew
+
+L1324			lda LAD83
+			sta L0308
+			lda LAD82
+			sta spriteID
+			sta spriteIDNew
+			jsr spritelib.drawSpriteM
+
+			ldx #$00
+			stx L0306
+			stx L0307
+			stx L0309
+			stx L031F
+			stx L031E
+			stx L0314
+			stx L0315
+			rts
 
 S134e		ldx L0306
 		cpx #$01
@@ -475,6 +496,7 @@ S134e		ldx L0306
 		bne L135c
 L1359		stx L0308
 L135c		rts
+
 S135d		dec L030A
 		bne L1367
 		ldx #$04
@@ -485,9 +507,11 @@ L1367		lda L030A
 		tax
 		lda L0306
 		beq L1377
+
 		ldy #$10
-		jsr S107b
+		jsr tone
 L1377		rts
+
 L1378		sty L0377
 		lda #$90
 		jsr $fca8
@@ -495,13 +519,14 @@ L1378		sty L0377
 S1381		jsr S129c
 		ldx L0314
 		beq L13a3
-		jsr S15ca
+		jsr isSpriteInRect
 		bcs L13a3
 		ldx L0308
 		bmi L139b
 		ldx #$10
 		stx spriteIDNew
 		jmp L13b5
+
 L139b		ldx #$0e
 		stx spriteIDNew
 		jmp L13b5
@@ -535,69 +560,91 @@ onKeyJump	inc L031F
 		stx L0321
 		stx L0383
 		rts
+
+
 L13e5		jsr S129c
 		jsr S1233
 		ldx L0321
 		bmi L13fc
+
 		inc L0315
 		dec L0321
 		dec L0321
 		jmp L1414
+
 L13fc		ldx #$00
 		stx L031F
 		ldx #$04
 		stx L030A
 		jsr S1953
 		bcc L1414
+
 		inc L0314
 		inc L0315
 		jmp S1381
+
 L1414		jsr S1953
 		jsr drawNewSprite
 		jsr S15fe
 		rts
+
 S141e		ldx L0309
 		bne L1440
+
 		ldx L0314
 		bne L1433
+
 		ldx L0315
 		bne L1433
+
 		ldx L031F
 		bne L1433
+
 		rts
+
 L1433		inc L0307
 		ldx L0307
 		cpx #$06
 		bne L1440
+
 		dec L0307
 L1440		rts
+
 S1441		ldx L0307
 		bmi L1485
+
 		ldx #$ff
 		stx L0322
 L144b		inc L0322
 		ldx L0322
 		lda LAC40,x
 		beq L1485
+
 		lda spriteXNew
 		cmp LAC00,x
 		bcc L144b
+
 		cmp LAC20,x
 		beq L1465
+
 		bcs L144b
+
 L1465		lda LAC40,x
 		clc
 		adc #$03
 		cmp spriteYNew
 		bcc L144b
+
 		sec
 		sbc L0307
 		sec
 		sbc #$03
 		cmp #$f8
 		bcs L1480
+
 		cmp spriteYNew
 		bcs L144b
+
 L1480		stx L0379
 		clc
 		rts
@@ -753,36 +800,42 @@ L15b3		jsr S1381
 		jsr drawNewSprite
 L15c9		rts
 
-S15ca		ldx #$ff
+isSpriteInRect	ldx #$ff
 		stx L0322
 L15cf		inc L0322
 		ldx L0322
 		lda LAC40,x
 		beq L15fc
+
 		lda spriteXNew
 		cmp LAC00,x
 		bcc L15cf
+
 		cmp LAC20,x
 		bcs L15cf
+
 		lda LAC40,x
 		clc
 		adc #$06
 		cmp spriteYNew
 		bcc L15cf
+
 		sec
 		sbc #$10
 		cmp spriteYNew
 		bcs L15cf
+
 		clc
 		rts
 
 L15fc		sec
 		rts
-S15fe		ldx $b3f6
+
+S15fe		ldx spritelib.LB3F6
 		beq L1637
 		ldx L031E
 		bne L1637
-		ldx $0373
+		ldx L0373
 		bne L1637
 		jsr S164d
 		bcs L1637
@@ -810,6 +863,7 @@ S1638		lda spriteX
 		sbc L0307
 		sta spriteYNew
 		rts
+
 S164d		ldx #$ff
 		stx L0322
 L1652		inc L0322
@@ -1018,10 +1072,10 @@ L17fa		ldx #$08
 
 S1807		ldx L031A
 		ldy #$00
-		sty $b3f6
+		sty spritelib.LB3F6
 		ldy L031B
 		lda L031C
-		jsr drawSpriteM
+		jsr spritelib.drawSpriteM
 		rts
 
 L1819		jsr S184d
@@ -1033,12 +1087,12 @@ L1819		jsr S184d
 		rts
 
 S182b		jsr S1f2d
-		ldx $b3f6
+		ldx spritelib.LB3F6
 		beq L1841
 		jsr S1b93
 		jsr S185a
 		bcs L1841
-		jsr L0A50
+		jsr soundlib.L0A50
 L183e		jmp L1819
 
 L1841		ldx L031A
@@ -1051,7 +1105,7 @@ L184c		rts
 S184d		ldx L031A
 		ldy L031B
 		lda L031C
-		jsr drawSpriteM
+		jsr spritelib.drawSpriteM
 		rts
 
 S185a		ldx #$ff
@@ -1093,30 +1147,31 @@ S1891		ldx spriteY
 		beq L18a8
 L18a7		rts
 
-L18a8		jsr L0A00
+L18a8		jsr soundlib.L0A00
 S18ab		ldx L037E
-		bne L18c1
+		bne !+
 		ldx level
 		stx L037F
 L18b6		dec L037F
-		bmi L18c1
-		jsr S1038
+		bmi !+
+		jsr scoreAdd100
 		jmp L18b6
 
-L18c1		ldx L037E
+!		ldx L037E
 		beq L18d9
-		ldx #$07
+
+		ldx #level-playerData
 		stx level
 		jsr drawDigit
 		dec level
-		ldx #$07
+		ldx #level-playerData
 		jsr drawDigit
 		jmp L18e6
 
-L18d9		ldx #$07
+L18d9		ldx #level-playerData
 		jsr drawDigit
 		inc level
-		ldx #$07
+		ldx #level-playerData
 		jsr drawDigit
 
 L18e6		ldx level
@@ -1125,7 +1180,7 @@ L18e6		ldx level
 		ldx #$00
 		stx playerAxeState ; 00:off / FF: on / 01:back to player
 		stx keypressed
-		bit $c010
+		bit sys.KBDSTRB
 		jmp S12f7
 
 ;
@@ -1156,7 +1211,7 @@ S1926		lda LAD30,x
 		sta L033B
 		lda LAD40,x
 		ldx L033B
-		jsr drawSprite
+		jsr spritelib.drawSprite
 		rts
 
 ;
@@ -1169,7 +1224,7 @@ S193a		inc L033C
 		ldx LAD84
 		ldy LAD85
 		lda LAD86
-		jsr drawSprite
+		jsr spritelib.drawSprite
 L1952		rts
 
 S1953		jsr S1441
@@ -1197,10 +1252,10 @@ drawDigit	lda L0345,x
 		cmp #$00
 		bne L198b
 		lda #$0a
-L198b		jsr drawSprite
+L198b		jsr spritelib.drawSprite
 		rts
 
-L198f		jsr L0A2D
+L198f		jsr soundlib.L0A2D
 		ldx playerDeadAnimIdx
 		cpx #$08
 		bcs L19bd
@@ -1217,7 +1272,7 @@ S19aa		ldx playerDeadAnimIdx
 		sta spriteID
 		ldx spriteX
 		ldy spriteY
-		jsr drawSpriteM
+		jsr spritelib.drawSpriteM
 		rts
 
 L19bd		inc playerDeadAnimIdx
@@ -1231,41 +1286,43 @@ L19c8		jsr updLifeCount
 		ldx #$00
 		stx playerDeadAnimIdx
 		ldy playerAxeState ; 00:off / FF: on / 01:back to player
-		bpl L19db
+		bpl !+
+
 		stx playerAxeState ; 00:off / FF: on / 01:back to player
-L19db		bit $c010
+!		bit sys.KBDSTRB
 		rts
 
-updLifeCount	ldx #$06
+updLifeCount	ldx #playerLifeCount-playerData ; #$06
 		jsr drawDigit
 		dec playerLifeCount ; cheat
-		bmi L19ef
-		ldx #$06
+		bmi !+
+
+		ldx #playerLifeCount-playerData ; #$06
 		jsr drawDigit
 		rts
 
-L19ef		inc playerLifeCount
-		ldx #$06
+!		inc playerLifeCount
+		ldx #playerLifeCount-playerData
 		jsr drawDigit
 		jsr S1e23
 		jsr S1c6b
 		jmp L108f
 
-L1a00		ldx #$09
+L1a00		ldx #playerAxeCount-playerData
 		stx L0322
-L1a05		ldx L0322
+!		ldx L0322
 		jsr drawDigit
 		dec L0322
-		bne L1a05
+		bne !-
 		rts
 
 S1a11		jsr L1a00
 		ldx #$00
-		stx L0346
-		stx L0347
-		stx L0348
-		stx L0349
-		stx L034A
+		stx playerScore
+		stx playerScore+1
+		stx playerScore+2
+		stx playerScore+3
+		stx playerScore+4
 		stx playerAxeCount
 		stx level
 		inx
@@ -1279,6 +1336,7 @@ loadLevel	stx L0381
 		lda #$00
 L1a3c		dex
 		bmi init2
+
 		clc
 		adc #$06
 		jmp L1a3c
@@ -1343,7 +1401,7 @@ init2		sta rangeIdx
 		; L0:15 T0SE-T2SF / M7A00-9BFF
 		; L1:	T4S8-T4SF / M7A00-81FF
 		; L2:	T6S7-T7S6 / M7A00-89FF
-		ldx #$7a
+		ldx #$7A
 		stx rwts_buf+1
 		jsr loadRange
 
@@ -1356,7 +1414,7 @@ init2		sta rangeIdx
 		; L0:16 T3S0-T3SB / MA000-ABFF
 		; L1:	T5S0-T5S8 / MA000-A7FF
 		; L2:	T7S7-T7SC / MA000-A5FF
-		ldx #$a0
+		ldx #$A0
 		stx rwts_buf+1
 		jsr loadRange
 
@@ -1369,7 +1427,7 @@ init2		sta rangeIdx
 		; L0: T3SC-T3SD / MAC00-ADFF
 		; L1: T5S9-T5SA / MAC00-ADFF
 		; L2: T7SD-T7SE / MAC00-ADFF
-		ldx #$ac
+		ldx #$AC
 		stx rwts_buf+1
 		jsr loadRange
 		rts
@@ -1382,13 +1440,14 @@ unpackToHgr	ldx #$00
 		ldx #$75 ; packed img at $7500
 		stx $1d
 
-L1aa9		jsr S1ab6
-		cmp #$fe
+nextPakByt	jsr readPakByt
+		cmp #$FE 	; is packed ?
 		beq L1b03
-		jsr S1ac5
-		jmp L1aa9
 
-S1ab6		ldy #$00
+		jsr writeHGRbyte
+		jmp nextPakByt
+
+readPakByt	ldy #$00
 		lda ($1c),y
 		jsr S1abe
 		rts
@@ -1398,14 +1457,14 @@ S1abe		inc $1c
 		inc $1d
 L1ac4		rts
 
-S1ac5		sta L0369
-		jsr S1ad5
+writeHGRbyte	sta L0369
+		jsr getPixAddr
 		lda L0369
 		ldy #$00
 		sta ($1a),y
 		jmp L1ae7
 
-S1ad5		ldx Ypos
+getPixAddr	ldx Ypos
 		lda hgrHi,x
 		sta $1b
 		lda hgrLo,x
@@ -1416,27 +1475,27 @@ S1ad5		ldx Ypos
 
 L1ae7		inc Ypos
 		ldx Ypos
-		cpx #$b7
+		cpx #183
 		bne L1b02
 		ldx #$00
 		stx Ypos
 		inc Xpos
 		ldx Xpos
-		cpx #$28
+		cpx #40
 		bne L1b02
 		pla
 		pla
 L1b02		rts
 
-L1b03		jsr S1ab6
+L1b03		jsr readPakByt
 		sta L0367
-		jsr S1ab6
+		jsr readPakByt
 		sta L0368
 L1b0f		lda L0367
-		jsr S1ac5
+		jsr writeHGRbyte
 		dec L0368
 		bne L1b0f
-		jmp L1aa9
+		jmp nextPakByt
 
 ; 1B1D
 readSector	ldx track
@@ -1516,7 +1575,7 @@ S1b93		ldx playerDeadAnimIdx
 		bcc L1b92
 		jsr S1bca
 		jsr L1819
-		jsr L0AD7
+		jsr soundlib.L0AD7
 		pla
 		pla
 		rts
@@ -1613,19 +1672,25 @@ S1c6b		jsr S1e97
 		stx rwts_buf+1
 		ldx #$00
 		stx rwts_buf
-		jsr S1f0d
+		jsr readTrack
 		jsr S1bf7
-		bit $c010
+
+		bit sys.KBDSTRB
 		ldy #$60
+
 L1c93		lda #$ff
 		jsr $fca8
-		lda $c000
+
+		lda sys.KBD
 		bmi L1ca5
-		jsr S1e4e
+
+		jsr readJoyBtn0
 		bcs L1ca5
+
 		dey
 		bne L1c93
-L1ca5		bit $c010
+
+L1ca5		bit sys.KBDSTRB
 		cpy #$00
 		beq L1caf
 		jmp L1097
@@ -1635,7 +1700,7 @@ L1caf		rts
 S1cb0		inc L037A
 		lda L037A
 		adc $7900
-		adc L0349
+		adc playerScore+3
 		sta L037A
 L1cbf		rts
 
@@ -1647,14 +1712,17 @@ readJoystick	ldx inputMode ; 01:kbd ff:joystick
 		ldx #$00
 		jmp L1d01
 
-L1ccf		ldx $c061
+L1ccf		ldx sys.BUTNO
 		bmi L1d16
+
 		ldx playerAxeState ; 00:off / FF: on / 01:back to player
 		bne L1cde
-		ldx $c062
+
+		ldx sys.BUTN1
 		bmi L1d1d
+
 L1cde		ldx #$fe
-		lda L037C
+		lda joyX
 		cmp #$10
 		bcc L1cf7
 		inx
@@ -1672,7 +1740,7 @@ L1cf7		cpx L0306
 		bmi L1d32
 		jmp L1d39
 
-L1d01		ldy L037D
+L1d01		ldy joyY
 		cpy #$30
 		bcc L1d24
 		cpy #$d0
@@ -1707,7 +1775,7 @@ L1d39		ldx keyRight
 		stx keypressed
 		rts
 
-S1d40		bit $c010
+S1d40		bit sys.KBDSTRB
 		ldx #$00
 		stx playerDeadAnimIdx
 		stx L031E
@@ -1718,112 +1786,123 @@ S1d40		bit $c010
 		stx L0309
 		stx L0306
 		stx L0307
-		ldx L036E
+
+		ldx assetKeyCnt
 		beq L1d6f
-		ldx #$01
-		jsr S1d91
+
+		ldx #assetKey
+		jsr drawAsset
 		ldx #$00
-		stx L036E
-L1d6f		ldx L036F
+		stx assetKeyCnt
+
+L1d6f		ldx assetGemCnt
 		beq L1d7e
-		ldx #$02
-		jsr S1d91
+
+		ldx #assetGem
+		jsr drawAsset
 		ldx #$00
-		stx L036F
+		stx assetGemCnt
 L1d7e		rts
 
-S1d7f		ldx #$00
-		jsr $fb1e
-		sty L037C
+readJoyX	ldx #$00
+		jsr sys.PREAD
+		sty joyX
 		rts
 
-S1d88		ldx #$01
-		jsr $fb1e
-		sty L037D
+readJoyY	ldx #$01
+		jsr sys.PREAD
+		sty joyY
 		rts
 
-S1d91		txa
+drawAsset	txa
 		tay
-		lda L036A,y
+		lda assetXpos-1,y
 		tax
 		tya
 		clc
 		adc #$26
-		ldy #$b9
-		jsr drawSprite
+		ldy #185
+		jsr spritelib.drawSprite
 		rts
+
+;
+; DRAWSCORE
+;
 
 drawScore	ldx #$05
 		jsr drawDigit
 		ldx #$05
-		inc L034A
-		ldy L034A
+		inc playerScore+4
+		ldy playerScore+4
 		cpy #$0a
-		beq L1db6
+		beq !+
 		jsr drawDigit
 		rts
 
-L1db6		lda #$00
-		sta L034A
+!		lda #$00
+		sta playerScore+4
 		jsr drawDigit
-S1dbe		ldx #$04
+
+drawScore10	ldx #$04
 		jsr drawDigit
 		ldx #$04
-		inc L0349
-		ldy L0349
+		inc playerScore+3
+		ldy playerScore+3
 		cpy #$0a
-		beq L1dd3
+		beq !+
 		jsr drawDigit
 		rts
 
-L1dd3		lda #$00
-		sta L0349
+!		lda #$00
+		sta playerScore+3
 		jsr drawDigit
-S1ddb		ldx #$03
+
+drawScore100	ldx #$03
 		jsr drawDigit
 		ldx #$03
-		inc L0348
-		ldy L0348
+		inc playerScore+2
+		ldy playerScore+2
 		cpy #$0a
-		beq L1df0
+		beq !+
 		jsr drawDigit
 		rts
 
-L1df0		lda #$00
-		sta L0348
+!		lda #$00
+		sta playerScore+2
 		jsr drawDigit
-S1df8		ldx #$02
+
+drawScore1000	ldx #$02
 		jsr drawDigit
 		ldx #$02
-		inc L0347
-		ldy L0347
+		inc playerScore+1
+		ldy playerScore+1
 		cpy #$0a
-		beq L1e0d
+		beq !+
 		jsr drawDigit
 		rts
 
-L1e0d		lda #$00
-		sta L0347
+!		lda #$00
+		sta playerScore+1
 		jsr drawDigit
 		ldx #$01
 		jsr drawDigit
-		inc L0346
+		inc playerScore
 		ldx #$01
 		jsr drawDigit
 		rts
 
 S1e23		ldx #$00
 L1e25		lda highScore,x
-		cmp L0346,x
+		cmp playerScore,x
 		bcc L1e35
 		bne L1e34
 		inx
 		cpx #$05
 		bne L1e25
-	L1e34	rts
+L1e34		rts
 
 L1e35		ldx #$04
-L1e37		lda L0346,x
+L1e37		lda playerScore,x
 		sta highScore,x
 		dex
 		bpl L1e37
@@ -1835,10 +1914,10 @@ S1e41		ldx level
 		dec level
 		jmp L1111
 
-S1e4e		lda inputMode ; 01:kbd ff:joystick
+readJoyBtn0	lda inputMode ; 01:kbd ff:joystick
 		bpl L1e5a ; if kbd
 
-		lda $c061
+		lda sys.BUTNO
 		bpl L1e5a
 		sec
 		rts
@@ -1899,20 +1978,24 @@ S1e97		rol $4e
 		adc L037A
 		sta L0372
 		rts
+;
+; LOADRANGE Y:range idx
+;
 ; 1EC3
-loadRange	lda L0900,y
+loadRange	lda levels.rangeTracks,y
 		sta track
-		lda L0980,y
+		lda levels.rangeSectors,y
 		sta sector
 		iny
-		lda L0900,y
+		lda levels.rangeTracks,y
 		sta trackend
-		lda L0980,y
+		lda levels.rangeSectors,y
 		sta sectorend
 		ldx #$00
 		stx rwts_buf
+
 		; check if ptrs =. exit of true
-L1ee1		ldx sector
+!		ldx sector
 		cpx sectorend
 		bne L1ef2
 		ldx track
@@ -1925,18 +2008,19 @@ L1ef2		jsr readSector
 		inc sector
 		ldx sector
 		cpx #$10
-		bne L1ee1
+		bne !-
 		ldx #$00
 		stx sector
 		inc track
-		jmp L1ee1
+		jmp !-
 
-S1f0d		jsr S1f1e
+
+readTrack	jsr S1f1e
 		inc rwts_buf+1
 		inc rwts_sec
 		ldx rwts_sec
 		cpx #$10
-		bne S1f0d
+		bne readTrack
 		rts
 
 S1f1e		ldx #$00
@@ -1969,7 +2053,7 @@ S1f2d		ldx playerDeadAnimIdx
 		bcc L1f2c
 		jsr S1bca
 		jsr L1819
-		jsr L0AD7
+		jsr soundlib.L0AD7
 		pla
 		pla
 		rts

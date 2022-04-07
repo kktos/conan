@@ -5,8 +5,9 @@ BOOT3:		{ start: 0xB700, end: 0xB7FF }
 BOOT2:		{ start: 0x4100, end: 0x45FF }
 WELCOME:	{ start: 0x0200, end: 0x11FF }
 
-PAD1:		{ start: 0x0000, end: 0x1FFF }
+PAD1:		{ start: 0x0000, end: 0x0FFF }
 
+SPRITELIB:	{ start: 0xA700, end: 0xB6FF }
 VARIABLES:	{ start: 0x0300, end: 0x12FF }
 GAME1:		{ start: 0x1000, end: 0x1FFF }
 
@@ -23,3 +24,5 @@ INTRO:		{ start: 0x8000, end: 0x8FFF }
 SETUP:		{ start: 0x9000, end: 0x9FFF }
 
 DATA4:		{ start: 0xA000, end: 0xAFFF }
+
+LEVEL0:		{ start: 0x7500, end: 0xAFFF }

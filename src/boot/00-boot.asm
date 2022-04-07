@@ -13,10 +13,10 @@
                   ; load T0S0 - T0S9
                   ; into $B600 - $BF00
                   ;
-BOOT0               lda PT2BTBUF+1
+BOOT0               lda sys.PT2BTBUF+1
                     cmp #$09
                     bne L081f
-                    lda SLT16ZPG
+                    lda sys.SLT16ZPG
                     lsr a
                     lsr a
                     lsr a
@@ -32,20 +32,20 @@ BOOT0               lda PT2BTBUF+1
 L081f               ldx sectorCnt
                     bmi L0839
                     lda dskSectors,x
-                    sta BOOTSEC
+                    sta sys.BOOTSEC
                     dec sectorCnt
                     lda addrHi
-                    sta PT2BTBUF+1
+                    sta sys.PT2BTBUF+1
                     dec addrHi
-                    ldx SLT16ZPG
+                    ldx sys.SLT16ZPG
                     jmp ($003e) ; $C65C
 
 L0839               inc addrHi ; = $B600
                     inc addrHi ; = $B700
-                    jsr SETKBD
-                    jsr SETVID
-                    jsr INIT
-                    ldx SLT16ZPG
+                    jsr sys.SETKBD
+                    jsr sys.SETVID
+                    jsr sys.INIT
+                    ldx sys.SLT16ZPG
                     jmp BOOT_END
 
 dskSectors          .hex 00 0d 0b 09 07 05 03 01 0e 0c

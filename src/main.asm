@@ -1,4 +1,4 @@
-
+	.lst off
 
 	.setcpu 65C02
 
@@ -51,7 +51,7 @@
 
 
 	;
-	; TRACK 1
+	; TRACK $01
 	;
 
 .segment WELCOME
@@ -73,16 +73,23 @@
 
 
 	;
-	; TRACK $02-$03
+	; TRACK $02
 	;
 .segment PAD1
 	.fill .SEGMENTEND-*+1 $AA
 
 	;
+	; TRACK $03
+	;
+.segment SPRITELIB
+	.include "game1/sprite-lib.asm"
+	.fill .SEGMENTEND-*+1 $EA
+
+	;
 	; TRACK $04
 	;
 .segment VARIABLES
-	.include "07-variables-page03.asm"
+	.include "game1/variables.asm"
 	.include "game1/helpers.asm"
 
 	.fill .SEGMENTEND-*+1 $55
@@ -153,6 +160,12 @@
 	;
 .segment DATA4
 	.include "05.1-TFS0-F-MA000-AFFF.asm"
+
+	;
+	; TRACK $10
+	;
+.segment LEVEL0
+	.include "levels/level0/level.asm"
 
 
 	.out ""

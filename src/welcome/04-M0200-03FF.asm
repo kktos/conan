@@ -49,7 +49,7 @@ L0259		lda L1000,x
 		.include "load-part2.asm"
 
 		jsr showFlipDisk
-		jmp L1000
+		jmp game1.gameStart
 
 ; clear hires1
 S02af		ldy #$00

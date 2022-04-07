@@ -1,4 +1,7 @@
-L0a00               ldx #$f8
+		.namespace soundlib
+		.org $0A00
+
+L0A00               ldx #$f8
 L0a02               ldy #$04
                     txa
                     pha
@@ -18,7 +21,7 @@ L0a12               dey
                     inc L0a02+1
                     ldx L0a02+1
                     cpx #$10
-                    bne L0a00
+                    bne L0A00
                     ldx #$04
                     stx L0a02+1
                     rts
@@ -47,32 +50,32 @@ L0a4f               rts
 
 L0a50               ldx #$08
                     ldy #$70
-                    jsr $107b
+                    jsr tone
                     rts
 
 L0a58               ldx #$60
                     ldy #$40
-                    jsr $107b
+                    jsr tone
                     ldx #$30
                     ldy #$60
-                    jsr $107b
+                    jsr tone
                     ldx #$10
                     ldy #$f0
-                    jsr $107b
+                    jsr tone
                     rts
 
 L0a6e               ldx #$90
                     ldy #$10
-                    jsr $107b
+                    jsr tone
                     ldx #$30
                     ldy #$a0
-                    jsr $107b
+                    jsr tone
                     rts
 
 L0a7d               jsr S0a88
                     ldx #$d0
                     ldy #$40
-                    jsr $107b
+                    jsr tone
                     rts
 
 S0a88               lda #$01
@@ -105,27 +108,27 @@ L0aaa               dex
 
 L0ab6               ldx #$05
                     ldy #$50
-                    jsr $107b
+                    jsr tone
                     ldx #$20
                     ldy #$30
-                    jsr $107b
+                    jsr tone
                     rts
 
 L0ac5               ldx #$08
                     ldy #$e0
-                    jsr $107b
+                    jsr tone
                     jsr L0a9f
                     ldx #$80
                     ldy #$70
-                    jsr $107b
+                    jsr tone
                     rts
 
 L0ad7               ldx #$18
                     ldy #$50
-                    jsr $107b
+                    jsr tone
                     ldx #$28
                     ldy #$68
-                    jsr $107b
+                    jsr tone
                     rts
 
 L0ae6               tya
@@ -133,7 +136,7 @@ L0ae7               pha
                     jsr S0b51
                     tax
                     ldy #$02
-                    jsr $107b
+                    jsr tone
                     pla
                     sec
                     sbc #$01
@@ -153,37 +156,37 @@ L0af8               jsr L0a9f
 
 L0b06               ldx #$03
                     ldy #$70
-                    jsr $107b
+                    jsr tone
                     ldx #$f0
                     ldy #$45
-                    jsr $107b
+                    jsr tone
                     ldx #$d0
                     ldy #$20
-                    jsr $107b
+                    jsr tone
                     ldx #$80
                     ldy #$18
-                    jsr $107b
+                    jsr tone
                     rts
 
 L0b23               jsr S0a88
                     ldx #$20
                     ldy #$9a
-                    jsr $107b
+                    jsr tone
                     ldx #$10
                     ldy #$b0
-                    jsr $107b
+                    jsr tone
                     jsr L0a9f
                     ldx #$80
                     ldy #$50
-                    jsr $107b
+                    jsr tone
                     rts
 
 L0b3f               ldx #$10
                     ldy #$d0
-                    jsr $107b
+                    jsr tone
                     ldx #$80
                     ldy #$40
-                    jsr $107b
+                    jsr tone
                     jsr S0a88
                     rts
 

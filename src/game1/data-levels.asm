@@ -1,3 +1,4 @@
+		.namespace levels
 
 ; levels(8) table used by L1EC3
 ; used to load a range of sectors
@@ -8,18 +9,48 @@
 ; - range 5: $A000:ABFF -
 ; track list
 ; <start> <end>
-L0900
-		.hex 00 00 00 00 03 03
-		.hex 03 04 04 04 05 05
-		.hex 05 06 06 06 07 07
+; $0900
+rangeTracks
+		.hex 00 00
+		.hex 00 00
+		.hex 03 03
 
-		.hex 07 08 08 08 0A 0A
-		.hex 0B 0B 0B 0B 0D 0E
-		.hex 0E 0F 0F 0F 11 11
-		.hex 12 12 12 12 14 15
-		.hex 15 16 16 16 18 19
-		.hex 19 1A 1A 1A 1A 1A
-		.hex 1A 00 00 00 00 00
+		.hex 03 04
+		.hex 04 04
+		.hex 05 05
+
+		.hex 05 06
+		.hex 06 06
+		.hex 07 07
+
+		.hex 07 08
+		.hex 08 08
+		.hex 0A 0A
+
+		.hex 0B 0B
+		.hex 0B 0B
+		.hex 0D 0E
+
+		.hex 0E 0F
+		.hex 0F 0F
+		.hex 11 11
+
+		.hex 12 12
+		.hex 12 12
+		.hex 14 15
+
+		.hex 15 16
+		.hex 16 16
+		.hex 18 19
+
+		.hex 19 1A
+		.hex 1A 1A
+		.hex 1A 1A
+
+		.hex 1A 00
+		.hex 00 00
+		.hex 00 00
+
 		.hex 00 00 00 00 00 00 00 00 00 00 00 00
 		.hex 00 00 00 00 00 00 00 00 00 00 00 00
 		.hex 00 00 00 00 00 00 00 00 00 00 00 00
@@ -30,18 +61,47 @@ L0900
 
 ; sector list
 ; <start> <end>
-L0980
-		.hex 01 09 0D 0E 00 0C
-		.hex 0E 06 07 08 00 09
-		.hex 0B 05 06 07 07 0D
+; $0980
+rangeSectors
+		.hex 01 09
+		.hex 0D 0E
+		.hex 00 0C
 
-		.hex 0F 08 0A 0B 04 0F
-		.hex 01 0A 0C 0D 09 05
-		.hex 07 01 03 04 02 0E
-		.hex 00 0A 0D 0E 09 05
-		.hex 07 03 07 08 0E 0A
-		.hex 0C 07 08 09 0C 0D
-		.hex 0F 00 00 00 00 00
+		.hex 0E 06
+		.hex 07 08
+		.hex 00 09
+
+		.hex 0B 05
+		.hex 06 07
+		.hex 07 0D
+
+		.hex 0F 08
+		.hex 0A 0B
+		.hex 04 0F
+
+		.hex 01 0A
+		.hex 0C 0D
+		.hex 09 05
+
+		.hex 07 01
+		.hex 03 04
+		.hex 02 0E
+
+		.hex 00 0A
+		.hex 0D 0E
+		.hex 09 05
+
+		.hex 07 03
+		.hex 07 08
+		.hex 0E 0A
+
+		.hex 0C 07
+		.hex 08 09
+		.hex 0C 0D
+
+		.hex 0F 00
+		.hex 00 00
+		.hex 00 00
 
 		.hex 00 00 00 00 00 00 00 00 00 00 00 00
 		.hex 00 00 00 00 00 00 00 00 00 00 00 00
