@@ -106,4 +106,4 @@ L02be		sta ($1a),y
 
 		.include "unpack.asm"
 
-		.align $100 $FF
+		.align $100,$FF

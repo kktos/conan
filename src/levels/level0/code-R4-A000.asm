@@ -1,6 +1,6 @@
 		.org $A000
 
-	.macro drawSprite id x y
+	.macro drawSprite id,x,y
 		ldx #x
 		ldy #y
 		lda #id
@@ -30,7 +30,7 @@ drawSpriteBis 	sty yPos
 		and #$7f
 		sta spritelib.dsHeight
 		lda spritelib.LB200,x
-		asl a
+		asl
 		clc
 		adc #$02
 		tay
@@ -42,7 +42,7 @@ drawSpriteBis 	sty yPos
 		jmp La05a
 
 !	     	lda spritelib.LAF00,x
-		asl a
+		asl
 		clc
 		adc #$02
 		tay
@@ -263,11 +263,11 @@ Sa1e6               lda spritelib.hgrLo,x
                     rts
 
 Sa1f1
-		    drawSprite $4f 25,16
+		    drawSprite $4f,25,16
                     rts
 
 Sa1fb
-		    drawSprite $50 48,16
+		    drawSprite $50,48,16
                     rts
 
 Sa205               ldx #$0c
@@ -295,7 +295,7 @@ Sa230               ldx L7901
                     rts
 
 Sa23c
-                    drawSprite $51 20,42
+                    drawSprite $51,20,42
                     rts
 
 Sa246               ldx #$00
@@ -352,11 +352,11 @@ Sa2ad       	lda L7905
 		rts
 
 Sa2b9
-		drawSprite $53 $3a,$54
+		drawSprite $53,$3a,$54
 		rts
 
 Sa2c3
-		drawSprite $54 $2e,$10
+		drawSprite $54,$2e,$10
 		rts
 
 	.define spritesTable
@@ -381,7 +381,7 @@ displayHelpObj	ldx #$0d
 		jsr Sa35e
 
 		; img key
-		drawSprite $27 15,60
+		drawSprite $27,15,60
 
 		jsr Sa35e
 

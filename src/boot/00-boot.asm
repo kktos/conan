@@ -17,10 +17,10 @@ BOOT0               lda sys.PT2BTBUF+1
                     cmp #$09
                     bne L081f
                     lda sys.SLT16ZPG
-                    lsr a
-                    lsr a
-                    lsr a
-                    lsr a
+                    lsr
+                    lsr
+                    lsr
+                    lsr
                     ora #$c0
                     sta $3f
                     lda #$5c

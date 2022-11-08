@@ -1,5 +1,5 @@
 La000               jmp La0b9
-                    
+
 Sa003               sty $b3f0
                     tay
                     lda $b5ff,y
@@ -20,7 +20,7 @@ Sa003               sty $b3f0
                     and #$7f
                     sta $b3f4
                     lda LB200,x
-                    asl a
+                    asl
                     clc
                     adc #$02
                     tay
@@ -30,9 +30,9 @@ Sa003               sty $b3f0
                     lda ($1c),y
                     sta mask+2
                     jmp La05a
-                    
+
 La047               lda LAF00,x
-                    asl a
+                    asl
                     clc
                     adc #$02
                     tay
@@ -53,7 +53,7 @@ La05a               ldy $b3f0
                     lda LB000,x
                     tay
                     jmp La07a
-                    
+
 La076               lda $b100,x
                     tay
 La07a               cpy #$28
@@ -66,7 +66,7 @@ mask                lda $ffff
                     cpx #$00
                     beq La08f
                     jmp La093
-                    
+
 La08f               eor ($1c),y
                     sta ($1c),y
 La093               inc mask+1
@@ -84,9 +84,9 @@ La0a2               dec $b3f1
                     beq La0b8
                     inc $b3f0
                     jmp La05a
-                    
+
 La0b8               rts
-                    
+
 La0b9               ldx $034f
                     bne La0c1
                     jsr Sa155
@@ -99,7 +99,7 @@ La0c1               jsr Sa0d9
                     lda #$80
                     jsr $fca8
                     rts
-                    
+
 Sa0d9               ldx $7900
                     bne La110
                     ldx spriteX
@@ -124,7 +124,7 @@ Sa0d9               ldx $7900
                     jsr $1038
                     jsr $0a6e
 La110               rts
-                    
+
 Sa111               ldx $036e
                     beq La110
                     ldx spriteX
@@ -147,7 +147,7 @@ Sa111               ldx $036e
                     jsr $1071
                     jsr $0a7d
 La144               rts
-                    
+
 Sa145               txa
                     tay
                     lda $036a,y
@@ -158,7 +158,7 @@ Sa145               txa
                     ldy #$b9
                     jsr $ae00
                     rts
-                    
+
 Sa155               ldx $034f
                     bne La165
                     ldx spriteY
@@ -167,7 +167,7 @@ Sa155               ldx $034f
                     cpx #$f0
                     bcc La166
 La165               rts
-                    
+
 La166               ldx spriteX
                     cpx #$50
                     bcc playerIsDead
@@ -189,7 +189,7 @@ La166               ldx spriteX
                     jsr Sa1e7
                     rts
 
-;A192                    
+;A192
 playerIsDead        ldx #$01
                     stx $034f
 
@@ -204,14 +204,14 @@ playerIsDead        ldx #$01
                     jsr $b300 ; player death sprite 1st frame
 
                     rts
-                    
+
 Sa1af               ldx $7900
                     bne La1bb
                     ldx spriteX
                     cpx #$2c
                     bcc La1bc
 La1bb               rts
-                    
+
 La1bc               ldx spriteX
                     ldy spriteY
                     lda spriteID
@@ -228,13 +228,13 @@ La1bc               ldx spriteX
                     lda spriteID
                     jsr $b300
 La1e6               rts
-                    
+
 Sa1e7               ldx $7902
                     ldy #$a2
                     lda $7904
                     jsr Sa003
                     rts
-                    
+
 Sa1f3               ldx $7901
                     beq La1e6
                     jsr Sa1e7
@@ -246,11 +246,11 @@ Sa1f3               ldx $7901
                     jsr Sa1e7
                     inc $7903
                     rts
-                    
+
 La20f               ldx #$00
                     stx $7901
                     rts
-                    
+
 Sa215               jsr Sa264
                     ldx $7907
                     beq La220
@@ -277,20 +277,20 @@ La220               ldx $7905
                     beq La256
                     jsr Sa257
 La256               rts
-                    
+
 Sa257               ldx spriteX
                     ldy spriteY
                     lda spriteID
                     jsr $b300
                     rts
-                    
+
 Sa264               ldx spriteY
                     cpx #$ef
                     bcs La272
                     cpx #$1a
                     bcc La272
                     jmp La288
-                    
+
 La272               lda $7905
                     sec
                     sbc #$0a
@@ -301,7 +301,7 @@ La272               lda $7905
                     cmp spriteX
                     bcc La288
                     jmp La2a6
-                    
+
 La288               lda spriteY
                     cmp #$2b
                     bcs La2ac
@@ -319,11 +319,11 @@ La288               lda spriteY
 La2a6               ldx #$04
                     stx $7907
                     rts
-                    
+
 La2ac               ldx #$00
                     stx $7907
                     rts
-                    
+
 Sa2b2               ldx $7910
                     lda La400,x
                     cmp La401,x
@@ -336,12 +336,12 @@ Sa2b2               ldx $7910
                     bne La2d1
                     inc $7910
                     rts
-                    
+
 La2d1               jsr Sa2db
                     inc $7910
                     jsr Sa2db
                     rts
-                    
+
 Sa2db               ldx $7910
                     lda La400,x
                     tay
@@ -352,57 +352,57 @@ Sa2db               ldx $7910
                     pla
                     jsr $ae00
                     rts
-                    
-                                                                 00 
-                    00 00 00 00 40 00 00 00 20 71 07 00 10 79 1a 00 
-La300               f0 
-La301                  f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 
-                    f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 
-                    f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 
-                    f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 
-                    f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f2 f4 f6 f8 fa fa 
-                    fc fe 00 02 04 06 08 0a 0c 0e 10 12 12 12 12 12 
-                    12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 
-                    12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 
-                    12 12 12 12 12 12 12 12 12 12 12 12 12 14 16 18 
-                    1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 
-                    1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 18 16 14 
-                    12 10 0e 0c 0a 08 06 04 02 00 fe fc fa f8 f6 f6 
-                    f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 
-                    f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 
-                    f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 
-                    f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 
-La400               4e 
-La401                  4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 
-                    4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 
-                    4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 
-                    4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 
-                    4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4f 
-                    51 53 55 58 5c 60 63 65 66 64 61 62 63 63 63 63 
-                    63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 
-                    63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 
-                    63 63 63 63 63 63 63 63 63 63 62 60 5d 58 54 52 
-                    53 53 53 53 53 53 53 53 53 53 53 53 53 53 53 53 
-                    53 53 53 53 53 53 53 53 53 53 53 53 51 51 53 56 
-                    5a 5f 64 68 6b 6e 70 71 70 6e 6b 67 64 63 62 62 
-                    62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 
-                    62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 
-                    62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 
-                    62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 
-La500               47 
-La501                  47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 
-                    47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 
-                    47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 
-                    47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 
-                    47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 
-                    47 47 47 47 47 47 47 47 47 47 47 47 49 49 49 49 
-                    49 49 49 49 49 49 49 49 49 49 49 49 49 4a 4a 4a 
-                    4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 
-                    4a 4a 4a 4a 4a 4a 4a 4a 49 49 49 47 47 47 47 47 
-                    49 49 49 49 49 49 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 
-                    4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 48 48 48 
-                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 
-                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 
-                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 
-                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 
-                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 
+
+                                                                 00
+                    00 00 00 00 40 00 00 00 20 71 07 00 10 79 1a 00
+La300               f0
+La301                  f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0
+                    f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0
+                    f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0
+                    f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0
+                    f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f2 f4 f6 f8 fa fa
+                    fc fe 00 02 04 06 08 0a 0c 0e 10 12 12 12 12 12
+                    12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12
+                    12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12
+                    12 12 12 12 12 12 12 12 12 12 12 12 12 14 16 18
+                    1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a
+                    1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 18 16 14
+                    12 10 0e 0c 0a 08 06 04 02 00 fe fc fa f8 f6 f6
+                    f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6
+                    f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6
+                    f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6
+                    f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6
+La400               4e
+La401                  4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e
+                    4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e
+                    4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e
+                    4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e
+                    4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4f
+                    51 53 55 58 5c 60 63 65 66 64 61 62 63 63 63 63
+                    63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63
+                    63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63
+                    63 63 63 63 63 63 63 63 63 63 62 60 5d 58 54 52
+                    53 53 53 53 53 53 53 53 53 53 53 53 53 53 53 53
+                    53 53 53 53 53 53 53 53 53 53 53 53 51 51 53 56
+                    5a 5f 64 68 6b 6e 70 71 70 6e 6b 67 64 63 62 62
+                    62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62
+                    62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62
+                    62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62
+                    62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62
+La500               47
+La501                  47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
+                    47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
+                    47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
+                    47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
+                    47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
+                    47 47 47 47 47 47 47 47 47 47 47 47 49 49 49 49
+                    49 49 49 49 49 49 49 49 49 49 49 49 49 4a 4a 4a
+                    4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a
+                    4a 4a 4a 4a 4a 4a 4a 4a 49 49 49 47 47 47 47 47
+                    49 49 49 49 49 49 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a
+                    4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 48 48 48
+                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
+                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
+                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
+                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
+                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48

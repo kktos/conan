@@ -1,24 +1,5 @@
 		.namespace variables
 
-		.export "sprite"
-		.export "player"
-		.export "key"
-		.export "L03"
-		.export "joy"
-		.export "asset"
-
-		.export axeAnimIDs
-		.export level
-		.export highScore
-		.export track
-		.export sector
-		.export trackend
-		.export sectorend
-		.export rangeIdx
-		.export inputMode
-		.export Xpos
-		.export Ypos
-
 		.org $300
 
 spriteX		.hex d9
@@ -227,3 +208,22 @@ L03fb               jmp $ff65
 
 L03fe               .db $65
 L03ff               .db $ff
+
+		.export "sprite"
+		.export "player"
+		.export "key"
+		.export "L03"
+		.export "joy"
+		.export "asset"
+
+		.export axeAnimIDs
+		.export level
+		.export highScore
+		.export track
+		.export sector
+		.export trackend
+		.export sectorend
+		.export rangeIdx
+		.export inputMode
+		.export Xpos
+		.export Ypos

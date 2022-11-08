@@ -30,9 +30,9 @@ L0a2d               lda $034f
                     beq L0a4f
                     cmp #$0d
                     bcs L0a4f
-                    asl a
-                    asl a
-                    asl a
+                    asl
+                    asl
+                    asl
 L0a39               ldy #$04
 L0a3b               ldx $0380
                     pha
@@ -194,14 +194,14 @@ S0b51               rol $4e
                     rol $037a
                     rol $0371
                     lda $4e
-                    asl a
+                    asl
                     eor $4f
                     eor $0371
-                    rol a
-                    rol a
-                    rol a
-                    rol a
-                    rol a
+                    rol
+                    rol
+                    rol
+                    rol
+                    rol
                     pha
                     rol $4f
                     lda $4f

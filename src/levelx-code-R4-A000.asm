@@ -24,7 +24,7 @@ drawSpriteBis	sty spritelib.LB3F0
 		and #$7f
 		sta spritelib.dsHeight
 		lda spritelib.LB200,x
-		asl a
+		asl
 		clc
 		adc #$02
 		tay
@@ -36,7 +36,7 @@ drawSpriteBis	sty spritelib.LB3F0
 		jmp La05a
 
 La047               lda spritelib.LAF00,x
-                    asl a
+                    asl
                     clc
                     adc #$02
                     tay

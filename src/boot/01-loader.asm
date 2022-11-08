@@ -6,14 +6,14 @@
 ; https://apple2.org.za/gswv/a2zine/GS.WorldView/Resources/DOS.3.3.ANATOMY/BOOT.PROCESS.txt
 ;
 
-BOOT1               stx local_rwts_slot
+BOOT1               stx local_rwts_slot+1
                     stx local_rwts_lstslot
                     txa
                     pha
-                    lsr a
-                    lsr a
-                    lsr a
-                    lsr a
+                    lsr
+                    lsr
+                    lsr
+                    lsr
                     tax
                     lda #$00
                     sta $0478,x

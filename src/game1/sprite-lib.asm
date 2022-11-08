@@ -14,7 +14,7 @@
 
 		.org $AE00
 
-drawSprite 	sty LB3F0
+drawSprite: 	sty LB3F0
 		tay
 		lda spriteLo-1,y
 		sta $1c
@@ -34,7 +34,7 @@ drawSprite 	sty LB3F0
 		and #$7f
 		sta dsHeight
 		lda LB200,x
-		asl a
+		asl
 		clc
 		adc #$02
 		tay
@@ -46,7 +46,7 @@ drawSprite 	sty LB3F0
 		jmp loop
 
 Lae44		lda LAF00,x
-		asl a
+		asl
 		clc
 		adc #$02
 		tay
@@ -203,7 +203,7 @@ drawSpriteM         sty LB3F0
                     and #$7f
                     sta dsHeight
                     lda LB200,x
-                    asl a
+                    asl
                     clc
                     adc #$02
                     tay
@@ -215,7 +215,7 @@ drawSpriteM         sty LB3F0
                     jmp Lb357
 
 Lb344               lda LAF00,x
-                    asl a
+                    asl
                     clc
                     adc #$02
                     tay

@@ -366,7 +366,7 @@ L123f			ldx L031F
 			lda L0306
 			beq L1275
 
-			ror a
+			ror
 			bcs L1256
 
 			lda L030A
@@ -502,8 +502,8 @@ S135d		dec L030A
 		ldx #$04
 		stx L030A
 L1367		lda L030A
-		asl a
-		asl a
+		asl
+		asl
 		tax
 		lda L0306
 		beq L1377
@@ -1217,9 +1217,9 @@ S1926		lda LAD30,x
 ;
 S193a		inc L033C
 		lda L033C
-		ror a
+		ror
 		bcs L1952
-		ror a
+		ror
 		bcs L1952
 		ldx LAD84
 		ldy LAD85
@@ -1661,8 +1661,8 @@ S1c5d		ldx L0374
 
 S1c6b		jsr S1e97
 		and #$03
-		asl a
-		asl a
+		asl
+		asl
 		sta rwts_sec
 		lda level
 		clc
@@ -1936,8 +1936,8 @@ S1e5c		ldx playerAxeState ; 00:off / FF: on / 01:back to player
 		jmp L1e73
 
 L1e70		lda L0338
-L1e73		asl a
-		asl a
+L1e73		asl
+		asl
 		sta L0382
 L1e78		lda #$02
 L1e7a		ldy L0382
@@ -1959,14 +1959,14 @@ S1e97		rol $4e
 		rol L037A
 		rol L0371
 		lda $4e
-		asl a
+		asl
 		eor $4f
 		eor L0371
-		rol a
-		rol a
-		rol a
-		rol a
-		rol a
+		rol
+		rol
+		rol
+		rol
+		rol
 		pha
 		rol $4f
 		lda $4f

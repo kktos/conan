@@ -1,6 +1,6 @@
 	.lst off
 
-	.setcpu 65C02
+	.cpu "65C02"
 
 	.include "includes/disk-io.inc"
         .include "includes/a2-firmware.inc"
@@ -26,7 +26,7 @@
 	.include "boot/01-loader.asm"
 
 	; T0S2-S9
-        .fill .SEGMENTEND-*+1 $55
+        .fill .SEGMENTEND-*+1, $55
 
 .segment BOOT2
 	;
@@ -37,7 +37,7 @@
 	.include "boot/03-boot2.M4100.asm"
 
 	; T0SC-SF
-	.fill .SEGMENTEND-*+1 $55
+	.fill .SEGMENTEND-*+1, $55
 
 .segment BOOT3
 	;
@@ -69,21 +69,21 @@
 	.include "welcome/04-M0200-03FF.asm"
 
 	; T0S2-SF
-	.fill .SEGMENTEND-*+1 $55
+	.fill .SEGMENTEND-*+1, $55
 
 
 	;
 	; TRACK $02
 	;
 .segment PAD1
-	.fill .SEGMENTEND-*+1 $AA
+	.fill .SEGMENTEND-*+1, $AA
 
 	;
 	; TRACK $03
 	;
 .segment SPRITELIB
 	.include "game1/sprite-lib.asm"
-	.fill .SEGMENTEND-*+1 $EA
+	.fill .SEGMENTEND-*+1, $EA
 
 	;
 	; TRACK $04
@@ -92,7 +92,7 @@
 	.include "game1/variables.asm"
 	.include "game1/helpers.asm"
 
-	.fill .SEGMENTEND-*+1 $55
+	.fill .SEGMENTEND-*+1, $55
 
 	;
 	; TRACK $05
@@ -135,7 +135,7 @@
 	; TRACK $0B L$1000
 	;
 .segment PAD3
-	.fill .SEGMENTEND-*+1 $DD
+	.fill .SEGMENTEND-*+1, $DD
 
 	;
 	; TRACK $0C
