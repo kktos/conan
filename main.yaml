@@ -1,11 +1,12 @@
 segments:
 
-  BOOT1:		{ start: 0x800, end: 0x8FF }
+  BOOT1:		{ start: 0x0800, end: 0x08FF }
   LOADER:		{ start: 0xB700, end: 0xBFFF }
   BOOT3:		{ start: 0xB700, end: 0xB7FF }
   BOOT2:		{ start: 0x4100, end: 0x45FF }
-  WELCOME:		{ start: 0x0200, end: 0x11FF }
+  WELCOME:		{ start: 0x0200, end: 0x03FF }
 
+  PAD0:			{ start: 0x0000, end: 0x0DFF }
   PAD1:			{ start: 0x0000, end: 0x0FFF }
 
   SPRITELIB:		{ start: 0xA700, end: 0xB6FF }
@@ -18,7 +19,7 @@ segments:
   DATA9:		{ start: 0x7000, end: 0x7FFF }
 
   DATA1:		{ start: 0x6000, end: 0x6FFF }
-  PAD3:			{ start: 0x0000, end: 0x0FFF }
+  DATA_INTRO:		{ start: 0x6000, end: 0x6FFF }
   DATA2:		{ start: 0x7000, end: 0x7FFF }
 
   INTRO:		{ start: 0x8000, end: 0x8FFF }

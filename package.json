@@ -4,7 +4,7 @@
   "description": "Conan: Hall of Volta on Apple //",
   "main": "index.js",
   "scripts": {
-    "build": "node ../../jsasm6502/src/vasm.js --conf main.yaml --out conan.bin src/main.asm"
+    "build": "node ../../jsasm6502/src/main.js --conf main.yaml --out conan.bin src/main.asm"
   },
   "repository": {
     "type": "git",

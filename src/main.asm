@@ -2,6 +2,7 @@
 
 	.cpu "65C02"
 
+	.include "includes/extended-cmds.asm"
 	.include "includes/disk-io.inc"
         .include "includes/a2-firmware.inc"
 
@@ -55,6 +56,7 @@
 	;
 
 .segment WELCOME
+	; S0-S1
 	;
 	; load intro
 	; load TB to TF in $6000:AFFF and T4S0:$1000->$0300
@@ -66,9 +68,10 @@
 	; load T3 in $A700:B6FF
 	; jump game1
 	;
-	.include "welcome/04-M0200-03FF.asm"
+	.include "welcome/05-main-M0200-03FF.asm"
 
-	; T0S2-SF
+.segment PAD0
+	; S2-SF
 	.fill .SEGMENTEND-*+1, $55
 
 
@@ -130,18 +133,17 @@
 .segment DATA1
 	.include "05.0-TAS0-F-M6000-6FFF.asm"
 
-
 	;
 	; TRACK $0B L$1000
 	;
-.segment PAD3
-	.fill .SEGMENTEND-*+1, $DD
+.segment DATA_INTRO
+	.include "welcome/TB-M6000-6FFF.asm"
 
 	;
 	; TRACK $0C
 	;
 .segment DATA2
-	.include "06-TCS0-F-M7000-7FFF.asm"
+	.include "welcome/06-TCS0-F-M7000-7FFF.asm"
 
 	;
 	; TRACK $0D
@@ -159,7 +161,7 @@
 	; TRACK $0F
 	;
 .segment DATA4
-	.include "05.1-TFS0-F-MA000-AFFF.asm"
+	.include "welcome/05.1-data-TFS0-F-MA000-AFFF.asm"
 
 	;
 	; TRACK $10

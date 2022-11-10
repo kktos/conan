@@ -38,7 +38,7 @@ BOOT3:
 		lda #>rwts_iob
 		jsr enterwts
 
-		jmp welcome
+		jmp welcome.main
 
 
 

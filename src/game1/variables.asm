@@ -2,6 +2,8 @@
 
 		.org $300
 
+block_start = *
+
 spriteX		.hex d9
 spriteY		.hex 97
 spriteID	.hex 18
@@ -208,6 +210,8 @@ L03fb               jmp $ff65
 
 L03fe               .db $65
 L03ff               .db $ff
+
+block_size= *-block_start
 
 		.export "sprite"
 		.export "player"

@@ -1,8 +1,5 @@
 
 		.namespace unpack
-		.export unpack
-		.export L0810
-		.export L0343
 
 L0800		=	$0800
 L0801		=	$0801
@@ -14,27 +11,28 @@ L0810		=	$0810
 L6E00		=	$6E00
 L6F00		=	$6F00
 
-unpack              ldx #$00
-                    stx L0800
-                    stx L0801
+run		sta L0810
+		stz L0800
+		stz L0801
 
 L0343		=	*+1
 
-		ldx #$60
-                stx $1d
-                ldx #$00
-                stx $1c
-L034a           jsr S0357 ; read cmd
+		; ldx #$60
+		stx $1d
+                ; ldx #$00
+                stz $1c
+L034a           jsr readByte ; read cmd
                 cmp #$fe ; is repeat ?
                 beq L03a8
+
                 jsr S0366
                 jmp L034a
 
 ; read packed byte
-S0357               ldy #$00
-                    lda ($1c),y
-                    jsr S035f
-                    rts
+readByte	ldy #$00
+		lda ($1c),y
+		jsr S035f
+		rts
 
 S035f               inc $1c
                     bne L0365
@@ -76,9 +74,9 @@ L038c               inc L0801
 L03a7               rts
 
 ; process repeat bytes
-L03a8               jsr S0357 ; read packed byte
+L03a8               jsr readByte ; read packed byte
                     sta L0802
-                    jsr S0357 ; read packed byte
+                    jsr readByte ; read packed byte
                     sta L0803
 L03b4               lda L0802
                     jsr S0366

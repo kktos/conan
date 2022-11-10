@@ -1,7 +1,5 @@
 		.namespace intro
 
-		.export showIntro
-		.export showFlipDisk
 		.export hgrAddrLo
 		.export hgrAddrHi
 
@@ -81,19 +79,19 @@ height              .db $21
 hgrPage             .db $7c
 L80f7               .hex 08 21 7f 20 00 01 05 00 12
 
-L8100               sty $81f0
-                    stx $81f1
+L8100               sty L81F0
+                    stx L81F1
                     tay
                     lda spritesW,y
-                    sta $81f2
+                    sta L81F2
                     lda spritesH,y
-                    sta $81f5
+                    sta L81F5
                     lda spritesLo,y
                     sta $1c
                     lda spritesHi,y
                     sta $1d
                     ldx #$00
-L811f               ldy $81f0
+L811f               ldy L81F0
                     lda hgrAddrLo,y
                     sta $1a
                     sta $1e
@@ -102,28 +100,28 @@ L811f               ldy $81f0
                     clc
                     adc #$20
                     sta $1f
-                    lda $81f2
-                    sta $81f4
-                    lda $81f1
-                    sta $81f3
-L813f               dec $81f4
+                    lda L81F2
+                    sta L81F4
+                    lda L81F1
+                    sta L81F3
+L813f               dec L81F4
                     bmi L815f
-                    ldy $81f3
+                    ldy L81F3
                     cpy #$28
                     bcs L8153
                     lda ($1e),y
                     bmi L8153
                     lda ($1c,x)
                     sta ($1a),y
-L8153               inc $81f3
+L8153               inc L81F3
                     inc $1c
                     bne L813f
                     inc $1d
                     jmp L813f
 
-L815f               dec $81f5
+L815f               dec L81F5
                     beq L816a
-                    inc $81f0
+                    inc L81F0
                     jmp L811f
 
 L816a               rts
@@ -138,8 +136,15 @@ L816a               rts
                     01 01 18 02 01 1f 00 00 01 01 00 28 01 01 28 00
                     01 2b 00 00 03 01 00 52 01 01 58 00 01 51 02 00
                     51 03 00 58 17 01 0a 04 01 29 00 00 41 01 00 70
-                    41 01 30 46 01 3d 00 00 01 01 00 50 01 01 50 00
                     .end
+
+L81F0		.db $41
+L81F1		.db $01
+L81F2		.db $30
+L81F3		.db $46
+L81F4		.db $01
+L81F5		.db $3d
+		.hex 00 00 01 01 00 50 01 01 50 00
 
 ; table hires lo addr
 hgrAddrLo           .hex
@@ -269,7 +274,7 @@ S8765               .db 0
 ;
 ; intro animation
 ;
-showIntro	lda #$00
+run		lda #$00
 		sta L8ff1
 		sta L8ff0
 		sta L8ff6
@@ -280,11 +285,12 @@ showIntro	lda #$00
 		sta L8ffb
 		sta L8ffc
 		sta L8fff
+
 		lda #$04
 		sta L8ffe
 		lda #$30
 		sta L8ffd
-		lda $c010
+		lda sys.KBDSTRB
 		lda #$00
 		sta hgrPage
 		lda #$60
@@ -300,7 +306,7 @@ L883c		dec L80f7
 		cpy #$c0
 		beq L8853
 		jsr L8100
-		bit $c010
+		bit sys.KBDSTRB
 		jmp L883c
 
 L8853
@@ -324,106 +330,109 @@ L8853
 		ldx #$0f ; y
 		jsr drawImg
 
-                    ; exit on key + wait
+		; exit on key + wait
 L886f               jsr S8881
 
-                    ; anim sword in conan - once / anim knight on horse from left to right - repeat
-                    jsr S8894
-                    jsr S88ab
-                    jsr S8912
-                    jsr S896d
-                    jmp L886f
+		; anim sword in conan - once / anim knight on horse from left to right - repeat
+		jsr S8894
+		jsr S88ab
+		jsr S8912
+		jsr S896d
+		jmp L886f
 
-S8881               ldy #$08
-L8883               lda $c000
-                    bpl L888b
-                    jmp L89c3
+S8881		ldy #$08
+L8883		lda sys.KBD
+		bpl L888b
+		jmp L89c3
 
-L888b               lda #$10
-                    jsr $fca8
-                    dey
-                    bne L8883
-                    rts
+L888b		lda #$10
+		jsr sys.WAIT
+		dey
+		bne L8883
+		rts
 
 S8894               inc L8ff0
-                    lda L8ff0
-                    beq L889d
-                    rts
+		lda L8ff0
+		beq L889d
+		rts
 
 L889d               inc L8ff1
-                    lda L8ff1
-                    cmp #$11
-                    bne L88aa
-                    jmp L89c3
+		lda L8ff1
+		cmp #$11
+		bne L88aa
+		jmp L89c3
 
 L88aa               rts
 
 S88ab               lda L8ff2
-                    bne L88c7
-                    lda L8ff1
-                    cmp #$04
-                    bne L88c6
-                    lda #$01
-                    sta L8ff2
-                    lda #$0c
-                    sta L8ff3
-                    lda #$f1
-                    sta L8ff4
-L88c6               rts
+		bne L88c7
+		lda L8ff1
+		cmp #$04
+		bne L88c6
+		lda #$01
+		sta L8ff2
+		lda #$0c
+		sta L8ff3
+		lda #$f1
+		sta L8ff4
+L88c6		rts
 
-L88c7               inc L8fff
-                    lda L8fff
-                    cmp #$08
-                    bne L88c6
-                    lda #$00
-                    sta L8fff
-                    jsr S88dd
-                    jsr S8906
-                    rts
+L88c7		inc L8fff
+		lda L8fff
+		cmp #$08
+		bne L88c6
+		lda #$00
+		sta L8fff
+		jsr S88dd
+		jsr S8906
+		rts
 
-S88dd               lda L8ff3
-                    cmp #$11
-                    bne L8902
-                    lda #$0c
-                    sta L8ff3
-                    inc L8ff4
-                    inc L8ff4
-                    inc L8ff4
-                    inc L8ff4
-                    lda L8ff4
-                    cmp #$29
-                    bne L8901
-                    lda #$f1
-                    sta L8ff4
-L8901               rts
+S88dd		lda L8ff3
+		cmp #$11
+		bne L8902
+		lda #$0c
+		sta L8ff3
+		inc L8ff4
+		inc L8ff4
+		inc L8ff4
+		inc L8ff4
+		lda L8ff4
+		cmp #$29
+		bne L8901
+		lda #$f1
+		sta L8ff4
+L8901		rts
 
-L8902               inc L8ff3
-                    rts
+L8902		inc L8ff3
+		rts
 
-S8906               lda L8ff3
-                    ldy #$a2
-                    ldx L8ff4
-                    jsr L8100
-                    rts
+S8906		lda L8ff3
+		ldy #$a2
+		ldx L8ff4
+		jsr L8100
+		rts
 
-                    ; countdown between each sprite...
-S8912               lda L8ff6
-                    bne L892d
-                    lda L8ff5
-                    bne L892e
-                    lda L8ff1
-                    cmp #$00
-                    bne L892d
-                    lda #$01
-                    sta L8ff5
-                    lda #$00
-                    sta L8ff7
-L892d               rts
+		; countdown between each sprite...
+S8912		lda L8ff6
+		bne L892d
 
-L892e               inc L8ffb
-                    lda L8ffb
-                    cmp L8ffd
-                    bne L896c
+		lda L8ff5
+		bne L892e
+
+		lda L8ff1
+		cmp #$00
+		bne L892d
+
+		lda #$01
+		sta L8ff5
+		lda #$00
+		sta L8ff7
+L892d		rts
+
+L892e		inc L8ffb
+		lda L8ffb
+		cmp L8ffd
+		bne L896c
 
                     ; display
                     ; the key
@@ -491,14 +500,16 @@ L899e               lda #$00
 L89c2               rts
 
                     ; if "R" is pressed, launch key settings dialog
-L89c3               cmp #$d2
+L89c3               cmp #"R
+;"
                     beq L89cb
+
                     pla
                     pla
                     clc
                     rts
 
-L89cb               jsr showSetupDlg
+L89cb               jsr setup_dlg.run
                     pla
                     pla
                     sec
@@ -515,21 +526,21 @@ L89d2               jsr S8765
 showFlipDisk	lda $c010
 
 ; display "flip disk"
-                    lda #$15 	; img id
-                    ldx #0 	; x coord
-                    ldy #183 	; y coord
-                    jsr drawImg
+		lda #$15 	; img id
+		ldx #0 	; x coord
+		ldy #183 	; y coord
+		jsr drawImg
 
-L89e7               lda $c000
-                    bpl L89e7
-                    lda $c010
+L89e7		lda sys.KBD
+		bpl L89e7
+		lda sys.KBDSTRB
 
 ; display player bottom info [score men level axe]
-                    lda #$16 	; img id
-                    ldx #0 	; x coord
-                    ldy #183 	; y coord
-                    jsr drawImg
-                    rts
+		lda #$16 	; img id
+		ldx #0 		; x coord
+		ldy #183 	; y coord
+		jsr drawImg
+		rts
 
 ;L89f9
 		.hex cc a0 ce cf ce 8d a0
