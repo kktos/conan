@@ -4,9 +4,11 @@ segments:
   LOADER:		{ start: 0xB700, end: 0xBFFF }
   BOOT3:		{ start: 0xB700, end: 0xB7FF }
   BOOT2:		{ start: 0x4100, end: 0x45FF }
-  WELCOME:		{ start: 0x0200, end: 0x03FF }
 
-  PAD0:			{ start: 0x0000, end: 0x0DFF }
+  WELCOME:		{ start: 0x0200, end: 0x03FF }
+  UNPACK:		{ start: 0xD000, end: 0xD2FF }
+
+  PAD0:			{ start: 0x0000, end: 0x0AFF }
   PAD1:			{ start: 0x0000, end: 0x0FFF }
 
   SPRITELIB:		{ start: 0xA700, end: 0xB6FF }

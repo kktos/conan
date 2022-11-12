@@ -1,21 +1,20 @@
 
 		.namespace unpack
 
-L0800		=	$0800
-L0801		=	$0801
-L0802		=	$0802
-L0803		=	$0803
-L0808		=	$0808
-L0810		=	$0810
+		.org $D000
 
-L6E00		=	$6E00
-L6F00		=	$6F00
+; L0800		=	$0800
+; L0801		=	$0801
+; L0802		=	$0802
+; L0803		=	$0803
+; L0808		=	$0808
+; L0810		=	$0810
 
 run		sta L0810
 		stz L0800
 		stz L0801
 
-L0343		=	*+1
+; L0343		=	*+1
 
 		; ldx #$60
 		stx $1d
@@ -49,11 +48,11 @@ S0366               sta L0808
 
 ; set hires address from tables to ($1A)
 S0376               ldx L0801
-                    lda L6F00,x
+                    lda hgrHigh,x
                     clc
                     adc L0810
                     sta $1b
-                    lda L6E00,x
+                    lda hgrLow,x
                     clc
                     adc L0800
                     sta $1a
@@ -83,3 +82,13 @@ L03b4               lda L0802
                     dec L0803
                     bne L03b4
                     jmp L034a
+
+L0800		.db 00
+L0801		.db 00
+L0802		.db 00
+L0803		.db 00
+L0808		.db 00
+L0810		.db 00
+
+		.align $100
+		.namespace

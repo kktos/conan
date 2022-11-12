@@ -18,10 +18,6 @@ main		ldx #$01
 		ldx #$c6
 		stx $07f8
 
-		jmp L0254
-
-		.include "read-disk.asm"
-
                     ; will load data
                     ; and run intro screen
                     ; with the key settings screen
@@ -75,14 +71,22 @@ L02be		sta ($1a),y
 
 ; 05.0 load disk[A000-AFFF] to MEM[6000-6FFF]
 ; first screen
-		ldx #$0f
-		stx rwts_sec
-		ldx #$0a
-		stx rwts_trk
-		ldx #$6f
-		stx rwts_buf+1
-		jsr readTrack
+		; ldx #$0f
+		; stx rwts_sec
+		; ldx #$0a
+		; stx rwts_trk
+		; ldx #$6f
+		; stx rwts_buf+1
+		; jsr readTrack
 
+		read_diskw $0A00, $6000, $1000
+
+		lda sys.LCBANK2
+		lda sys.LCBANK2
+
+		read_diskw $0102, $D000, $0300
+		; MVPw $6E00, $D000, $200
+		brk
 ; unpack to hires
 ; intro screen
 		; ldx rwts_slot
@@ -109,6 +113,7 @@ L02be		sta ($1a),y
 		; splash screens with anim
 		jmp intro.run
 
-		.include "unpack.asm"
+		; .include "unpack.asm"
+		.include "read-disk.asm"
 
 		.align $100,$FF

@@ -17,6 +17,13 @@ PADDL2			= $C066
 PADDL3			= $C067
 PTRIG			= $C070
 
+; RR LCBANK2 Read/write RAM bank 2
+LCBANK2			= $C083
+; R7 RDLCBNK2 1=bank2 available 0=bank1 available
+RDLCBNK			= $C011
+; R7 BSRREADRAM 1=LC active for read 0=ROM active
+RDLCRAM			= $C012
+
 PREAD 			= $FB1E
 SETKBD 			= $FE89
 SETVID 			= $FE93

@@ -213,3 +213,8 @@ S0b51               rol $4e
                     adc $037a
                     sta $0372
                     rts
+
+		.align $10
+		.db "soundlib"
+
+		.align $100

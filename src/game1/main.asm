@@ -1366,6 +1366,7 @@ init2		sta rangeIdx
 		; unpack & display
 		jsr unpackToHgr
 
+		brk
 		inc rangeIdx
 		ldy rangeIdx
 
@@ -2058,15 +2059,17 @@ S1f2d		ldx playerDeadAnimIdx
 		pla
 		rts
 ;L1f64
-	.hex
-	c2 ce c5 a0 ce cf d7 c9 ce 8d a0 cc
-	c4 d8 a0 a4 b3 b0 b0 8d a0 c3 d0 d8 a0 a4 c1 c4
-	b8 b7 8d a0 c2 c5 d1 a0 d7 c9 ce cc c5 d6 8d a0
-	c4 c5 d8 8d a0 c3 d0 d8 a0 a4 c1 c4 b8 b7 8d a0
-	c2 c5 d1 a0 d7 c9 ce cc c5 d6 8d ce cf d7 c9 ce
-	a0 d2 d4 d3 8d d7 c9 ce cc c5 d6 a0 ca d3 d2 a0
-	d7 c9 ce d3 cf d5 8d cc c5 d6 c5 cc a0 cc c4 d8
-	a0 a4 b3 b7 c5 8d a0 c2 ce c5 a0 c5 ce c4 c2 cf
-	ce d5 d3 8d a0 cc c4 d8 a0 a4 b3 b4 c3 8d a0 d3
-	d4 d8 a0 a4 b3 b7 c6 8d c2 cf ce d5 d3 cc cf a0
-	.end
+		.align $100
+
+	; .hex
+	; c2 ce c5 a0 ce cf d7 c9 ce 8d a0 cc
+	; c4 d8 a0 a4 b3 b0 b0 8d a0 c3 d0 d8 a0 a4 c1 c4
+	; b8 b7 8d a0 c2 c5 d1 a0 d7 c9 ce cc c5 d6 8d a0
+	; c4 c5 d8 8d a0 c3 d0 d8 a0 a4 c1 c4 b8 b7 8d a0
+	; c2 c5 d1 a0 d7 c9 ce cc c5 d6 8d ce cf d7 c9 ce
+	; a0 d2 d4 d3 8d d7 c9 ce cc c5 d6 a0 ca d3 d2 a0
+	; d7 c9 ce d3 cf d5 8d cc c5 d6 c5 cc a0 cc c4 d8
+	; a0 a4 b3 b7 c5 8d a0 c2 ce c5 a0 c5 ce c4 c2 cf
+	; ce d5 d3 8d a0 cc c4 d8 a0 a4 b3 b4 c3 8d a0 d3
+	; d4 d8 a0 a4 b3 b7 c6 8d c2 cf ce d5 d3 cc cf a0
+	; .end

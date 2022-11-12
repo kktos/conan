@@ -26,6 +26,7 @@ rwts.lstslot equ $B7F7
 rwts.lstdrv equ $B7F8
 
 rwts equ $B7B5
+		.end
 
 L0900 equ $0900
 L0980 equ $0980

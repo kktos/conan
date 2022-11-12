@@ -3,8 +3,8 @@
 	.cpu "65C02"
 
 	.include "includes/extended-cmds.asm"
-	.include "includes/disk-io.inc"
-        .include "includes/a2-firmware.inc"
+	.include "includes/disk-io.asm"
+        .include "includes/a2-firmware.asm"
 
 	;
 	; TRACK 0
@@ -68,10 +68,16 @@
 	; load T3 in $A700:B6FF
 	; jump game1
 	;
-	.include "welcome/05-main-M0200-03FF.asm"
+	.include "welcome/main-M0200-03FF.asm"
+
+.segment UNPACK
+	; S2-S4
+	.include "welcome/unpack.asm"
+	.include "welcome/hgr-tables-M6E00-6FFF.asm"
 
 .segment PAD0
-	; S2-SF
+	; S5-SF
+
 	.fill .SEGMENTEND-*+1, $55
 
 
@@ -93,7 +99,11 @@
 	;
 .segment VARIABLES
 	.include "game1/variables.asm"
-	.include "game1/helpers.asm"
+	.include "game1/data-400-7FF.asm"
+	.include "game1/code-800.asm"
+	.include "game1/data-levels.asm"
+	.include "game1/sound-lib.asm"
+	.include "game1/data-C00-FFF.asm"
 
 	.fill .SEGMENTEND-*+1, $55
 
@@ -131,7 +141,8 @@
 	; TRACK $0A
 	;
 .segment DATA1
-	.include "05.0-TAS0-F-M6000-6FFF.asm"
+	.include "welcome/bkg-image-TAS0-F-M6000-6DFF.asm"
+	.include "welcome/hgr-tables-M6E00-6FFF.asm"
 
 	;
 	; TRACK $0B L$1000
