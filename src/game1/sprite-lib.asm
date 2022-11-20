@@ -1,7 +1,7 @@
 ; disk T3 into $A700:B6FF
 		.namespace spritelib
-		.export hgrHi
-		.export hgrLo
+		; .export hgrHi
+		; .export hgrLo
 
 ; $A700 00 x 256
 ; $A800 00 x 256
@@ -14,12 +14,13 @@
 
 		.org $AE00
 
-drawSprite: 	sty LB3F0
+drawSprite: 	sty yPos
 		tay
 		lda spriteLo-1,y
 		sta $1c
 		lda spriteHi-1,y
 		sta $1d
+
 		ldy #$00
 		sty LB3F7
 		lda ($1c),y
@@ -30,22 +31,25 @@ drawSprite: 	sty LB3F0
 		sta dsHeight
 		stx dsHeightInit
 		bpl Lae44
+
 		inc LB3F7
 		and #$7f
 		sta dsHeight
 		lda LB200,x
-		asl
-		clc
-		adc #$02
-		tay
-		lda ($1c),y
-		sta pixels
-		iny
-		lda ($1c),y
-		sta pixels+1
-		jmp loop
+		bra !+
+		; asl
+		; clc
+		; adc #$02
+		; tay
+		; lda ($1c),y
+		; sta pixels
+		; iny
+		; lda ($1c),y
+		; sta pixels+1
+		; jmp loop
 
 Lae44		lda LAF00,x
+!
 		asl
 		clc
 		adc #$02
@@ -56,22 +60,24 @@ Lae44		lda LAF00,x
 		lda ($1c),y
 		sta pixels+1
 
-loop:		ldy LB3F0
-		lda hgrHi,y
+loop:		ldy yPos
+		lda utils.hgrLow,y
 		sta $1c
-		lda hgrLo,y
+		lda utils.hgrHigh,y
 		sta $1d
 		ldx dsHeightInit
+
 		ldy LB3F7
 		beq Lae73
+
 		lda LB000,x
+		bra !+
+
+Lae73		lda LB100,x
+!
 		tay
-		jmp Lae77
 
-Lae73               lda LB100,x
-                    tay
-
-Lae77               cpy #$28
+Lae77               cpy #40 ; $28
                     bcs Lae8e
 
 pixels=*+1
@@ -87,23 +93,29 @@ pixels=*+1
                     sta ($1c),y
 Lae8e               inc pixels
                     bne Lae96
+
                     inc pixels+1
 Lae96               iny
                     cpy #$4a
                     bne Lae9d
+
                     ldy #$00
 Lae9d               dec dsWidth
                     bne Lae77
+
                     ldx dsWidthInit
                     stx dsWidth
                     dec dsHeight
                     beq Laeb3
-                    inc LB3F0
+
+                    inc yPos
                     jmp loop
 
 Laeb3               rts
 
-		.align $100
+		; .align $100
+
+		.org $AF00
 
 ; $AF00
 LAF00:
@@ -182,7 +194,7 @@ LB200:
 		.hex 04 06 01 03 05 00 02 04 06 01 03 05 00 02 04 06
 
 ; $B300
-drawSpriteM         sty LB3F0
+drawSpriteM         sty yPos
                     tay
                     lda spriteLo-1,y
                     sta $1c
@@ -225,10 +237,10 @@ Lb344               lda LAF00,x
                     lda ($1c),y
                     sta mask+1
 
-Lb357               ldy LB3F0
-                    lda hgrLo,y
+Lb357               ldy yPos
+                    lda utils.hgrLow,y
                     sta $1c
-                    lda hgrHi,y
+                    lda utils.hgrHigh,y
                     sta $1d
                     ldx dsHeightInit
                     ldy LB3F7
@@ -264,7 +276,7 @@ Lb397 	dec dsWidth
 		stx dsWidth
 		dec dsHeight
 		beq Lb3ad
-		inc LB3F0
+		inc yPos
 		jmp Lb357
 
 Lb3ad 	rts
@@ -282,14 +294,14 @@ mask2=*+1
 		jmp loop2
 
 ; B3C5
-		.hex B3
-		.hex 4C 83 B3
+		; .hex B3
+		; .hex 4C 83 B3
 
-		.hex 03 05 00 02 04 06 01
-		.hex 00 80 00 80 00 80 00 80 00 20 40 60 80 A0 C0 E0
-		.hex 04 04 05 05 06 06 07 07 08 08 08 08 08 08 08 08
+		; .hex 03 05 00 02 04 06 01
+		; .hex 00 80 00 80 00 80 00 80 00 20 40 60 80 A0 C0 E0
+		; .hex 04 04 05 05 06 06 07 07 08 08 08 08 08 08 08 08
 
-LB3F0       	.db $03
+yPos       	.db $03
 dsWidth 	.db $05
 LB3F2       	.db $00
 dsWidthInit 	.db $02
@@ -308,42 +320,42 @@ LB3FF        	.db $05
 ;$B3F0  03 05 00 02 04 06 01 03 00 02 04 06 06 03 05 05
 
 ; hires addr lo - $B400
-hgrHi:
-		.hex 00 00 00 00 00 00 00 00 80 80 80 80 80 80 80 80
-		.hex 00 00 00 00 00 00 00 00 80 80 80 80 80 80 80 80
-		.hex 00 00 00 00 00 00 00 00 80 80 80 80 80 80 80 80
-		.hex 00 00 00 00 00 00 00 00 80 80 80 80 80 80 80 80
-		.hex 28 28 28 28 28 28 28 28 A8 A8 A8 A8 A8 A8 A8 A8
-		.hex 28 28 28 28 28 28 28 28 A8 A8 A8 A8 A8 A8 A8 A8
-		.hex 28 28 28 28 28 28 28 28 A8 A8 A8 A8 A8 A8 A8 A8
-		.hex 28 28 28 28 28 28 28 28 A8 A8 A8 A8 A8 A8 A8 A8
-		.hex 50 50 50 50 50 50 50 50 D0 D0 D0 D0 D0 D0 D0 D0
-		.hex 50 50 50 50 50 50 50 50 D0 D0 D0 D0 D0 D0 D0 D0
-		.hex 50 50 50 50 50 50 50 50 D0 D0 D0 D0 D0 D0 D0 D0
-		.hex 50 50 50 50 50 50 50 50 D0 D0 D0 D0 D0 D0 D0 60
-		.hex 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60
-		.hex 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60
-		.hex 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60
-		.hex 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60
+; hgrLo:
+; 		.hex 00 00 00 00 00 00 00 00 80 80 80 80 80 80 80 80
+; 		.hex 00 00 00 00 00 00 00 00 80 80 80 80 80 80 80 80
+; 		.hex 00 00 00 00 00 00 00 00 80 80 80 80 80 80 80 80
+; 		.hex 00 00 00 00 00 00 00 00 80 80 80 80 80 80 80 80
+; 		.hex 28 28 28 28 28 28 28 28 A8 A8 A8 A8 A8 A8 A8 A8
+; 		.hex 28 28 28 28 28 28 28 28 A8 A8 A8 A8 A8 A8 A8 A8
+; 		.hex 28 28 28 28 28 28 28 28 A8 A8 A8 A8 A8 A8 A8 A8
+; 		.hex 28 28 28 28 28 28 28 28 A8 A8 A8 A8 A8 A8 A8 A8
+; 		.hex 50 50 50 50 50 50 50 50 D0 D0 D0 D0 D0 D0 D0 D0
+; 		.hex 50 50 50 50 50 50 50 50 D0 D0 D0 D0 D0 D0 D0 D0
+; 		.hex 50 50 50 50 50 50 50 50 D0 D0 D0 D0 D0 D0 D0 D0
+; 		.hex 50 50 50 50 50 50 50 50 D0 D0 D0 D0 D0 D0 D0 60
+; 		.hex 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60
+; 		.hex 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60
+; 		.hex 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60
+; 		.hex 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60
 
-; hires addr hi - $B500
-hgrLo:
-		.hex 20 24 28 2C 30 34 38 3C 20 24 28 2C 30 34 38 3C
-		.hex 21 25 29 2D 31 35 39 3D 21 25 29 2D 31 35 39 3D
-		.hex 22 26 2A 2E 32 36 3A 3E 22 26 2A 2E 32 36 3A 3E
-		.hex 23 27 2B 2F 33 37 3B 3F 23 27 2B 2F 33 37 3B 3F
-		.hex 20 24 28 2C 30 34 38 3C 20 24 28 2C 30 34 38 3C
-		.hex 21 25 29 2D 31 35 39 3D 21 25 29 2D 31 35 39 3D
-		.hex 22 26 2A 2E 32 36 3A 3E 22 26 2A 2E 32 36 3A 3E
-		.hex 23 27 2B 2F 33 37 3B 3F 23 27 2B 2F 33 37 3B 3F
-		.hex 20 24 28 2C 30 34 38 3C 20 24 28 2C 30 34 38 3C
-		.hex 21 25 29 2D 31 35 39 3D 21 25 29 2D 31 35 39 3D
-		.hex 22 26 2A 2E 32 36 3A 3E 22 26 2A 2E 32 36 3A 3E
-		.hex 23 27 2B 2F 33 37 3B 3F 23 27 2B 2F 33 37 3B 0F
-		.hex 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
-		.hex 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
-		.hex 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
-		.hex 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
+; ; hires addr hi - $B500
+; hgrHi:
+; 		.hex 20 24 28 2C 30 34 38 3C 20 24 28 2C 30 34 38 3C
+; 		.hex 21 25 29 2D 31 35 39 3D 21 25 29 2D 31 35 39 3D
+; 		.hex 22 26 2A 2E 32 36 3A 3E 22 26 2A 2E 32 36 3A 3E
+; 		.hex 23 27 2B 2F 33 37 3B 3F 23 27 2B 2F 33 37 3B 3F
+; 		.hex 20 24 28 2C 30 34 38 3C 20 24 28 2C 30 34 38 3C
+; 		.hex 21 25 29 2D 31 35 39 3D 21 25 29 2D 31 35 39 3D
+; 		.hex 22 26 2A 2E 32 36 3A 3E 22 26 2A 2E 32 36 3A 3E
+; 		.hex 23 27 2B 2F 33 37 3B 3F 23 27 2B 2F 33 37 3B 3F
+; 		.hex 20 24 28 2C 30 34 38 3C 20 24 28 2C 30 34 38 3C
+; 		.hex 21 25 29 2D 31 35 39 3D 21 25 29 2D 31 35 39 3D
+; 		.hex 22 26 2A 2E 32 36 3A 3E 22 26 2A 2E 32 36 3A 3E
+; 		.hex 23 27 2B 2F 33 37 3B 3F 23 27 2B 2F 33 37 3B 0F
+; 		.hex 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
+; 		.hex 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
+; 		.hex 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
+; 		.hex 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
 
 ; sprites addr lo - $B600
 spriteLo:
@@ -366,3 +378,5 @@ spriteHi:
 		.hex 76 76 76 76 76 76 76 76 76 76 76 76 76 76 76 76
 		.hex 77 77 77 77 77 77 77 77 77 77 77 77 77 77 77 77
 		.hex 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78
+
+		.end namespace

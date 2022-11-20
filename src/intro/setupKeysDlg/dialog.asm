@@ -9,7 +9,7 @@ L1003		=	$1003
 L1004		=	$1004
 L1084		=	$1084
 
-		.org $9000
+		; .org $9000
 
 		.include "data.asm"
 
@@ -26,9 +26,11 @@ S9704		ldx #$c0
 L9706		dex
 		cpx #$ff
 		beq L9703
-		lda hgrAddrLo,x
+		; lda hgrAddrLo,x
+		lda utils.hgrLow,x
 		sta $1a
-		lda hgrAddrHi,x
+		; lda hgrAddrHi,x
+		lda utils.hgrHigh,x
 		sta $1b
 		ldy #$28
 L9717		dey
@@ -106,8 +108,8 @@ S97a5               sta L1000
 		sty L1001
 		lda #$20
 		sta L1002
-		lda $c010
-L97b3               lda $c000
+		lda sys.KBDSTRB
+L97b3               lda sys.KBD
 		sta L1003
 		jsr S9813
 		lda L1003
@@ -201,9 +203,11 @@ S9900               sty L99f0
                     sta $1d
                     ldx #$00
 L991f               ldy L99f0
-                    lda hgrAddrLo,y
+                ;     lda hgrAddrLo,y
+                    lda utils.hgrLow,y
                     sta $1a
-                    lda hgrAddrHi,y
+                ;     lda hgrAddrHi,y
+                    lda utils.hgrHigh,y
                     sta $1b
                     lda L99f2
                     sta L99f4
@@ -378,3 +382,5 @@ L9f00		.hex
 		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 		.end
+
+		.end namespace

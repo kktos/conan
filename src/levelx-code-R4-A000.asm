@@ -3,7 +3,7 @@
 
 La000               jmp start
 
-drawSpriteBis	sty spritelib.LB3F0
+drawSpriteBis	sty spritelib.yPos
 		tay
 		lda spritelib.spriteLo-1,y
 		sta $1c
@@ -45,10 +45,10 @@ La047               lda spritelib.LAF00,x
                     iny
                     lda ($1c),y
                     sta pixels+1
-La05a               ldy spritelib.LB3F0
-                    lda spritelib.hgrHi,y
-                    sta $1c
+La05a               ldy spritelib.yPos
                     lda spritelib.hgrLo,y
+                    sta $1c
+                    lda spritelib.hgrHi,y
                     sta $1d
                     ldx spritelib.dsHeightInit
                     ldy spritelib.LB3F7
@@ -87,7 +87,7 @@ La0a2               dec spritelib.dsWidth
                     dec spritelib.dsHeight
                     beq La0b8
 
-                    inc spritelib.LB3F0
+                    inc spritelib.yPos
                     jmp La05a
 
 La0b8               rts
@@ -387,8 +387,10 @@ renderAnimFrame	ldx animFrameIdx
 		jsr spritelib.drawSprite
 		rts
 
-		.hex 00
-		.hex 00 00 00 00 40 00 00 00 20 71 07 00 10 79 1a 00
+		; .hex 00
+		; .hex 00 00 00 00 40 00 00 00 20 71 07 00 10 79 1a 00
+
+		.align $100
 
 spriteXtabl	.hex
 		f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0

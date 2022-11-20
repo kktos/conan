@@ -1,8 +1,9 @@
 		.org $A000
 
-La000		jsr Sa017
+startLevel
+		jsr Sa017
 		lda #$80
-		jsr $fca8
+		jsr utils.wait
 
 		ldx L7902
 		bne La016
@@ -44,7 +45,7 @@ drawBat		ldx L7900
 		sta L7901
 		lda batSpriteTbl,x
 		ldx L7901
-		jsr drawSpriteM
+		jsr spritelib.drawSpriteM
 		rts
 
 La05c		bmi La016
@@ -112,12 +113,12 @@ Sa09b		ldx L7900
 		ldx spriteX
 		ldy spriteY
 		lda spriteID
-		jsr drawSpriteM ; clear player current sprite
+		jsr spritelib.drawSpriteM ; clear player current sprite
 
 		ldx spriteX
 		ldy spriteY
 		lda #$19
-		jsr drawSpriteM ; player death sprite 1st frame
+		jsr spritelib.drawSpriteM ; player death sprite 1st frame
 
 La0e5		    rts
 
@@ -154,18 +155,18 @@ Sa0e6		    ldx playerAxeState
 		    sta L7905
 		    ldx #$01
 		    stx L7909
-		    jsr L106A
+		    jsr scoreAdd75 ;L106A
 
-		    jsr $0a58
+		    jsr soundlib.L0a58
 
 La139		    rts
 
 Sa13a		    ldx #$00
-		    stx LB3F6
+		    stx spritelib.LB3F6
 		    ldx L7903
 		    ldy L7904
 		    lda L7905
-		    jsr drawSpriteM
+		    jsr spritelib.drawSpriteM
 		    rts
 
 Sa14c		    ldx L7909
@@ -240,5 +241,5 @@ drawDigit	    lda playerData,x
 		    cmp #$00
 		    bne La1e3
 		    lda #$0a
-La1e3		    jsr drawSprite
+La1e3		    jsr spritelib.drawSprite
 		    rts

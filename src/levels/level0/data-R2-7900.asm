@@ -1,3 +1,4 @@
+		.namespace level0
 		.org $7900
 
 L7900		.hex 00
@@ -14,15 +15,15 @@ L7909		.hex 7D
 L790A		.hex 02
 		.hex 00 7D 02 00 7D
 
-animSpriteIDs
+animVoltaSpriteIDs
 		.hex 41 42 41 42 41 42 41 42 41 42 41 42 41 42 43 44
 		.hex 43 44 43 44 43 44 45 46 45 46 45 46 45 45 45 45
 
-L7930		.hex 00
+animFrameIdx	.db $00
 L7931		.hex F8
-L7932		.hex 00
-L7933		.hex A3
-L7934		.hex 49
+isSpringRunning	.db $00
+springCurYpos	.db $A3
+springCurId	.db $49
 		.hex 00 78 01 00 70 00 00 10 02 00 50
 
 		.hex 02 00 64 09 00 74 0B 00 74 0B 00 74 0B 00 74 0B

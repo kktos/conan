@@ -1,7 +1,5 @@
-		; .namespace welcome
-		; .org $6E00
+		.align $100
 
-		.namespace unpack
 ; hires lo addr
 hgrLow
 	.hex

@@ -31,16 +31,16 @@ BOOT1               stx local_rwts_slot+1
 
 Lb71f
 		bra boot1_2
-		    ; lda #>local_rwts_iob
-                    ldy #<local_rwts_iob
-                    sei
-                    jsr rwts
+		; lda #>local_rwts_iob
+		ldy #<local_rwts_iob
+		sei
+		jsr rwts
 
-                    dec local_rwts_sector
-                    dec local_rwts_hibuf
-                    lda local_rwts_hibuf
-                    cmp #$40
-                    bcs Lb71f
+		dec local_rwts_sector
+		dec local_rwts_hibuf
+		lda local_rwts_hibuf
+		cmp #$40
+		bcs Lb71f
 
 ; load disk[2800-2FFF] mem[1D00-1FFF]
 
@@ -74,27 +74,27 @@ Lb739               lda #>local_rwts_iob
 
 ; load disk[0A00-0Bff] mem[4000-41FF]
 boot1_2
-                    lda #$00
-                    sta local_rwts_track
-                    lda #$0b
-                    sta local_rwts_sector
-                    lda #$41
-                    sta local_rwts_hibuf
-                    lda #>local_rwts_iob
-                    ldy #<local_rwts_iob
-                    sei
-                    jsr rwts
+		lda #$00
+		sta local_rwts_track
+		lda #$0b
+		sta local_rwts_sector
+		lda #$41
+		sta local_rwts_hibuf
+		lda #>local_rwts_iob
+		ldy #<local_rwts_iob
+		sei
+		jsr rwts
 
-                    dec local_rwts_sector
-                    dec local_rwts_hibuf
-                    lda #>local_rwts_iob
-                    ldy #<local_rwts_iob
-                    sei
-                    jsr rwts
+		dec local_rwts_sector
+		dec local_rwts_hibuf
+		lda #>local_rwts_iob
+		ldy #<local_rwts_iob
+		sei
+		jsr rwts
 
-                    lda #$00
-                    sta $48
-                    jmp L4100
+		lda #$00
+		sta $48
+		jmp L4100
 
 local_rwts_iob:
                     .DB $01

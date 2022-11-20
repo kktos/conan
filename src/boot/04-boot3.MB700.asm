@@ -17,30 +17,35 @@ LA000		= $A000
 ;
 
 BOOT3:
-		ldx #$02
-		stx rwts_buf+1
-		ldx #$01
-		stx rwts_trk
-		stx rwts_cmd
-		dex
-		stx rwts_sec
-		stx $48
-		stx rwts_vol
-		ldy #<rwts_iob
-		lda #>rwts_iob
-		jsr enterwts
+		; ldx #$02
+		; stx rwts_buf+1
+		; ldx #$01
+		; stx rwts_trk
+		; stx rwts_cmd
+		; dex
+		; stx rwts_sec
+		; stx $48
+		; stx rwts_vol
+		; ldy #<rwts_iob
+		; lda #>rwts_iob
+		; jsr enterwts
 
-		inc rwts_sec
-		inc rwts_buf+1
-		ldx #$00
-		stx $48
-		ldy #<rwts_iob
-		lda #>rwts_iob
-		jsr enterwts
+		; inc rwts_sec
+		; inc rwts_buf+1
+		; ldx #$00
+		; stx $48
+		; ldy #<rwts_iob
+		; lda #>rwts_iob
+		; jsr enterwts
+
+		read_file fwelcome
 
 		jmp welcome.main
 
+fwelcome:
+		.cstr "WELCOME"
 
+		.org $B731
 
 Lb731		lda #$00
 		sta rwts_cmd

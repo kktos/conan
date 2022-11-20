@@ -18,19 +18,10 @@ rangeTracks
 		; .hex 04 04
 		; .hex 05 05
 
-		.hex 10 10
-		.hex 00 00
-		.hex 03 03
-		.hex 03 04
-		.hex 04 04
-		.hex 05 05
-
-		.hex 05 06
-		.hex 06 06
-		.hex 07 07
-		.hex 07 08
-		.hex 08 08
-		.hex 0A 0A
+		.hex 10 10 10 10 12 13 13
+		.hex 04 04 04 05 05 05 06
+		.hex 06 06 07 07 07 08 08
+		.hex 08 0A 0A
 
 		.hex 0B 0B
 		.hex 0B 0B
@@ -65,22 +56,11 @@ rangeTracks
 ; <start> <end>
 ; $0980
 rangeSectors
-		; .hex 01 09
-		; .hex 00 08
-		; .hex 0D 0E
-		; .hex 00 0C
-		; .hex 0E 06
-		; .hex 07 08
-		; .hex 00 09
+		; .hex 01 09 00 08 0D 0E 00 0C 0E 06 07 08 00 09
 
-		.hex 00 08
-		.hex 0D 0E
-		.hex 00 0C
-		.hex 0E 06
-		.hex 07 08
-		.hex 00 09
+		.hex 00 08 0C 0D 0F 0B 0D
+		.hex 06 07 08 00 09 0B 05
 
-		.hex 0B 05
 		.hex 06 07
 		.hex 07 0D
 		.hex 0F 08

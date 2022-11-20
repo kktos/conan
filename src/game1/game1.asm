@@ -62,10 +62,19 @@ L100b		bit sys.KBDSTRB
 		ldx $1d
 		cpx #$3d
 		bne !-
-		bit $c030
-		bit $c030
+		bit sys.SPKR
+		bit sys.SPKR
 
 L102d		jmp L108c
+
+; logKey
+; 			; log "keypressed= %b", keypressed
+; 		.db $42,$FF
+; 		.db "keypressed= %b"
+; 		.db 0
+; 		.db 1
+; 		.dw keypressed
+; 		rts
 
 ;1030
 scoreAdd1	jsr drawScore
@@ -118,9 +127,9 @@ scoreAdd250	jsr scoreAdd100
 
 ;107B
 tone		txa
-L107c		ldx L0380
+L107c		ldx soundSwitch
 		pha
-		lda $c020,x
+		lda sys.SPKR-$10,x
 		pla
 L1084		tax
 L1085		dex
@@ -131,7 +140,7 @@ L1085		dex
 
 L108c		jsr L1a00
 
-L108f		ldx #$00
+restart		ldx #$00
 		; sprites 	$7500:78FF
 		; data 		$7900:78FF
 		; data 		$7A00:9BFF
@@ -142,13 +151,12 @@ L108f		ldx #$00
 		; anim conan jump / high score
 		jsr startLevel
 
-L1097		jsr S1d40
-		jsr S1a11
-		jsr S18ab
+levelLoop	jsr resetVars
+		jsr resetVars2
+		jsr loadInitLevel
 
 L10a0		jsr startLevel
-		ldx #$00
-		stx L0383
+		stz L0383
 		jsr readJoyX
 		jsr S179e
 		jsr S1891
@@ -169,10 +177,15 @@ L10a0		jsr startLevel
 
 		jmp L10a0
 
+onKeyNext
+		bit sys.KBDSTRB
+		inc level
+		jmp L18e6
+
 readUserInput	lda sys.KBD
 		sta keypressed
 
-		cmp L038B ; D3/53/S
+		cmp keySoundSwitch ; D3/53/S
 		beq L1154
 
 		cmp keyPause ; 9B/1B/esc
@@ -180,6 +193,9 @@ readUserInput	lda sys.KBD
 
 		cmp keyRestart ; 8D/0D/return
 		beq onKeyRestart ; restart level
+
+		cmp #$EE ; n : next
+		beq onKeyNext ; next level
 
 		cmp keyJoystick
 		beq L1142 ; joystick only
@@ -200,16 +216,16 @@ L1104		jsr readJoystick
 		rts
 
 ; 1108
-onKeyRestart	jsr S1e23
+onKeyRestart	jsr updateHiScore
 		bit sys.KBDSTRB
-		jmp L1097
+		jmp levelLoop
 
 L1111		bit sys.KBDSTRB
 		bit sys.TEXTOFF
 		bit sys.MIXEDOFF
 		bit sys.HIRESON
 		bit sys.PAGE2OFF
-		jmp L108f
+		jmp restart
 
 ; 1123
 onKeyPause		bit sys.KBDSTRB
@@ -239,9 +255,9 @@ L114b			ldx #$01 ; input = keyboard
 			rts
 
 L1154			bit sys.KBDSTRB
-			lda L0380
+			lda soundSwitch
 			eor #$10
-			sta L0380
+			sta soundSwitch
 			rts
 
 S1160			ldx playerDeadAnimIdx
@@ -282,6 +298,8 @@ S11a3			ldx L0378
 			ldx keypressed
 			bpl L11fd
 
+			; jsr logKey
+
 			cpx keyPause
 			beq L11fd
 
@@ -304,7 +322,7 @@ L11d0			cpx keyDown
 			bne L11d8
 			jmp onKeyDown
 
-L11d8			nop
+L11d8
 			cpx keyAxe
 			bne L11e4
 			bit sys.KBDSTRB
@@ -315,10 +333,10 @@ L11e4			cpx keyJump
 			bit sys.KBDSTRB
 			jmp onKeyJump
 
-L11ef			ldx #$00
-			stx L0306
-			stx L0307
-			stx keypressed
+L11ef
+			stz L0306
+			stz L0307
+			stz keypressed
 			bit sys.KBDSTRB
 L11fd			rts
 
@@ -514,7 +532,7 @@ L1377		rts
 
 L1378		sty L0377
 		lda #$90
-		jsr $fca8
+		jsr utils.wait
 		rts
 S1381		jsr S129c
 		ldx L0314
@@ -1148,8 +1166,11 @@ S1891		ldx spriteY
 L18a7		rts
 
 L18a8		jsr soundlib.L0A00
-S18ab		ldx L037E
+
+loadInitLevel
+		ldx L037E
 		bne !+
+
 		ldx level
 		stx L037F
 L18b6		dec L037F
@@ -1304,9 +1325,9 @@ updLifeCount	ldx #playerLifeCount-playerData ; #$06
 !		inc playerLifeCount
 		ldx #playerLifeCount-playerData
 		jsr drawDigit
-		jsr S1e23
+		jsr updateHiScore
 		jsr S1c6b
-		jmp L108f
+		jmp restart
 
 L1a00		ldx #playerAxeCount-playerData
 		stx L0322
@@ -1316,7 +1337,8 @@ L1a00		ldx #playerAxeCount-playerData
 		bne !-
 		rts
 
-S1a11		jsr L1a00
+resetVars2
+		jsr L1a00
 		ldx #$00
 		stx playerScore
 		stx playerScore+1
@@ -1332,20 +1354,49 @@ S1a11		jsr L1a00
 		jsr L1a00
 		rts
 
-loadLevel	stx L0381
-		lda #$00
-L1a3c		dex
-		bmi init2
+fbkgnd		.cstr "L0_BKGD"
+fdata		.cstr "L0_DATA"
+fcode		.cstr "L0_CODE"
 
-		clc
-		adc #$06
-		jmp L1a3c
+		.if loadLevel
+		.out "loadLevel : ",.hex(loadLevel)
+		.end
+
+loadLevel	stx L0381
+; 		lda #$00
+; L1a3c		dex
+; 		bmi init2
+
+; 		clc
+; 		adc #$06
+; 		jmp L1a3c
 
 ; load welcome screen
 ; 1A45
-init2		sta rangeIdx
-		tay
+init2		txa
+		clc
+		adc #$30
+		sta fbkgnd+1
+		sta fdata+1
+		sta fcode+1
 
+		read_file fbkgnd
+
+		; unpack & display
+		; jsr unpackToHgr
+		lda #$00
+		ldx #$75
+		ldy #183
+		jsr unpack.run
+
+		read_file fdata
+		read_file fcode
+
+		rts
+
+		.if 0
+		sta rangeIdx
+		tay
 		;
 		; R0 : background image
 		;
@@ -1366,7 +1417,10 @@ init2		sta rangeIdx
 		; unpack & display
 		jsr unpackToHgr
 
-		brk
+		; lda #$00
+		; ldx #$75
+		; jsr unpack.run
+
 		inc rangeIdx
 		ldy rangeIdx
 
@@ -1433,6 +1487,9 @@ init2		sta rangeIdx
 		jsr loadRange
 		rts
 
+		.end
+
+		.if 0
 ; L1A9B
 unpackToHgr	ldx #$00
 		stx $1c
@@ -1443,36 +1500,41 @@ unpackToHgr	ldx #$00
 
 nextPakByt	jsr readPakByt
 		cmp #$FE 	; is packed ?
-		beq L1b03
+		beq repeatByte
 
 		jsr writeHGRbyte
 		jmp nextPakByt
 
 readPakByt	ldy #$00
 		lda ($1c),y
-		jsr S1abe
+		jsr nextByte
 		rts
 
-S1abe		inc $1c
+nextByte	inc $1c
 		bne L1ac4
 		inc $1d
 L1ac4		rts
 
-writeHGRbyte	sta L0369
-		jsr getPixAddr
-		lda L0369
-		ldy #$00
-		sta ($1a),y
-		jmp L1ae7
 
 getPixAddr	ldx Ypos
-		lda hgrHi,x
+		; lda hgrHi,x
+		lda utils.hgrHigh,x
 		sta $1b
-		lda hgrLo,x
+		; lda hgrLo,x
+		lda utils.hgrLow,x
 		clc
 		adc Xpos
 		sta $1a
 		rts
+
+
+writeHGRbyte
+		sta L0369
+		jsr getPixAddr
+		lda L0369
+		ldy #$00
+		sta ($1a),y
+
 
 L1ae7		inc Ypos
 		ldx Ypos
@@ -1488,16 +1550,21 @@ L1ae7		inc Ypos
 		pla
 L1b02		rts
 
-L1b03		jsr readPakByt
+
+repeatByte
+		jsr readPakByt
 		sta L0367
 		jsr readPakByt
 		sta L0368
+
 L1b0f		lda L0367
 		jsr writeHGRbyte
 		dec L0368
 		bne L1b0f
+
 		jmp nextPakByt
 
+		.end
 ; 1B1D
 readSector	ldx track
 		stx rwts_trk
@@ -1607,20 +1674,20 @@ S1bf7		jsr S1bfe
 		rts
 
 S1bfe		ldx #$3b
-		stx L0374
+		stx unknown_yPos
 L1c03		jsr S1c11
-		inc L0374
-		ldx L0374
+		inc unknown_yPos
+		ldx unknown_yPos
 		cpx #$7e
 		bne L1c03
 		rts
 
-S1c11		jsr S1c5d
+S1c11		jsr getHGRLineAddr
 		ldy #$0c
 		lda #$00
 L1c18		sta ($1a),y
 		iny
-		cpy #$1c
+		cpy #28
 		bne L1c18
 		rts
 
@@ -1629,34 +1696,35 @@ S1c20		ldx #$00
 		ldx #$75
 		stx $1d
 		ldx #$41
-		stx L0374
+		stx unknown_yPos
 L1c2d		jsr S1c3b
-		inc L0374
-		ldx L0374
+		inc unknown_yPos
+		ldx unknown_yPos
 		cpx #$79
 		bne L1c2d
 		rts
 
-S1c3b		jsr S1c5d
+S1c3b		jsr getHGRLineAddr
 		ldy #$0d
-		sty L0375
+		sty unknown_xPos
 L1c43		ldy #$00
 		lda ($1c),y
-		ldy L0375
+		ldy unknown_xPos
 		sta ($1a),y
 		inc $1c
 		bne L1c52
 		inc $1d
-L1c52		inc L0375
-		ldy L0375
+L1c52		inc unknown_xPos
+		ldy unknown_xPos
 		cpy #$1c
 		bne L1c43
 		rts
 
-S1c5d		ldx L0374
-		lda hgrLo,x
+getHGRLineAddr
+		ldx unknown_yPos
+		lda utils.hgrLow,x
 		sta $1a
-		lda hgrHi,x
+		lda utils.hgrHigh,x
 		sta $1b
 		rts
 
@@ -1680,7 +1748,7 @@ S1c6b		jsr S1e97
 		ldy #$60
 
 L1c93		lda #$ff
-		jsr $fca8
+		jsr utils.wait
 
 		lda sys.KBD
 		bmi L1ca5
@@ -1694,7 +1762,7 @@ L1c93		lda #$ff
 L1ca5		bit sys.KBDSTRB
 		cpy #$00
 		beq L1caf
-		jmp L1097
+		jmp levelLoop
 
 L1caf		rts
 
@@ -1776,42 +1844,39 @@ L1d39		ldx keyRight
 		stx keypressed
 		rts
 
-S1d40		bit sys.KBDSTRB
-		ldx #$00
-		stx playerDeadAnimIdx
-		stx L031E
-		stx L031F
-		stx playerAxeState ; 00:off / FF: on / 01:back to player
-		stx L0314
-		stx L0315
-		stx L0309
-		stx L0306
-		stx L0307
+resetVars	bit sys.KBDSTRB
+		stz playerDeadAnimIdx
+		stz L031E
+		stz L031F
+		stz playerAxeState ; 00:off / FF: on / 01:back to player
+		stz L0314
+		stz L0315
+		stz L0309
+		stz L0306
+		stz L0307
 
 		ldx assetKeyCnt
 		beq L1d6f
 
 		ldx #assetKey
 		jsr drawAsset
-		ldx #$00
-		stx assetKeyCnt
+		stz assetKeyCnt
 
 L1d6f		ldx assetGemCnt
 		beq L1d7e
 
 		ldx #assetGem
 		jsr drawAsset
-		ldx #$00
-		stx assetGemCnt
+		stz assetGemCnt
 L1d7e		rts
 
 readJoyX	ldx #$00
-		jsr sys.PREAD
+		jsr utils.PREAD
 		sty joyX
 		rts
 
 readJoyY	ldx #$01
-		jsr sys.PREAD
+		jsr utils.PREAD
 		sty joyY
 		rts
 
@@ -1892,7 +1957,8 @@ drawScore1000	ldx #$02
 		jsr drawDigit
 		rts
 
-S1e23		ldx #$00
+updateHiScore
+		ldx #$00
 L1e25		lda highScore,x
 		cmp playerScore,x
 		bcc L1e35
@@ -1942,8 +2008,8 @@ L1e73		asl
 		sta L0382
 L1e78		lda #$02
 L1e7a		ldy L0382
-		ldx L0380
-L1e80		cmp $c020,x
+		ldx soundSwitch
+L1e80		cmp sys.SPKR-$10,x
 		dey
 		bne L1e80
 		sec
@@ -2073,3 +2139,5 @@ S1f2d		ldx playerDeadAnimIdx
 	; ce d5 d3 8d a0 cc c4 d8 a0 a4 b3 b4 c3 8d a0 d3
 	; d4 d8 a0 a4 b3 b7 c6 8d c2 cf ce d5 d3 cc cf a0
 	; .end
+
+		.end namespace

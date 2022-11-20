@@ -1,3 +1,4 @@
+		.namespace level0
 		.org $A000
 
 	.macro drawSprite id,x,y
@@ -9,12 +10,14 @@
 
 LA000      	jmp start
 
-drawSpriteBis 	sty yPos
+drawSpriteBis
+		sty yPos
 		tay
 		lda spritelib.spriteLo-1,y
 		sta $1c
 		lda spritelib.spriteHi-1,y
 		sta $1d
+
 		ldy #$00
 		sty spritelib.LB3F7
 		lda ($1c),y
@@ -30,18 +33,20 @@ drawSpriteBis 	sty yPos
 		and #$7f
 		sta spritelib.dsHeight
 		lda spritelib.LB200,x
-		asl
-		clc
-		adc #$02
-		tay
-		lda ($1c),y
-		sta pixels
-		iny
-		lda ($1c),y
-		sta pixels+1
-		jmp La05a
+		bra !++
+		; asl
+		; clc
+		; adc #$02
+		; tay
+		; lda ($1c),y
+		; sta pixels
+		; iny
+		; lda ($1c),y
+		; sta pixels+1
+		; jmp La05a
 
 !	     	lda spritelib.LAF00,x
+!
 		asl
 		clc
 		adc #$02
@@ -53,20 +58,20 @@ drawSpriteBis 	sty yPos
 		sta pixels+1
 
 La05a       	ldy yPos
-		lda spritelib.hgrLo,y
+		lda utils.hgrLow,y
 		sta $1c
-		lda spritelib.hgrHi,y
+		lda utils.hgrHigh,y
 		sta $1d
 		ldx Ypos
+
 		ldy spritelib.LB3F7
 		beq !+
 
 		lda spritelib.LB000,x
-		tay
-		jmp La07a
+		bra !++
 
 !	      	lda spritelib.LB100,x
-		tay
+!		tay
 
 La07a       	cpy #40
 		bcs !+
@@ -121,7 +126,14 @@ La0af               jsr animConanJump
 La0d7               rts
 
 ; A0D8
-drawTitleBitmap     ldx #$00
+drawTitleBitmap
+		lda #$00
+		ldx #$A6
+		ldy #183
+		jmp unpack.run
+
+		.if 0
+		ldx #$00
                     stx $1c
                     stx Xpos
                     stx Ypos
@@ -185,6 +197,7 @@ La14c               lda L0367
                     dec L0368
                     bne La14c
                     jmp La0e6
+		.end
 
 ; A15A
 displayHelp         jsr clearScreen
@@ -203,7 +216,7 @@ displayHelp         jsr clearScreen
                     ldx #$10
                     jsr checkUserInput
 
-                    jsr Sa246
+                    jsr runAnimVolta
                     jsr Sa272
 
                     ldx #$10
@@ -217,7 +230,7 @@ displayHelp         jsr clearScreen
 
                     jsr Sa230
                     jsr Sa2ad
-                    jsr Sa264
+                    jsr animVolta
                     jsr Sa2b9
                     jsr Sa272
                     jsr Sa23c
@@ -256,9 +269,9 @@ La1e0               sta ($1c),y
                     bpl La1e0
                     rts
 
-Sa1e6               lda spritelib.hgrLo,x
+Sa1e6               lda utils.hgrLow,x
                     sta $1c
-                    lda spritelib.hgrHi,x
+                    lda utils.hgrHigh,x
                     sta $1d
                     rts
 
@@ -282,7 +295,7 @@ La20f               jsr Sa230
                     inc L7901
                     jsr Sa230
                     ldx #$40
-                    jsr La361
+                    jsr waitAndExitOnEvent2
                     ldx L7901
                     cpx #$19
                     bne La20f
@@ -298,25 +311,28 @@ Sa23c
                     drawSprite $51,20,42
                     rts
 
-Sa246               ldx #$00
-                    stx L7903
-                    jsr Sa264
-La24e               jsr Sa264
-                    inc L7903
-                    jsr Sa264
-                    ldx #$12
-                    jsr La361
-                    ldx L7903
-                    cpx #$1f
-                    bne La24e
-                    rts
+runAnimVolta
+		ldx #$00
+		stx L7903
+		jsr animVolta
+La24e
+		jsr animVolta
+		inc L7903
+		jsr animVolta
+		ldx #$12
+		jsr waitAndExitOnEvent2
+		ldx L7903
+		cpx #$1f
+		bne La24e
+		rts
 
-Sa264               ldx L7903
-                    lda animSpriteIDs,x
-                    ldx #$62
-                    ldy #$31
-                    jsr spritelib.drawSprite
-                    rts
+animVolta
+		ldx L7903
+		lda animVoltaSpriteIDs,x
+		ldx #$62
+		ldy #$31
+		jsr spritelib.drawSprite
+		rts
 
 Sa272               ldx #$5a
                     ldy #$29
@@ -336,7 +352,7 @@ La286               jsr Sa2ad
                     cpx #$40
                     beq La2a1
                     ldx #$40
-                    jsr La361
+                    jsr waitAndExitOnEvent2
                     jmp La286
 
 La2a1      	jsr Sa2ad
@@ -368,104 +384,108 @@ Sa2c3
 
 	; 	sprite= spritesTable[spriteIdx]
 	; 	drawSprite sprite[0] sprite[1] sprite[2]
-	; 	jsr Sa35e
+	; 	jsr waitAndExitOnEvent
 
 	; .end
 
 ; $A2CD
-displayHelpObj	ldx #$0d
+displayHelpObj
+		ldx #$0d
 		ldy #$30
 		lda #$55 ; text key
 		jsr spritelib.drawSprite
 
-		jsr Sa35e
+		jsr waitAndExitOnEvent
 
 		; img key
 		drawSprite $27,15,60
 
-		jsr Sa35e
+		jsr waitAndExitOnEvent
 
 		ldx #$31
 		ldy #$27
 		lda #$57 ; text locked door
 		jsr spritelib.drawSprite
 
-		jsr Sa35e
+		jsr waitAndExitOnEvent
 
 		ldx #$3a
 		ldy #$3c
 		lda #$5c ; img locked door
 		jsr spritelib.drawSprite
 
-		jsr Sa35e
+		jsr waitAndExitOnEvent
 
 		ldx #$59
 		ldy #$27
 		lda #$58 ; text unlocked door
 		jsr spritelib.drawSprite
 
-		jsr Sa35e
+		jsr waitAndExitOnEvent
 
 		ldx #$67
 		ldy #$3c
 		lda #$5d ; img unlocked door
 		jsr spritelib.drawSprite
 
-		jsr Sa35e
+		jsr waitAndExitOnEvent
 
 		ldx #$25
 		ldy #$64
 		lda #$59 ; text gem
 		jsr spritelib.drawSprite
 
-		jsr Sa35e
+		jsr waitAndExitOnEvent
 
 		ldx #$28
 		ldy #$6e
 		lda #$28 ; img gem
 		jsr spritelib.drawSprite
 
-		jsr Sa35e
+		jsr waitAndExitOnEvent
 
 		ldx #$53
 		ldy #$5b
 		lda #$5a ; text gem holder
 		jsr spritelib.drawSprite
 
-		jsr Sa35e
+		jsr waitAndExitOnEvent
 
 		ldx #$5b
 		ldy #$6d
 		lda #$56 ; img gem holder
 		jsr spritelib.drawSprite
 
-		jsr Sa35e
+		jsr waitAndExitOnEvent
 
 		ldx #$2e
 		ldy #$88
 		lda #$5b ; text extra sword
 		jsr spritelib.drawSprite
 
-		jsr Sa35e
+		jsr waitAndExitOnEvent
 
 		ldx #$40
 		ldy #$9b
 		lda #$1e; img extra sword
 		jsr spritelib.drawSprite
 
-		jsr Sa35e
+		jsr waitAndExitOnEvent
 		rts
 
-Sa35e     	ldx L7906
-La361       	lda #$18
-		jsr sys.WAIT
+waitAndExitOnEvent
+		ldx L7906
+waitAndExitOnEvent2
+!       	lda #$18
+		jsr utils.WAIT
 		jsr exitOnEvent2
 		dex
-		bne La361
+		bne !-
 		rts
 
-checkUserInput	lda #$ff
-		jsr sys.WAIT
+checkUserInput
+		lda #$ff
+		jsr utils.WAIT
 		jsr exitOnEvent2
 		dex
 		bne checkUserInput
@@ -489,90 +509,95 @@ La38d               lda playerScore,x
                     rts
 
 ; A397
-animConanJump       jsr Sa3ad
+animConanJump
+		; ldx #$6b
+		; ldy #$9c
+		; lda #$0b ; conan-stand-left
+		; jsr spritelib.drawSpriteM
 
-                    ldx #$00
-                    stx L7930
-La39f               jsr Sa3cb
+		stz animFrameIdx
+		jsr renderAnimFrame
+!
+		jsr renderNextFrame
+		jsr processSpringAnim
+		ldx #$30
+		jsr waitAndExitOnEvent2
+		bra !-
 
-                    jsr Sa3fe
-                    ldx #$30
-                    jsr La361
-                    jmp La39f
+renderAnimFrame
+		ldx animFrameIdx
+		lda spriteYtabl,x
+		tay
+		lda spriteIDtabl,x
+		pha
+		lda spriteXtabl,x
+		tax
+		pla
+		jsr spritelib.drawSpriteM
+		rts
 
-Sa3ad               ldx #$6b
-                    ldy #$9c
-                    lda #$0b ; conan-stand-left
-                    jsr spritelib.drawSpriteM
-                    rts
+renderNextFrame
+		ldx animFrameIdx
+		lda spriteYtabl,x
+		cmp spriteYtabl+1,x
+		bne La3f1
+		lda spriteIDtabl,x
+		cmp spriteIDtabl+1,x
+		bne La3f1
+		lda spriteXtabl,x
+		cmp spriteXtabl+1,x
+		bne La3f1
+		inc animFrameIdx
+		ldx animFrameIdx
+		cpx #$50
+		beq La3fb
+		rts
 
-Sa3b7               ldx L7930
-                    lda spriteYtabl,x
-                    tay
-                    lda spriteIDtabl,x
-                    pha
-                    lda spriteXtabl,x
-                    tax
-                    pla
-                    jsr spritelib.drawSpriteM
-                    rts
+La3f1
+		jsr renderAnimFrame	; remove previous sprite
+		inc animFrameIdx
+		jsr renderAnimFrame	; draw current sprite
+		rts
 
-Sa3cb               ldx L7930
-                    lda spriteYtabl,x
-                    cmp spriteYtabl+1,x
-                    bne La3f1
-                    lda spriteIDtabl,x
-                    cmp spriteIDtabl+1,x
-                    bne La3f1
-                    lda spriteXtabl,x
-                    cmp spriteXtabl+1,x
-                    bne La3f1
-                    inc L7930
-                    ldx L7930
-                    cpx #$50
-                    beq La3fb
-                    rts
+La3fb
+		pla
+		pla
+		rts
 
-La3f1               jsr Sa3b7
-                    inc L7930
-                    jsr Sa3b7
-                    rts
+processSpringAnim
+		ldx isSpringRunning
+		bne La421
+		ldx animFrameIdx
+		cpx #$1a
+		beq La40b
+		rts
 
-La3fb               pla
-                    pla
-                    rts
+La40b
+		inc isSpringRunning
+		ldx #$fb
+		stx L7931
+		ldx #$99
+		stx springCurYpos
+		ldx #$49
+		stx springCurId
+		jsr renderSpring
+		rts
 
-Sa3fe               ldx L7932
-                    bne La421
-                    ldx L7930
-                    cpx #$1a
-                    beq La40b
-                    rts
-
-La40b               inc L7932
-                    ldx #$fb
-                    stx L7931
-                    ldx #$99
-                    stx L7933
-                    ldx #$49
-                    stx L7934
-                    jsr Sa451
-                    rts
-
-La421               lda L7933
-                    clc
-                    adc L7931
-                    sta L7933
-                    jsr Sa451
-                    inc L7931
-                    ldx L7931
-                    cpx #$06
-                    beq eraseSpring
-                    rts
+La421
+		lda springCurYpos
+		clc
+		adc L7931
+		sta springCurYpos
+		jsr renderSpring
+		inc L7931
+		ldx L7931
+		cpx #$06
+		beq eraseSpring
+		rts
 
 ; draw black blocks over spring
-eraseSpring	ldx #$00
-		stx L7932
+eraseSpring
+		stz isSpringRunning
 		ldx #$45
 		ldy #$a3
 		lda #$4e
@@ -583,13 +608,14 @@ eraseSpring	ldx #$00
 		jsr drawSpriteBis
 		rts
 
-Sa451 		ldx #$45
-		lda L7934
-		ldy L7933
+renderSpring
+		ldx #$45
+		lda springCurId
+		ldy springCurYpos
 		jsr drawSpriteBis
-		lda L7934
+		lda springCurId
 		eor #$03
-		sta L7934
+		sta springCurId
 		rts
 
 ; draw highscore
@@ -675,14 +701,14 @@ La4ec               jsr clearScreen
                     bit sys.KBDSTRB
                     ldx #$40
 La4fd               lda #$ff
-                    jsr sys.WAIT
+                    jsr utils.WAIT
                     dex
                     bne La4fd
 
                     jsr drawTitleBitmap
 
                     ldx #$00
-                    stx L7932
+                    stx isSpringRunning
                     jmp La0af
 
 La510
@@ -703,6 +729,9 @@ La510
 		cf d2 c5 20 20 aa 8d aa 20 d4 cf 20 d3 c3 d2 c5
 		c5 ce ae 20 20 d5 d3 c5 c4 20 c6 cf d2 20 c7 c5
 		.end
+
+		.org $a600
+
 La600
 		.hex
 		fe 00 40 fe 80 06 40 80 70 7c 0f fe 40 05 00 fe

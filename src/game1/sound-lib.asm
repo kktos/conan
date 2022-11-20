@@ -5,8 +5,8 @@ L0A00               ldx #$f8
 L0a02               ldy #$04
                     txa
                     pha
-                    ldx $0380
-L0a09               lda $c020,x
+                    ldx soundSwitch
+L0a09               lda sys.SPKR-$10,x
                     dey
                     bne L0a09
                     pla
@@ -34,9 +34,9 @@ L0a2d               lda $034f
                     asl
                     asl
 L0a39               ldy #$04
-L0a3b               ldx $0380
+L0a3b               ldx soundSwitch
                     pha
-                    lda $c020,x
+                    lda sys.SPKR-$10,x
                     pla
                     tax
 L0a44               dex
@@ -80,8 +80,8 @@ L0a7d               jsr S0a88
 
 S0a88               lda #$01
 L0a8a               ldy #$08
-L0a8c               ldx $0380
-                    cmp $c020,x
+L0a8c               ldx soundSwitch
+                    cmp sys.SPKR-$10,x
                     tax
 L0a93               dex
                     bne L0a93
@@ -94,8 +94,8 @@ L0a93               dex
 
 L0a9f               lda #$7f
 L0aa1               ldy #$08
-L0aa3               ldx $0380
-                    cmp $c020,x
+L0aa3               ldx soundSwitch
+                    cmp sys.SPKR-$10,x
                     tax
 L0aaa               dex
                     bne L0aaa

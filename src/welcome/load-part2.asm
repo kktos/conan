@@ -27,7 +27,7 @@
 
 		; read_diskw $0600, $4000, $1000
 
-		read_diskw $0600, $4000, $4000
+		; read_diskw $0600, $4000, $4000
 
 		; 09 load disk[5000-5FFF] to MEM[1000-1FFF]
 		; dec rwts_trk
@@ -35,7 +35,7 @@
 		; stx rwts_buf+1
 		; jsr readTrack
 
-		read_diskw $0500, $1000, $1000
+		; read_diskw $0500, $1000, $1000
 
 		; 10 load disk[4000-4CFF] to MEM[0300-0FFF]
 		; dec rwts_trk

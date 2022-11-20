@@ -1,4 +1,5 @@
-	.org $AC00
+		.namespace level0
+		.org $AC00
 
 LAC00
 	.hex 2A 2A 28 20 20 20 FE 00 0F FE 20 04 FE 28 04 2A

@@ -127,8 +127,8 @@ L0371		.hex 03
 L0372		.hex dc
 L0373		.hex 00
 
-L0374		.hex 05
-L0375		.hex 06
+unknown_xPos	.hex 05
+unknown_yPos	.hex 06
 		.hex d9
 
 L0377		.hex d8
@@ -143,7 +143,7 @@ joyX		.hex 07
 joyY		.hex 08
 L037E		.hex 00
 L037F		.hex d8
-L0380		.hex 10
+soundSwitch	.db $10 ; $10:on $00:off
 L0381		.hex 09
 L0382		.hex 0a
 L0383		.hex 00
@@ -153,12 +153,12 @@ keyLeft		.hex 88
 keyRight	.hex 95
 keyUp		.hex c1
 keyDown		.hex da
-keyJump		.hex d1
+keyJump		.hex f1
 keyAxe		.hex a0
 keyRestart	.hex 8d
-L038B		.hex d3
-keyJoystick	.hex 00
-keyKeyboard	.hex 00
+keySoundSwitch	.db "S | $80
+keyJoystick	.db "J | $80
+keyKeyboard	.db "K | $80
 		.hex ce
 keyPause	.hex 9b
 
@@ -231,3 +231,6 @@ block_size= *-block_start
 		.export inputMode
 		.export Xpos
 		.export Ypos
+		.export soundSwitch
+		.export unknown_xPos
+		.export unknown_yPos

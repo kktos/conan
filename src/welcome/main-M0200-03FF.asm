@@ -32,11 +32,14 @@ L0254		jsr S02af
 ; 		inx
 ; 		bne L0259
 
-		MVPw L1000, variables.block_start, variables.block_size
+		;;; useless now
+		; MVPw L1000, variables.block_start, variables.block_size
 
 		; nop
 		; nop
 		; nop
+
+		jsr intro.showLevelBar
 
 		;
 		; load T6 to T9 in $4000:7FFF
@@ -44,9 +47,20 @@ L0254		jsr S02af
 		; load T4 in $0300:0FFF
 		; load T3 in $A700:B6FF
 		;
-		.include "load-part2.asm"
+		; .include "load-part2.asm"
 
-		jsr intro.showFlipDisk
+		; read_diskw $0500, $1000, $1000
+		read_file fgame_code
+		; read_diskw $0600, $4000, $4000
+		read_file fgame_data
+
+		; read_diskw $0400, $0300, $1000-$0300
+		read_file fvariables
+
+		; read_diskw $0300, $A700, $B700-$A700
+		read_file fspritelib
+
+		; jsr intro.showFlipDisk
 		jmp game1.gameStart
 
 ; clear hires1
@@ -79,24 +93,29 @@ L02be		sta ($1a),y
 		; stx rwts_buf+1
 		; jsr readTrack
 
-		read_diskw $0A00, $6000, $1000
+		; read_diskw $0A00, $6000, $1000
+		; read_diskw $0A00, $6000, $0E00
+		read_file fwelcome_data
 
 		lda sys.LCBANK2
 		lda sys.LCBANK2
 
-		read_diskw $0102, $D000, $0300
+		; read_diskw $0102, $D000, $0E00
+		read_file futils
 		; MVPw $6E00, $D000, $200
-		brk
+
 ; unpack to hires
 ; intro screen
 		; ldx rwts_slot
 		; lda $c089,x
 		lda #$00
 		ldx #$60
+		ldy #192
 		jsr unpack.run
 
-		ldx #$68
 		lda #$20
+		ldx #$68
+		ldy #192
 		; stx L0343
 		; ldx #$20
 		; stx L0810
@@ -105,8 +124,11 @@ L02be		sta ($1a),y
 		;
 		; load TB to TF in $6000:AFFF and T4S0:$1000 ->L0257
 		;
+		; .include "load-part1.asm"
+		read_file fintro
 
-		.include "load-part1.asm"
+		;;; useless now
+		; read_diskw $0400, $1000, $0100
 
 		bit sys.KBDSTRB
 
@@ -114,6 +136,14 @@ L02be		sta ($1a),y
 		jmp intro.run
 
 		; .include "unpack.asm"
-		.include "read-disk.asm"
+		; .include "read-disk.asm"
 
-		.align $100,$FF
+fwelcome_data:	.cstr "WELCOME_DATA"
+fgame_data:	.cstr "GAME_DATA"
+fgame_code:	.cstr "GAME_CODE"
+fspritelib:	.cstr "SPRITELIB"
+fvariables:	.cstr "VARIABLES"
+futils:		.cstr "UTILS"
+fintro:		.cstr "INTRO"
+
+		; .align $100,$FF

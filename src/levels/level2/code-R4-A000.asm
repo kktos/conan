@@ -1,25 +1,25 @@
 La000               jmp La0b9
 
-Sa003               sty $b3f0
+Sa003               sty spritelib.yPos
                     tay
-                    lda $b5ff,y
+                    lda spritelib.spriteLo-1,y
                     sta $1c
-                    lda $b67f,y
+                    lda spritelib.spriteHi-1,y
                     sta $1d
                     ldy #$00
-                    sty $b3f7
+                    sty spritelib.LB3F7
                     lda ($1c),y
-                    sta $b3f1
-                    sta $b3f3
+                    sta spritelib.dsWidth
+                    sta spritelib.dsWidthInit
                     iny
                     lda ($1c),y
-                    sta $b3f4
-                    stx $b3f5
+                    sta spritelib.dsHeight
+                    stx spritelib.dsHeightInit
                     bpl La047
-                    inc $b3f7
+                    inc spritelib.LB3F7
                     and #$7f
-                    sta $b3f4
-                    lda LB200,x
+                    sta spritelib.dsHeight
+                    lda spritelib.LB200,x
                     asl
                     clc
                     adc #$02
@@ -31,7 +31,7 @@ Sa003               sty $b3f0
                     sta mask+2
                     jmp La05a
 
-La047               lda LAF00,x
+La047               lda spritelib.LAF00,x
                     asl
                     clc
                     adc #$02
@@ -42,19 +42,19 @@ La047               lda LAF00,x
                     lda ($1c),y
                     sta mask+2
 
-La05a               ldy $b3f0
-                    lda hgrLo,y
+La05a               ldy spritelib.yPos
+                    lda utils.hgrLow,y
                     sta $1c
-                    lda hgrHi,y
+                    lda utils.hgrHigh,y
                     sta $1d
-                    ldx $b3f5
-                    ldy $b3f7
+                    ldx spritelib.dsHeightInit
+                    ldy spritelib.LB3F7
                     beq La076
-                    lda LB000,x
+                    lda spritelib.LB000,x
                     tay
                     jmp La07a
 
-La076               lda $b100,x
+La076               lda spritelib.LB100,x
                     tay
 La07a               cpy #$28
                     bcs La093
@@ -76,18 +76,18 @@ La09b               iny
                     cpy #$4a
                     bne La0a2
                     ldy #$00
-La0a2               dec $b3f1
+La0a2               dec spritelib.dsWidth
                     bne La07a
-                    ldx $b3f3
-                    stx $b3f1
-                    dec $b3f4
+                    ldx spritelib.dsWidthInit
+                    stx spritelib.dsWidth
+                    dec spritelib.dsHeight
                     beq La0b8
-                    inc $b3f0
+                    inc spritelib.yPos
                     jmp La05a
 
 La0b8               rts
 
-La0b9               ldx $034f
+La0b9               ldx playerDeadAnimIdx
                     bne La0c1
                     jsr Sa155
 La0c1               jsr Sa0d9
@@ -97,7 +97,7 @@ La0c1               jsr Sa0d9
                     jsr Sa1f3
                     jsr Sa215
                     lda #$80
-                    jsr $fca8
+                    jsr utils.wait
                     rts
 
 Sa0d9               ldx $7900
@@ -112,20 +112,20 @@ Sa0d9               ldx $7900
                     bcc La110
                     cpx #$c0
                     bcs La110
-                    ldx $036e
+                    ldx assetKeyCnt
                     bne La110
-                    inc $036e
+                    inc assetKeyCnt
                     ldx #$01
                     jsr Sa145
                     ldx #$85
                     ldy #$9f
                     lda #$27
-                    jsr $ae00
+                    jsr spritelib.drawSprite
                     jsr $1038
                     jsr $0a6e
 La110               rts
 
-Sa111               ldx $036e
+Sa111               ldx assetKeyCnt
                     beq La110
                     ldx spriteX
                     cpx #$2e
@@ -139,27 +139,27 @@ Sa111               ldx $036e
                     stx $7900
                     jsr Sa145
                     ldx #$00
-                    stx $036e
+                    stx assetKeyCnt
                     ldx #$27
                     ldy #$7b
                     lda #$2a
-                    jsr $ae00
+                    jsr spritelib.drawSprite
                     jsr $1071
                     jsr $0a7d
 La144               rts
 
 Sa145               txa
                     tay
-                    lda $036a,y
+                    lda L036A,y
                     tax
                     tya
                     clc
                     adc #$26
                     ldy #$b9
-                    jsr $ae00
+                    jsr spritelib.drawSprite
                     rts
 
-Sa155               ldx $034f
+Sa155               ldx playerDeadAnimIdx
                     bne La165
                     ldx spriteY
                     cpx #$a8
@@ -173,13 +173,13 @@ La166               ldx spriteX
                     bcc playerIsDead
 
                     ldx #$08
-                    stx $034f
+                    stx playerDeadAnimIdx
 
                     ldx spriteX
                     stx $7902
                     ldy spriteY
                     lda spriteID
-                    jsr $b300
+                    jsr spritelib.drawSpriteM
 
                     inc $7901
                     ldx #$01
@@ -191,17 +191,17 @@ La166               ldx spriteX
 
 ;A192
 playerIsDead        ldx #$01
-                    stx $034f
+                    stx playerDeadAnimIdx
 
                     ldx spriteX
                     ldy spriteY
                     lda spriteID
-                    jsr $b300 ; clear player current sprite
+                    jsr spritelib.drawSpriteM ; clear player current sprite
 
                     ldx spriteX
                     ldy spriteY
                     lda #$19
-                    jsr $b300 ; player death sprite 1st frame
+                    jsr spritelib.drawSpriteM ; player death sprite 1st frame
 
                     rts
 
@@ -215,18 +215,18 @@ La1bb               rts
 La1bc               ldx spriteX
                     ldy spriteY
                     lda spriteID
-                    jsr $b300
+                    jsr spritelib.drawSpriteM
                     lda spriteX
                     sec
-                    sbc $0306
+                    sbc L0306
                     sta spriteX
                     ldx #$00
-                    stx $0306
-                    stx $0307
+                    stx L0306
+                    stx L0307
                     ldx spriteX
                     ldy spriteY
                     lda spriteID
-                    jsr $b300
+                    jsr spritelib.drawSpriteM
 La1e6               rts
 
 Sa1e7               ldx $7902
@@ -281,7 +281,7 @@ La256               rts
 Sa257               ldx spriteX
                     ldy spriteY
                     lda spriteID
-                    jsr $b300
+                    jsr spritelib.drawSpriteM
                     rts
 
 Sa264               ldx spriteY
@@ -326,13 +326,13 @@ La2ac               ldx #$00
 
 Sa2b2               ldx $7910
                     lda La400,x
-                    cmp La401,x
+                    cmp La400+1,x
                     bne La2d1
                     lda La500,x
-                    cmp La501,x
+                    cmp La500+1,x
                     bne La2d1
                     lda La300,x
-                    cmp La301,x
+                    cmp La300+1,x
                     bne La2d1
                     inc $7910
                     rts
@@ -350,59 +350,67 @@ Sa2db               ldx $7910
                     lda La300,x
                     tax
                     pla
-                    jsr $ae00
+                    jsr spritelib.drawSprite
                     rts
 
+		.hex
                                                                  00
                     00 00 00 00 40 00 00 00 20 71 07 00 10 79 1a 00
-La300               f0
-La301                  f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0
-                    f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0
-                    f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0
-                    f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0
-                    f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f2 f4 f6 f8 fa fa
-                    fc fe 00 02 04 06 08 0a 0c 0e 10 12 12 12 12 12
-                    12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12
-                    12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12
-                    12 12 12 12 12 12 12 12 12 12 12 12 12 14 16 18
-                    1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a
-                    1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 18 16 14
-                    12 10 0e 0c 0a 08 06 04 02 00 fe fc fa f8 f6 f6
-                    f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6
-                    f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6
-                    f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6
-                    f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6
-La400               4e
-La401                  4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e
-                    4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e
-                    4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e
-                    4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e
-                    4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4f
-                    51 53 55 58 5c 60 63 65 66 64 61 62 63 63 63 63
-                    63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63
-                    63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63
-                    63 63 63 63 63 63 63 63 63 63 62 60 5d 58 54 52
-                    53 53 53 53 53 53 53 53 53 53 53 53 53 53 53 53
-                    53 53 53 53 53 53 53 53 53 53 53 53 51 51 53 56
-                    5a 5f 64 68 6b 6e 70 71 70 6e 6b 67 64 63 62 62
-                    62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62
-                    62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62
-                    62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62
-                    62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62
-La500               47
-La501                  47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
-                    47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
-                    47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
-                    47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
-                    47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
-                    47 47 47 47 47 47 47 47 47 47 47 47 49 49 49 49
-                    49 49 49 49 49 49 49 49 49 49 49 49 49 4a 4a 4a
-                    4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a
-                    4a 4a 4a 4a 4a 4a 4a 4a 49 49 49 47 47 47 47 47
-                    49 49 49 49 49 49 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a
-                    4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 48 48 48
-                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
-                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
-                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
-                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
-                    48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
+		.end
+La300
+		.hex
+		f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0
+		f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0
+		f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0
+		f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0
+		f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f2 f4 f6 f8 fa fa
+		fc fe 00 02 04 06 08 0a 0c 0e 10 12 12 12 12 12
+		12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12
+		12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12
+		12 12 12 12 12 12 12 12 12 12 12 12 12 14 16 18
+		1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a
+		1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 18 16 14
+		12 10 0e 0c 0a 08 06 04 02 00 fe fc fa f8 f6 f6
+		f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6
+		f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6
+		f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6
+		f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6 f6
+		.end
+La400
+		.hex
+		4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e
+		4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e
+		4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e
+		4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e
+		4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4e 4f
+		51 53 55 58 5c 60 63 65 66 64 61 62 63 63 63 63
+		63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63
+		63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63
+		63 63 63 63 63 63 63 63 63 63 62 60 5d 58 54 52
+		53 53 53 53 53 53 53 53 53 53 53 53 53 53 53 53
+		53 53 53 53 53 53 53 53 53 53 53 53 51 51 53 56
+		5a 5f 64 68 6b 6e 70 71 70 6e 6b 67 64 63 62 62
+		62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62
+		62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62
+		62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62
+		62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62
+		.end
+La500
+		.hex
+		47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
+		47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
+		47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
+		47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
+		47 47 47 47 47 47 47 47 47 47 47 47 47 47 47 47
+		47 47 47 47 47 47 47 47 47 47 47 47 49 49 49 49
+		49 49 49 49 49 49 49 49 49 49 49 49 49 4a 4a 4a
+		4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a
+		4a 4a 4a 4a 4a 4a 4a 4a 49 49 49 47 47 47 47 47
+		49 49 49 49 49 49 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a
+		4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 4a 48 48 48
+		48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
+		48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
+		48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
+		48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
+		48 48 48 48 48 48 48 48 48 48 48 48 48 48 48 48
+		.end

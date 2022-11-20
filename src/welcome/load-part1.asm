@@ -49,7 +49,7 @@
 
 ;
 ; all in one
-;
+; T 0B, 0C, 0D, 0E, 0F
 		read_diskw $0B00, $6000, $5000
 
 ; 07 load disk[4000-40FF] to MEM[1000-10FF]

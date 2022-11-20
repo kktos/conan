@@ -5,28 +5,29 @@ segments:
   BOOT3:		{ start: 0xB700, end: 0xB7FF }
   BOOT2:		{ start: 0x4100, end: 0x45FF }
 
-  WELCOME:		{ start: 0x0200, end: 0x03FF }
-  UNPACK:		{ start: 0xD000, end: 0xD2FF }
+  WELCOME:		{ start: 0x0200, end: 0x03FF, pad: 0x00 }
+  UTILS:		{ start: 0xD000, end: 0xDDFF, pad: 0x60 }
 
-  PAD0:			{ start: 0x0000, end: 0x0AFF }
-  PAD1:			{ start: 0x0000, end: 0x0FFF }
+  PAD1:			{ start: 0x0000, end: 0x0FFF, pad: 0x55 }
 
-  SPRITELIB:		{ start: 0xA700, end: 0xB6FF }
-  VARIABLES:		{ start: 0x0300, end: 0x12FF }
-  GAME1:		{ start: 0x1000, end: 0x1FFF }
+  SPRITELIB:		{ start: 0xA700, end: 0xB6FF, pad: 0xFF  }
+  VARIABLES:		{ start: 0x0300, end: 0xFFF, pad: 0x55 }
 
-  DATA6:		{ start: 0x4000, end: 0x4FFF }
-  DATA7:		{ start: 0x5000, end: 0x5FFF }
-  DATA8:		{ start: 0x6000, end: 0x6FFF }
-  DATA9:		{ start: 0x7000, end: 0x7FFF }
+  GAME_CODE:		{ start: 0x1000, end: 0x1FFF, pad: 0x00 }
+  GAME_DATA:		{ start: 0x4000, end: 0x7FFF, pad: 0x00 }
 
-  DATA1:		{ start: 0x6000, end: 0x6FFF }
-  DATA_INTRO:		{ start: 0x6000, end: 0x6FFF }
-  DATA2:		{ start: 0x7000, end: 0x7FFF }
+  WELCOME_DATA:		{ start: 0x6000, end: 0x6FFF, pad: 0x55 }
 
-  INTRO:		{ start: 0x8000, end: 0x8FFF }
-  SETUP:		{ start: 0x9000, end: 0x9FFF }
+  INTRO:		{ start: 0x6000, end: 0xAFFF, pad: 0x00 }
 
-  DATA4:		{ start: 0xA000, end: 0xAFFF }
+  L0_BKGD:		{ start: 0x7500, end: 0x7CFF, pad: 0xAA }
+  L0_DATA:		{ start: 0x7500, end: 0x9BFF, pad: 0x55 }
+  L0_CODE:		{ start: 0xA000, end: 0xADFF, pad: 0xD5 }
 
-  LEVEL0:		{ start: 0x7500, end: 0xAFFF }
+  L1_BKGD:		{ start: 0x7500, end: 0x7CFF, pad: 0xAA }
+  L1_DATA:		{ start: 0x7500, end: 0x9BFF, pad: 0x55 }
+  L1_CODE:		{ start: 0xA000, end: 0xADFF, pad: 0xD5 }
+
+  L2_BKGD:		{ start: 0x7500, end: 0x7EFF, pad: 0xAA }
+  L2_DATA:		{ start: 0x7500, end: 0x9BFF, pad: 0x55 }
+  L2_CODE:		{ start: 0xA000, end: 0xADFF, pad: 0xD5 }

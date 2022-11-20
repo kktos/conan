@@ -102,7 +102,7 @@ LB100 equ $B100
 LB200 equ $B200
 
 LB300 equ $B300
-LB3F0 equ $B3F0
+yPos equ $B3F0
 LB3F1 equ $B3F1
 LB3F2 equ $B3F2
 LB3F3 equ $B3F3

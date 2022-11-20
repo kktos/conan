@@ -16,7 +16,8 @@
 	; load loader
 	; load T0S0 - T0S9 into $B600:$BF00
 	;
-	.include "boot/00-boot.asm"
+	; .include "boot/00-boot.asm"
+	.include "boot/newboot.asm"
 
 
 .segment LOADER
@@ -70,29 +71,20 @@
 	;
 	.include "welcome/main-M0200-03FF.asm"
 
-.segment UNPACK
-	; S2-S4
-	.include "welcome/unpack.asm"
-	.include "welcome/hgr-tables-M6E00-6FFF.asm"
-
-.segment PAD0
-	; S5-SF
-
-	.fill .SEGMENTEND-*+1, $55
-
+.segment UTILS
+	; S2-SF
+	.include "welcome/utils/utils.asm"
 
 	;
 	; TRACK $02
 	;
 .segment PAD1
-	.fill .SEGMENTEND-*+1, $AA
 
 	;
 	; TRACK $03
 	;
 .segment SPRITELIB
 	.include "game1/sprite-lib.asm"
-	.fill .SEGMENTEND-*+1, $EA
 
 	;
 	; TRACK $04
@@ -105,80 +97,99 @@
 	.include "game1/sound-lib.asm"
 	.include "game1/data-C00-FFF.asm"
 
-	.fill .SEGMENTEND-*+1, $55
-
 	;
 	; TRACK $05
 	;
-.segment GAME1
-	.include "game1/main.asm"
+.segment GAME_CODE
+	.include "game1/game1.asm"
 
 	;
 	; TRACK $06
 	;
-.segment DATA6
+.segment GAME_DATA
 	.include "08-data-M4000-4FFF.asm"
-
 	;
 	; TRACK $07
 	;
-.segment DATA7
 	.include "08-data-M5000-5FFF.asm"
-
 	;
 	; TRACK $08
 	;
-.segment DATA8
 	.include "08-data-M6000-6FFF.asm"
-
 	;
 	; TRACK $09
 	;
-.segment DATA9
 	.include "08-data-M7000-7FFF.asm"
 
 	;
 	; TRACK $0A
 	;
-.segment DATA1
+.segment WELCOME_DATA
 	.include "welcome/bkg-image-TAS0-F-M6000-6DFF.asm"
-	.include "welcome/hgr-tables-M6E00-6FFF.asm"
+	; .include "welcome/hgr-tables-M6E00-6FFF.asm"
+
 
 	;
-	; TRACK $0B L$1000
-	;
-.segment DATA_INTRO
-	.include "welcome/TB-M6000-6FFF.asm"
-
-	;
-	; TRACK $0C
-	;
-.segment DATA2
-	.include "welcome/06-TCS0-F-M7000-7FFF.asm"
-
-	;
-	; TRACK $0D
+	; TRACK $0B
 	;
 .segment INTRO
 	.include "intro/06-TDS0-F-M8000-8FFF.asm"
-
+	; TRACK $0C
+	;
+	.include "intro/sprites.asm"
+	; TRACK $0D
+	;
+	; .include "intro/T0C-M7000-7FFF.asm"
 	;
 	; TRACK $0E
 	;
-.segment SETUP
 	.include "intro/setupKeysDlg/dialog.asm"
-
 	;
 	; TRACK $0F
 	;
-.segment DATA4
-	.include "welcome/05.1-data-TFS0-F-MA000-AFFF.asm"
+	; .include "intro/05.1-data-TFS0-F-MA000-AFFF.asm"
+
 
 	;
 	; TRACK $10
 	;
-.segment LEVEL0
-	.include "levels/level0/level.asm"
+.segment L0_BKGD
+	.include "levels/level0/data-bkgnd-R0-7500.asm"
+
+.segment L0_DATA
+	.include "levels/level0/data-R1-7500.asm"
+	.include "levels/level0/data-R2-7900.asm"
+	.include "levels/level0/data-R3-7A00.asm"
+
+.segment L0_CODE
+	.include "levels/level0/code-R4-A000.asm"
+	; .include "levels/level0/data-R5-AC00.asm"
+
+.segment L1_BKGD
+	.include "levels/level1/data-bkgnd-R0-7500.asm"
+
+.segment L1_DATA
+	.include "levels/level1/data-R1-7500.asm"
+	.include "levels/level1/data-R2-7900.asm"
+	.include "levels/level1/data-R3-7A00.asm"
+
+.segment L1_CODE
+	.include "levels/level1/code-R4-A000.asm"
+	.include "levels/level1/data-R4-A200.asm"
+	.include "levels/level1/data-R5-AC00.asm"
+
+.segment L2_BKGD
+	.include "levels/level2/data-bkgnd-R0-7500.asm"
+
+.segment L2_DATA
+	.include "levels/level2/data-R1-7500.asm"
+	.include "levels/level2/data-R2-7900.asm"
+	.include "levels/level2/data-R3-7A00.asm"
+
+.segment L2_CODE
+	.include "levels/level2/code-R4-A000.asm"
+	; .include "levels/level2/data-R4-A200.asm"
+	.include "levels/level2/data-R5-AC00.asm"
 
 
 	.out ""
