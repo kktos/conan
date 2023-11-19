@@ -1,5 +1,3 @@
-		.namespace level0
-		.org $7500
 L7500
 		.hex
 		02 12 00 7a 24 7a 48 7a 6c 7a 90 7a b4 7a d8 7a

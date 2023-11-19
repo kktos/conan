@@ -1,4 +1,9 @@
-	.org $AC00
+		.if * < $AC00²
+		.align $AC00²
+		.end
+		.if * > $AC00²
+		.error "this needs to be at $AC00² !"
+		.end
 
 LAC00
 	.hex 00 00 1A 00 00 58 59 0A 00 7E 77 7A 00 00 00 00

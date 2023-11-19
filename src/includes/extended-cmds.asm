@@ -35,7 +35,7 @@
 
 	.macro log fmt, parm1
 		.db $42,$FF
-		.db fmt
+		.cstr fmt
 		.db 1
 		.dw parm1
 	.end

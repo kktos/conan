@@ -156,9 +156,9 @@ keyDown		.hex da
 keyJump		.hex f1
 keyAxe		.hex a0
 keyRestart	.hex 8d
-keySoundSwitch	.db "S | $80
-keyJoystick	.db "J | $80
-keyKeyboard	.db "K | $80
+keySoundSwitch	.db "S" | $80
+keyJoystick	.db "J" | $80
+keyKeyboard	.db "K" | $80
 		.hex ce
 keyPause	.hex 9b
 
@@ -234,3 +234,5 @@ block_size= *-block_start
 		.export soundSwitch
 		.export unknown_xPos
 		.export unknown_yPos
+
+		.end namespace

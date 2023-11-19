@@ -1,5 +1,8 @@
 ; disk T3 into $A700:B6FF
+
+		.segment SPRITELIB
 		.namespace spritelib
+
 		; .export hgrHi
 		; .export hgrLo
 
@@ -13,6 +16,13 @@
 		.fill 256*7
 
 		.org $AE00
+
+	.macro drawSprite id,x,y
+		ldx #x
+		ldy #y
+		lda #id
+		jsr spritelib.drawSprite
+	.end
 
 drawSprite: 	sty yPos
 		tay
@@ -36,7 +46,7 @@ drawSprite: 	sty yPos
 		and #$7f
 		sta dsHeight
 		lda LB200,x
-		bra !+
+		bra :+
 		; asl
 		; clc
 		; adc #$02
@@ -49,7 +59,7 @@ drawSprite: 	sty yPos
 		; jmp loop
 
 Lae44		lda LAF00,x
-!
+:
 		asl
 		clc
 		adc #$02
@@ -68,13 +78,14 @@ loop:		ldy yPos
 		ldx dsHeightInit
 
 		ldy LB3F7
-		beq Lae73
+		beq :+
 
 		lda LB000,x
-		bra !+
+		jmp nextItem
 
-Lae73		lda LB100,x
-!
+;Lae73
+:		lda LB100,x
+nextItem
 		tay
 
 Lae77               cpy #40 ; $28

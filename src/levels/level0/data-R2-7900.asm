@@ -1,5 +1,6 @@
-		.namespace level0
-		.org $7900
+		.if * != $7900
+		.error "this needs to be at $7900 !"
+		.end
 
 L7900		.hex 00
 L7901		.hex F0

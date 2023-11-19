@@ -1,4 +1,3 @@
-		.org $A000
 
 startLevel
 		jsr Sa017

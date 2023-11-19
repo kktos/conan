@@ -2,6 +2,7 @@
 ; disk 5000-5FFF into $1000:1FFF
 ;
 
+		.segment GAME_CODE
 		.namespace game1
 
 		.export scoreAdd75
@@ -66,15 +67,6 @@ L100b		bit sys.KBDSTRB
 		bit sys.SPKR
 
 L102d		jmp L108c
-
-; logKey
-; 			; log "keypressed= %b", keypressed
-; 		.db $42,$FF
-; 		.db "keypressed= %b"
-; 		.db 0
-; 		.db 1
-; 		.dw keypressed
-; 		rts
 
 ;1030
 scoreAdd1	jsr drawScore
@@ -155,7 +147,7 @@ levelLoop	jsr resetVars
 		jsr resetVars2
 		jsr loadInitLevel
 
-L10a0		jsr startLevel
+:		jsr startLevel
 		stz L0383
 		jsr readJoyX
 		jsr S179e
@@ -173,9 +165,9 @@ L10a0		jsr startLevel
 		jsr S1cb0
 		jsr readJoyY
 
-		jsr S1e41
+		jsr resetIfLastLevel
 
-		jmp L10a0
+		jmp :-
 
 onKeyNext
 		bit sys.KBDSTRB
@@ -220,7 +212,8 @@ onKeyRestart	jsr updateHiScore
 		bit sys.KBDSTRB
 		jmp levelLoop
 
-L1111		bit sys.KBDSTRB
+resetGame
+		bit sys.KBDSTRB
 		bit sys.TEXTOFF
 		bit sys.MIXEDOFF
 		bit sys.HIRESON
@@ -1389,6 +1382,8 @@ init2		txa
 		ldy #183
 		jsr unpack.run
 
+;		.call unpack($00 $75 183)
+
 		read_file fdata
 		read_file fcode
 
@@ -1975,11 +1970,12 @@ L1e37		lda playerScore,x
 		bpl L1e37
 L1e40		rts
 
-S1e41		ldx level
+resetIfLastLevel
+		ldx level
 		cpx #$09
 		bne L1e40
 		dec level
-		jmp L1111
+		jmp resetGame
 
 readJoyBtn0	lda inputMode ; 01:kbd ff:joystick
 		bpl L1e5a ; if kbd

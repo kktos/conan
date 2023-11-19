@@ -1,35 +1,36 @@
-La000               jmp La0b9
+La000               jmp start
 
-Sa003               sty spritelib.yPos
-                    tay
-                    lda spritelib.spriteLo-1,y
-                    sta $1c
-                    lda spritelib.spriteHi-1,y
-                    sta $1d
-                    ldy #$00
-                    sty spritelib.LB3F7
-                    lda ($1c),y
-                    sta spritelib.dsWidth
-                    sta spritelib.dsWidthInit
-                    iny
-                    lda ($1c),y
-                    sta spritelib.dsHeight
-                    stx spritelib.dsHeightInit
-                    bpl La047
-                    inc spritelib.LB3F7
-                    and #$7f
-                    sta spritelib.dsHeight
-                    lda spritelib.LB200,x
-                    asl
-                    clc
-                    adc #$02
-                    tay
-                    lda ($1c),y
-                    sta mask+1
-                    iny
-                    lda ($1c),y
-                    sta mask+2
-                    jmp La05a
+drawSpriteBis
+		sty spritelib.yPos
+		tay
+		lda spritelib.spriteLo-1,y
+		sta $1c
+		lda spritelib.spriteHi-1,y
+		sta $1d
+		ldy #$00
+		sty spritelib.LB3F7
+		lda ($1c),y
+		sta spritelib.dsWidth
+		sta spritelib.dsWidthInit
+		iny
+		lda ($1c),y
+		sta spritelib.dsHeight
+		stx spritelib.dsHeightInit
+		bpl La047
+		inc spritelib.LB3F7
+		and #$7f
+		sta spritelib.dsHeight
+		lda spritelib.LB200,x
+		asl
+		clc
+		adc #$02
+		tay
+		lda ($1c),y
+		sta mask+1
+		iny
+		lda ($1c),y
+		sta mask+2
+		jmp La05a
 
 La047               lda spritelib.LAF00,x
                     asl
@@ -87,7 +88,7 @@ La0a2               dec spritelib.dsWidth
 
 La0b8               rts
 
-La0b9               ldx playerDeadAnimIdx
+start               ldx playerDeadAnimIdx
                     bne La0c1
                     jsr Sa155
 La0c1               jsr Sa0d9
@@ -100,29 +101,42 @@ La0c1               jsr Sa0d9
                     jsr utils.wait
                     rts
 
-Sa0d9               ldx $7900
+Sa0d9               ldx L7900
                     bne La110
-                    ldx spriteX
-                    cpx #$82
-                    bcc La110
-                    cpx #$d0
-                    bcs La110
-                    ldx spriteY
-                    cpx #$98
-                    bcc La110
-                    cpx #$c0
-                    bcs La110
+
+		ifx "spriteX < #130", La110
+                ;ldx spriteX
+                ;cpx #130
+                ;bcc La110
+
+		ifx ">= #208", La110
+                ;cpx #208
+                ;bcs La110
+
+		ifx "spriteY < #152", La110
+		;ldx spriteY
+		;cpx #152
+		;bcc La110
+
+		ifx ">= #192", La110
+		;cpx #192
+		;bcs La110
+
                     ldx assetKeyCnt
                     bne La110
                     inc assetKeyCnt
                     ldx #$01
                     jsr Sa145
-                    ldx #$85
-                    ldy #$9f
-                    lda #$27
-                    jsr spritelib.drawSprite
-                    jsr $1038
-                    jsr $0a6e
+
+		    drawSprite $27,$85,$9F
+                    ;ldx #$85
+                    ;ldy #$9f
+                    ;lda #$27
+                    ;jsr spritelib.drawSprite
+
+
+                    jsr scoreAdd100
+                    jsr soundlib.L0a6e
 La110               rts
 
 Sa111               ldx assetKeyCnt
@@ -136,16 +150,19 @@ Sa111               ldx assetKeyCnt
                     cpx #$8c
                     bcs La144
                     ldx #$01
-                    stx $7900
+                    stx L7900
                     jsr Sa145
                     ldx #$00
                     stx assetKeyCnt
-                    ldx #$27
-                    ldy #$7b
-                    lda #$2a
-                    jsr spritelib.drawSprite
-                    jsr $1071
-                    jsr $0a7d
+
+		    drawSprite $2A,$27,$7B
+                    ;ldx #$27
+                    ;ldy #$7b
+                    ;lda #$2a
+                    ;jsr spritelib.drawSprite
+
+                    jsr scoreAdd250
+                    jsr soundlib.L0a7d
 La144               rts
 
 Sa145               txa
@@ -176,16 +193,16 @@ La166               ldx spriteX
                     stx playerDeadAnimIdx
 
                     ldx spriteX
-                    stx $7902
+                    stx L7902
                     ldy spriteY
                     lda spriteID
                     jsr spritelib.drawSpriteM
 
-                    inc $7901
+                    inc L7901
                     ldx #$01
-                    stx $7903
+                    stx L7903
                     ldx #$41
-                    stx $7904
+                    stx L7904
                     jsr Sa1e7
                     rts
 
@@ -205,7 +222,7 @@ playerIsDead        ldx #$01
 
                     rts
 
-Sa1af               ldx $7900
+Sa1af               ldx L7900
                     bne La1bb
                     ldx spriteX
                     cpx #$2c
@@ -229,51 +246,58 @@ La1bc               ldx spriteX
                     jsr spritelib.drawSpriteM
 La1e6               rts
 
-Sa1e7               ldx $7902
+Sa1e7               ldx L7902
                     ldy #$a2
-                    lda $7904
-                    jsr Sa003
+                    lda L7904
+                    jsr drawSpriteBis
                     rts
 
-Sa1f3               ldx $7901
+Sa1f3               ldx L7901
                     beq La1e6
                     jsr Sa1e7
-                    ldx $7903
+                    ldx L7903
                     cpx #$09
                     beq La20f
-                    lda $7907,x
-                    sta $7904
+                    lda L7907,x
+                    sta L7904
                     jsr Sa1e7
-                    inc $7903
+                    inc L7903
                     rts
 
 La20f               ldx #$00
-                    stx $7901
+                    stx L7901
                     rts
 
 Sa215               jsr Sa264
-                    ldx $7907
+
+                    ldx L7907
                     beq La220
+
                     jsr Sa257
-La220               ldx $7905
+
+La220               ldx L7905
                     ldy #$01
                     lda #$45
-                    jsr Sa003
-                    inc $7905
-                    ldx $7905
+                    jsr drawSpriteBis
+
+                    inc L7905
+                    ldx L7905
                     ldy #$01
                     lda #$45
-                    jsr Sa003
-                    ldx $7906
+                    jsr drawSpriteBis
+
+                    ldx L7906
                     ldy #$1a
                     lda #$46
-                    jsr Sa003
-                    inc $7906
-                    ldx $7906
+                    jsr drawSpriteBis
+
+                    inc L7906
+                    ldx L7906
                     ldy #$1a
                     lda #$46
-                    jsr Sa003
-                    ldx $7907
+                    jsr drawSpriteBis
+
+                    ldx L7907
                     beq La256
                     jsr Sa257
 La256               rts
@@ -285,13 +309,15 @@ Sa257               ldx spriteX
                     rts
 
 Sa264               ldx spriteY
-                    cpx #$ef
+                    cpx #239
                     bcs La272
-                    cpx #$1a
+
+                    cpx #26
                     bcc La272
+
                     jmp La288
 
-La272               lda $7905
+La272               lda L7905
                     sec
                     sbc #$0a
                     cmp spriteX
@@ -305,26 +331,30 @@ La272               lda $7905
 La288               lda spriteY
                     cmp #$2b
                     bcs La2ac
+
                     cmp #$0e
                     bcc La2ac
-                    lda $7906
+
+                    lda L7906
                     sec
                     sbc #$09
                     cmp spriteX
                     bcs La2ac
+
                     clc
                     adc #$1e
                     cmp spriteX
                     bcc La2ac
+
 La2a6               ldx #$04
-                    stx $7907
+                    stx L7907
                     rts
 
 La2ac               ldx #$00
-                    stx $7907
+                    stx L7907
                     rts
 
-Sa2b2               ldx $7910
+Sa2b2               ldx L7910
                     lda La400,x
                     cmp La400+1,x
                     bne La2d1
@@ -334,15 +364,15 @@ Sa2b2               ldx $7910
                     lda La300,x
                     cmp La300+1,x
                     bne La2d1
-                    inc $7910
+                    inc L7910
                     rts
 
 La2d1               jsr Sa2db
-                    inc $7910
+                    inc L7910
                     jsr Sa2db
                     rts
 
-Sa2db               ldx $7910
+Sa2db               ldx L7910
                     lda La400,x
                     tay
                     lda La500,x
@@ -352,11 +382,13 @@ Sa2db               ldx $7910
                     pla
                     jsr spritelib.drawSprite
                     rts
-
+/*
 		.hex
                                                                  00
                     00 00 00 00 40 00 00 00 20 71 07 00 10 79 1a 00
 		.end
+*/
+		.align $100
 La300
 		.hex
 		f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0

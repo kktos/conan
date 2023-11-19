@@ -19,7 +19,7 @@ wait3
 		.db "wait"
 		.align $10
 
-clearScreen:
+.function clearScreen
 		stz yPos
 !		jsr clearByte
 		inc yPos
@@ -27,8 +27,9 @@ clearScreen:
 		cpx #$b7
 		bne !-
 		rts
+.end
 
-clearByte	ldx yPos
+.function clearByte
 		jsr getHGRLineAddr
 		ldy #$27
 		lda #$00
@@ -36,6 +37,7 @@ clearByte	ldx yPos
 		dey
 		bpl !-
 		rts
+.end
 
 getHGRLineAddr	lda hgrLow,x
 		sta $1c
@@ -54,7 +56,7 @@ PREAD
 		nop         		; COMPENSATE FOR 1ST COUNT
 		nop
 !		lda  sys.PADDL0,x 	;  COUNT Y-REG EVERY
-		bpl  !+  		; 12 USEC [actually 11]
+		bpl  !+  		; 12 uSec [actually 11]
 		iny
 		bne  !-       		;EXIT AT 255 MAX
 		dey

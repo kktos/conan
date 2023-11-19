@@ -4,7 +4,7 @@ rwts		= $BD00
 ; defined in boot3 ($B700)
 ;
 
-		.if 0
+/*
 rwts_slot 	= $B7E9
 rwts_drv 	= $B7EA
 rwts_vol 	= $B7EB
@@ -22,4 +22,4 @@ rwts_err 	= $B7F5
 rwts_lstvol 	= $B7F6
 rwts_lstslot 	= $B7F7
 rwts_lstdrv 	= $B7F8
-		.end
+*/

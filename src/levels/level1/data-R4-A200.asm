@@ -1,3 +1,10 @@
+		.if * < $A200
+		.align $A200
+		.end
+		.if * > $A200
+		.error "this needs to be at $A200 !"
+		.end
+
 La200
 		.hex
 		7f 0f 40 7f 7f 7f 1f 40 7f 7f 7f 1f 00 00 00 00

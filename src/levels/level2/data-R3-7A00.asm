@@ -1,3 +1,11 @@
+		.if * < $7A00
+		.align $7A00
+		.end
+		.if * > $7A00
+		.error "this needs to be at $7A00 !"
+		.end
+
+
 L7a00
 		.hex
 		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00

@@ -1,6 +1,8 @@
 
 		.namespace unpack
 
+; .function unpack(dst:A src:X maxYpos:Y)
+
 ; A: dest
 ; X: source
 ; Y: max Y pos

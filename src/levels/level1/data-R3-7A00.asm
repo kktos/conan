@@ -1,3 +1,7 @@
+		.if * != $7A00
+		.error "this needs to be at $7A00 !"
+		.end
+
 L7a00
 		.hex
 		44 00 00 54 00 00 39 02 00 7d 02 00 7d 02 00 7d
