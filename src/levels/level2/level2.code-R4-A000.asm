@@ -167,7 +167,7 @@ La144               rts
 
 Sa145               txa
                     tay
-                    lda L036A,y
+                    lda assetData,y
                     tax
                     tya
                     clc
@@ -235,11 +235,11 @@ La1bc               ldx spriteX
                     jsr spritelib.drawSpriteM
                     lda spriteX
                     sec
-                    sbc L0306
+                    sbc playerXspeed
                     sta spriteX
                     ldx #$00
-                    stx L0306
-                    stx L0307
+                    stx playerXspeed
+                    stx playerYspeed
                     ldx spriteX
                     ldy spriteY
                     lda spriteID

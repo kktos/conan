@@ -12,8 +12,8 @@ L0802               sec
 L0804               ldx #$ff
                     stx L0317
                     inx
-                    stx L0306
-                    stx L0307
+                    stx playerXspeed
+                    stx playerYspeed
                     sec
                     rts
 
@@ -32,7 +32,7 @@ L0822               jsr $1544
                     jsr $1295
                     jsr $12ad
                     jsr $1499
-                    ldx L0307
+                    ldx playerYspeed
                     beq L0839
                     jsr $1519
 L0839               ldx L0317
@@ -52,13 +52,13 @@ L0850               cpx #$cb
                     jmp $1466
 
 L0857               ldx #$00
-                    stx L0306
-                    stx L0307
+                    stx playerXspeed
+                    stx playerYspeed
 L085f               rts
 
 L0860               jsr $1417
                     bcc L0872
-                    ldx L031F
+                    ldx isPlayerJumping
                     bne L0872
                     ldx L0309
                     bne L0872
@@ -74,7 +74,7 @@ L087b               jsr $135e
                     ldx #$00
                     stx L0315
                     stx L0314
-                    stx L031F
+                    stx isPlayerJumping
                     jsr $12ad
 L0891               rts
 
@@ -115,7 +115,7 @@ L08c6               ldx $b3f6
                     jsr $1600
                     lda spriteXnew
                     sec
-                    sbc L0306
+                    sbc playerXspeed
                     sta spriteXnew
                     ldx spriteID
                     stx spriteIDNew
@@ -123,7 +123,7 @@ L08c6               ldx $b3f6
                     ldx #$01
                     stx L0314
                     dex
-                    stx L0307
-                    stx L0306
+                    stx playerYspeed
+                    stx playerXspeed
                     inc L031E
 L08ff               rts

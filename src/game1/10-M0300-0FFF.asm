@@ -41,7 +41,7 @@ level
 
     $034D  01
 
-playerAxeCount
+playerAxeCountLo
     $034E 00
 
 playerDeadAnimIdx

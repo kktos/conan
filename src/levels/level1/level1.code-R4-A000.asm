@@ -221,11 +221,15 @@ Sa1b0		    ldx spriteX
 		    bcc La1d1
 		    ldx L0309
 		    beq La1d1
-		    ldx #$06
+
+		    ldx #playerLifeCount-playerData
 		    jsr drawDigit
+
 		    inc playerLifeCount
-		    ldx #$06
+
+		    ldx #playerLifeCount-playerData
 		    jsr drawDigit
+
 		    ldx #$60
 		    stx Sa1b0
 		    jsr $0b23

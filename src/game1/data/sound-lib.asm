@@ -191,12 +191,12 @@ L0b3f               ldx #$10
                     rts
 
 S0b51               rol $4e
-                    rol $037a
-                    rol $0371
+                    rol globals.soundCnt1
+                    rol globals.sountCnt2
                     lda $4e
                     asl
                     eor $4f
-                    eor $0371
+                    eor globals.sountCnt2
                     rol
                     rol
                     rol
@@ -205,13 +205,13 @@ S0b51               rol $4e
                     pha
                     rol $4f
                     lda $4f
-                    eor $037a
+                    eor globals.soundCnt1
                     sta $4e
                     pla
-                    sta $0371
+                    sta globals.sountCnt2
                     adc $4e
-                    adc $037a
-                    sta $0372
+                    adc globals.soundCnt1
+                    sta globals.soundCnt3
                     rts
 
 		.align $10

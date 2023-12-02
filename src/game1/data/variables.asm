@@ -1,4 +1,4 @@
-		.namespace variables
+		.namespace globals
 
 		.org $300
 
@@ -12,20 +12,24 @@ spriteYNew	.hex 09
 
 spriteIDNew	.hex 01
 
-L0306		.hex 00
-L0307		.hex 00
-L0308		.hex ff
+playerXspeed	.db 0
+playerYspeed	.db 0
+
+currentXspeed	.db $ff
+
 L0309		.hex 00
 L030a		.hex 04
 
 keypressed	.hex 00
 
+playerAnimIDs = * - 1
 		.hex 0d 0e 0d 0b
 		.hex 0f 10 0f 0c
 
 L0314		.hex 00
 L0315		.hex 00
-L0316		.hex 08
+jumpAnimIdx	.hex 08
+
 L0317		.hex 2c
 
 ;00:off / FF: on / 01:back to player
@@ -40,16 +44,19 @@ L031B		.hex 00
 L031C		.hex 1e
 L031D		.hex ff
 L031E		.hex 00
-L031F		.hex 00
+
+; 00: not jumping 01: is jumping
+isPlayerJumping	.hex 00
+
 		.hex 02
 L0321		.hex 01
 L0322		.hex 00
 
-		.hex 35 2c 2f 13 34
-		.hex 14
-		.hex 32 2b 36 2e 30 2d 33
-		.hex 12
-		.hex 31 11
+jumpAnimIDs = * - 1
+; while going right
+		.hex 35 2c 2f 13 34 14 32 2b
+; while going left
+		.hex 36 2e 30 2d 33 12 31 11
 
 L0333		.hex 1c
 
@@ -57,18 +64,38 @@ L0333		.hex 1c
 axeAnimIDs
 		.hex 15 16 17 18
 
+; seems to be related to sound counters for the axe sound
 L0338		.hex 30
 L0339		.hex 01
+
 L033A		.hex 03
 L033B		.hex 00
 
-L033C		.hex 00 1a 1e 22
-;L0340
-		.hex 26
-		.hex 2a 43 61 6e
+L033C		.db 0
 
-playerData:
-L0345		.hex 72
+; x positions on player info line
+
+; playerScore
+		.hex 1a
+		.hex 1e
+		.hex 22
+		.hex 26
+		.hex 2a
+; playerLifeCount
+		.hex 43
+; level
+		.hex 61
+; playerAxeCountHi
+		.hex 6e
+; playerAxeCountLo
+		.hex 72
+
+
+;
+; Player Data
+;
+
+playerData = * - 1
 
 playerScore	.hex 00
 L0347		.hex 00
@@ -80,9 +107,11 @@ playerLifeCount	.hex 03
 
 level		.hex 00
 
-L034D		.hex 01
+playerAxeCountHi
+		.hex 01
+playerAxeCountLo
+		.hex 00
 
-playerAxeCount	.hex 00
 
 playerDeadAnimIdx
 		.hex 00
@@ -104,12 +133,18 @@ rangeIdx	.hex 09
 Xpos		.hex de
 Ypos		.hex de
 
+; used by unpack
 L0367		.hex dc
 L0368		.hex df
 L0369		.hex df
 
 L036A		.hex dc
 
+;
+; Asset Data
+;
+
+assetData = * - 1
 assetXpos:
 assetKey	= *-assetXpos+1
 		.hex 77
@@ -121,31 +156,43 @@ L036D		.hex 7f
 assetKeyCnt	.db 0
 assetGemCnt	.db 0
 
+
 		.hex 00
 
-L0371		.hex 03
-L0372		.hex dc
+sountCnt2	.hex 03
+soundCnt3	.hex dc
 L0373		.hex 00
 
 unknown_xPos	.hex 05
 unknown_yPos	.hex 06
 		.hex d9
 
+; unused ?
 L0377		.hex d8
+; readKbd: 0:yes !0:no
 L0378		.hex 00
+; ?
 L0379		.hex 00
-L037A		.hex d8
+
+soundCnt1	.hex d8
 
 ; 01:kbd ff:joystick
 inputMode	.hex 01
 
 joyX		.hex 07
 joyY		.hex 08
+; ?
 L037E		.hex 00
-L037F		.hex d8
+
+levelCnt	.hex d8
+
 soundSwitch	.db $10 ; $10:on $00:off
+; used by loadLevel
 L0381		.hex 09
-L0382		.hex 0a
+
+axeSndCnt1	.hex 0a
+
+; => L0321; isPlayerJumping : seems unused
 L0383		.hex 00
 
 ; key definitions
@@ -234,5 +281,8 @@ block_size= *-block_start
 		.export soundSwitch
 		.export unknown_xPos
 		.export unknown_yPos
+		.export currentXspeed
+		.export levelCnt
+		.export axeSndCnt1
 
 		.end namespace

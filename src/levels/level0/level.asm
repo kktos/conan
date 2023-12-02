@@ -18,4 +18,8 @@
 
 	.segment L0_CODE
 	.include "code-R4-A000.asm"
-	; .include "data-R5-AC00.asm"
+	.include "level0.data-R5-AC00.asm"
+
+	assertGameStruct
+
+	.end

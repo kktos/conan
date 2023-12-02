@@ -7,9 +7,9 @@ sectorend equ $35f
 rangeIdx equ $360
 
 playerLifeCount equ $034B
-playerAxeCount equ $034E
+playerAxeCountLo equ $034E
 highScore equ $0357
 
 drawHiScore equ $a465
 
-drawHSvalue equ $a47b 
+drawHSvalue equ $a47b

@@ -15,28 +15,50 @@
 ; highscoreses
 startLevel 	=	$A000
 
+; collision rects
+; left
 LAC00 		=	$AC00
+; right
 LAC20 		=	$AC20
+; top
 LAC40 		=	$AC40
+
 LAC60 		=	$AC60
 LAC80 		=	$AC80
 LACA0 		=	$ACA0
+
+; player boundaries
+; player X pos
 LACC0 		=	$ACC0
+; player Y pos
 LACF0 		=	$ACF0
 
 LAD20		=	$AD20
 LAD30		=	$AD30
 LAD40		=	$AD40
 
+; initial player pos, sprite, currentXspeed
+; x
 LAD80 		=	$AD80
+; y
 LAD81 		=	$AD81
+; spriteID
 LAD82 		=	$AD82
+; currentXSpeed
 LAD83 		=	$AD83
 
+; Level Exit Arrow
+; sprite X
 LAD84 		=	$AD84
+; sprite Y
 LAD85 		=	$AD85
+; sprite ID
 LAD86 		=	$AD86
+
+; player pos to win
+; x
 LAD87 		=	$AD87
+; y
 LAD88 		=	$AD88
 
 		.org $1000
@@ -162,7 +184,7 @@ levelLoop	jsr resetVars
 		jsr S1593
 		jsr S1e5c
 		jsr S18fa
-		jsr S193a
+		jsr drawExitArrow
 		jsr S1b63
 		jsr S1cb0
 		jsr readJoyY
@@ -267,7 +289,7 @@ L1170			ldx L0315
 			beq L1178
 			jmp S1381
 
-L1178			ldx L031F
+L1178			ldx globals.isPlayerJumping
 			beq L1180
 			jmp L13e5
 
@@ -279,15 +301,16 @@ L1188			ldx playerAxeState ; 00:off / FF: on / 01:back to player
 			bpl L1190
 			jmp L1702
 
-L1190			jsr S11a3
+L1190			jsr readKeyboard
 			jsr S134e
 			jsr S135d
-			jsr S1233
-			jsr S129c
+			jsr updatePlayerSprite
+			jsr movePlayer
 			jsr drawNewSprite
 			rts
 
-S11a3			ldx L0378
+readKeyboard:
+			ldx L0378
 			bne L11fd
 
 			ldx keypressed
@@ -300,7 +323,6 @@ S11a3			ldx L0378
 
 			cpx keyLeft
 			bne L11bd
-
 			bit sys.KBDSTRB
 			jmp onKeyLeft
 
@@ -329,11 +351,12 @@ L11e4			cpx keyJump
 			jmp onKeyJump
 
 L11ef
-			stz L0306
-			stz L0307
+			stz playerXspeed
+			stz playerYspeed
 			stz keypressed
 			bit sys.KBDSTRB
 L11fd			rts
+
 
 onKeyLeft		jsr S120a
 			bcc L121d
@@ -343,7 +366,7 @@ onKeyRight		jsr S120a
 			bcc L1228
 			rts
 
-S120a			ldx L031F
+S120a			ldx globals.isPlayerJumping
 			bne L121b
 			ldx L0309
 			bne L121b
@@ -355,28 +378,30 @@ S120a			ldx L031F
 L121b			sec
 			rts
 
-L121d			dec L0306
-			ldx L0306
+L121d			dec playerXspeed
+			ldx playerXspeed
 			cpx #$fd
 			beq L1228
 			rts
 
-L1228			inc L0306
-			ldx L0306
+L1228			inc playerXspeed
+			ldx playerXspeed
 			cpx #$03
 			beq L121d
 			rts
 
-S1233			ldx L0309
+updatePlayerSprite:
+			ldx L0309
 			beq L123f
+
 			ldx L0333
 			stx spriteIDNew
 			rts
 
-L123f			ldx L031F
+L123f			ldx globals.isPlayerJumping
 			bne L128b
 
-			lda L0306
+			lda playerXspeed
 			beq L1275
 
 			ror
@@ -394,58 +419,63 @@ L1256			lda L030A
 			ldx #$04
 			stx L030A
 L1262			lda L030A
-			ldy L0308
+			ldy currentXspeed
 			bmi L126d
 
 			clc
 			adc #$04
 L126d			tax
-			lda keypressed,x
+			lda globals.playerAnimIDs,x
 			sta spriteIDNew
 			rts
 
 L1275			ldx #$04
 			stx L030A
-			ldy L0308
+			ldy currentXspeed
 			bmi L1285
-			ldx #$0c
+			ldx #$0C
 			stx spriteIDNew
 			rts
 
-L1285			ldx #$0b
+L1285			ldx #$0B
 			stx spriteIDNew
 			rts
 
-L128b			ldx L0308
+L128b			ldx currentXspeed
 			bmi L1296
 			ldx #$10
 			stx spriteIDNew
 			rts
 
-L1296			ldx #$0e
+L1296			ldx #$0E
 			stx spriteIDNew
 			rts
 
-S129c			lda spriteX
+movePlayer:
+			lda spriteX
 			clc
-			adc L0306
+			adc playerXspeed
 			sta spriteXNew
 			lda spriteY
 			clc
-			adc L0307
+			adc playerYspeed
 			sta spriteYNew
-			jsr S1681
+			jsr checkBoundsDrawPlayer
 			rts
 
-drawNewSprite		lda L0306
+drawNewSprite		lda playerXspeed
 			bne L12d0
-			lda L0307
+
+			lda playerYspeed
 			bne L12d0
+
 			lda L0309
 			bne L12cf
+
 			lda spriteID
 			cmp #$0d
 			bcs L12d0
+
 			cmp spriteIDNew
 			bne L12d0
 L12cf			rts
@@ -486,28 +516,28 @@ L1312			ldx LAD80
 			sty spriteYNew
 
 L1324			lda LAD83
-			sta L0308
+			sta currentXspeed
 			lda LAD82
 			sta spriteID
 			sta spriteIDNew
 			jsr spritelib.drawSpriteM
 
 			ldx #$00
-			stx L0306
-			stx L0307
+			stx playerXspeed
+			stx playerYspeed
 			stx L0309
-			stx L031F
+			stx globals.isPlayerJumping
 			stx L031E
 			stx L0314
 			stx L0315
 			rts
 
-S134e		ldx L0306
+S134e		ldx playerXspeed
 		cpx #$01
 		beq L1359
 		cpx #$ff
 		bne L135c
-L1359		stx L0308
+L1359		stx currentXspeed
 L135c		rts
 
 S135d		dec L030A
@@ -518,65 +548,74 @@ L1367		lda L030A
 		asl
 		asl
 		tax
-		lda L0306
+		lda playerXspeed
 		beq L1377
 
 		ldy #$10
 		jsr tone
 L1377		rts
 
+; dead code ?!?
 L1378		sty L0377
 		lda #$90
 		jsr utils.wait
 		rts
-S1381		jsr S129c
+
+S1381		jsr movePlayer
+
 		ldx L0314
 		beq L13a3
-		jsr isSpriteInRect
+
+		jsr isSpriteInRect ; c=1 if true
 		bcs L13a3
-		ldx L0308
+
+		ldx currentXspeed
 		bmi L139b
+
 		ldx #$10
 		stx spriteIDNew
 		jmp L13b5
 
-L139b		ldx #$0e
+L139b		ldx #$0E
 		stx spriteIDNew
 		jmp L13b5
-L13a3		lda L0316
-		ldx L0308
+
+L13a3		lda jumpAnimIdx
+		ldx currentXspeed
 		bmi L13ae
 		clc
 		adc #$08
 L13ae		tax
-		lda L0322,x
+		lda globals.jumpAnimIDs,x
 		sta spriteIDNew
 L13b5		jsr drawNewSprite
 		jsr S15fe
 		jsr S1953
 		bcc L13c5
-		dec L0316
+
+		dec jumpAnimIdx
 		bne L13cf
+
 L13c5		ldx #$00
 		stx L0315
 		ldx #$08
-		stx L0316
+		stx jumpAnimIdx
 L13cf		rts
 
 ; 13D0
-onKeyJump	inc L031F
-		lda L0307
+onKeyJump	inc globals.isPlayerJumping
+		lda playerYspeed
 		sec
 		sbc #$05
-		sta L0307
+		sta playerYspeed
 		ldx #$01
 		stx L0321
 		stx L0383
 		rts
 
 
-L13e5		jsr S129c
-		jsr S1233
+L13e5		jsr movePlayer
+		jsr updatePlayerSprite
 		ldx L0321
 		bmi L13fc
 
@@ -586,7 +625,7 @@ L13e5		jsr S129c
 		jmp L1414
 
 L13fc		ldx #$00
-		stx L031F
+		stx globals.isPlayerJumping
 		ldx #$04
 		stx L030A
 		jsr S1953
@@ -610,24 +649,25 @@ S141e		ldx L0309
 		ldx L0315
 		bne L1433
 
-		ldx L031F
+		ldx globals.isPlayerJumping
 		bne L1433
 
 		rts
 
-L1433		inc L0307
-		ldx L0307
+L1433		inc playerYspeed
+		ldx playerYspeed
 		cpx #$06
 		bne L1440
 
-		dec L0307
+		dec playerYspeed
 L1440		rts
 
-S1441		ldx L0307
+S1441		ldx playerYspeed
 		bmi L1485
 
 		ldx #$ff
 		stx L0322
+
 L144b		inc L0322
 		ldx L0322
 		lda LAC40,x
@@ -649,7 +689,7 @@ L1465		lda LAC40,x
 		bcc L144b
 
 		sec
-		sbc L0307
+		sbc playerYspeed
 		sec
 		sbc #$03
 		cmp #$f8
@@ -668,31 +708,33 @@ L1485		sec
 onKeyUp 	ldx L0309
 		beq L149d
 		ldx #$fe
-		stx L0307
+		stx playerYspeed
 		rts
 
 ; 1492
 onKeyDown	ldx L0309
 		beq L14b3
 		ldx #$02
-		stx L0307
+		stx playerYspeed
 		rts
+
 L149d		jsr S14ca
 		bcc L14b2
 		ldx L0317
 		bpl L14b2
 		ldx #$fe
-		stx L0307
+		stx playerYspeed
 		inc L0309
 		jmp L1553
 L14b2		rts
+
 L14b3		jsr S14ca
 		bcc L14b2
 		ldx L0317
 		bmi L14b2
 		beq L14b2
 		ldx #$02
-		stx L0307
+		stx playerYspeed
 		inc L0309
 		jmp L1553
 S14ca		ldx #$ff
@@ -731,21 +773,21 @@ L14f4		lda LAC60,x
 		jsr drawNewSprite
 		ldx #$00
 		stx L0317
-		stx L0306
+		stx playerXspeed
 		sec
 		rts
 L1527		ldx #$01
 		stx L0317
 		dex
-		stx L0306
-		stx L0307
+		stx playerXspeed
+		stx playerYspeed
 		sec
 		rts
 L1535		ldx #$ff
 		stx L0317
 		inx
-		stx L0306
-		stx L0307
+		stx playerXspeed
+		stx playerYspeed
 		sec
 		rts
 
@@ -760,11 +802,11 @@ S154a		lda L0333
 		rts
 
 L1553		jsr S1575
-		jsr S1233
-		jsr S129c
+		jsr updatePlayerSprite
+		jsr movePlayer
 		jsr drawNewSprite
 		jsr S14ca
-		ldx L0307
+		ldx playerYspeed
 		beq L156a
 		jsr S154a
 L156a		ldx L0317
@@ -785,13 +827,13 @@ L1582		cpx keyDown
 		jmp onKeyDown
 
 L158a		ldx #$00
-		stx L0306
-		stx L0307
+		stx playerXspeed
+		stx playerYspeed
 L1592		rts
 
 S1593		jsr S1441
 		bcc L15aa
-		ldx L031F
+		ldx globals.isPlayerJumping
 		bne L15aa
 		ldx L0309
 		bne L15aa
@@ -800,20 +842,24 @@ S1593		jsr S1441
 		inc L0314
 L15aa		rts
 
-L15ab		ldx L0315
-		bne L15b3
+L15ab:
+		ldx L0315
+		bne !+
+
 		inc L0315
-L15b3		jsr S1381
+!		jsr S1381
 		jsr S1441
-		bcs L15c9
+		bcs !+
+
 		ldx #$00
 		stx L0315
 		stx L0314
-		stx L031F
+		stx globals.isPlayerJumping
 		jsr drawNewSprite
-L15c9		rts
+!		rts
 
-isSpriteInRect	ldx #$ff
+isSpriteInRect:
+		ldx #$ff
 		stx L0322
 L15cf		inc L0322
 		ldx L0322
@@ -855,7 +901,7 @@ S15fe		ldx spritelib.LB3F6
 		jsr S1638
 		lda spriteXNew
 		sec
-		sbc L0306
+		sbc playerXspeed
 		sta spriteXNew
 		ldx spriteID
 		stx spriteIDNew
@@ -863,17 +909,17 @@ S15fe		ldx spritelib.LB3F6
 		ldx #$01
 		stx L0314
 		dex
-		stx L0307
-		stx L0306
+		stx playerYspeed
+		stx playerXspeed
 		inc L031E
 L1637		rts
 S1638		lda spriteX
 		sec
-		sbc L0306
+		sbc playerXspeed
 		sta spriteXNew
 		lda spriteY
 		sec
-		sbc L0307
+		sbc playerYspeed
 		sta spriteYNew
 		rts
 
@@ -902,12 +948,16 @@ L1652		inc L0322
 
 L167f		clc
 		rts
-S1681		ldx #$ff
+
+checkBoundsDrawPlayer:
+		ldx #$ff
 		stx L0322
+
 L1686		inc L0322
 		ldx L0322
 		lda LACF0,x
 		beq L16d1
+
 		lda spriteXNew
 		cmp LACC0,x
 		beq L16a1
@@ -916,24 +966,31 @@ L1686		inc L0322
 		tya
 		cmp LACC0,x
 		bne L1686
+
 L16a1		lda LACF0,x
 		cmp spriteYNew
 		bne L1686
+
 		lda LACC0,x
 		sta spriteXNew
-		ldx L0308
+
+		ldx currentXspeed
 		bmi L16ba
+
 		dec spriteXNew
 		jmp L16bd
+
 L16ba		inc spriteXNew
 L16bd		ldx #$00
-		stx L0306
-		stx L0307
-		jsr S1233
+		stx playerXspeed
+		stx playerYspeed
+		jsr updatePlayerSprite
+
 		ldx spriteY
 		stx spriteYNew
 		jsr drawNewSprite
 L16d1		rts
+
 
 ; 16D2
 onKeyAxe	ldx L0309
@@ -945,16 +1002,16 @@ onKeyAxe	ldx L0309
 		ldx L0315
 		bne L1701
 
-		ldx L031F
+		ldx globals.isPlayerJumping
 		bne L1701
 
 		ldx playerAxeState ; 00:off / FF: on / 01:back to player
 		bne L1701
 
-		ldx L034D
+		ldx playerAxeCountHi
 		bne L16f5
 
-		ldx playerAxeCount
+		ldx playerAxeCountLo
 		beq L1701
 
 L16f5		ldx #$ff
@@ -967,7 +1024,7 @@ L1701		rts
 L1702		lda playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
 		cmp #$02
 		beq L1739
-		ldy L0308
+		ldy currentXspeed
 		bmi L1711
 		clc
 		adc #$02
@@ -979,7 +1036,7 @@ L1711		tay
 		dex
 		bne L1729
 
-		ldy L0308
+		ldy currentXspeed
 		bpl L1729
 		sec
 		sbc #$02
@@ -995,7 +1052,7 @@ L1729		sta spriteXNew
 L1739		ldx #$01
 		stx playerAxeState ; 00:off / FF: on / 01:back to player
 		lda spriteX
-		ldy L0308
+		ldy currentXspeed
 		bmi L1754
 		ldx #$03
 		stx L033A
@@ -1016,16 +1073,16 @@ L175f		lda spriteY
 		lda #$1e
 		sta L031C
 		jsr S1807
-		ldx L0308
+		ldx currentXspeed
 		stx L031D
 		ldx #$08
 		stx L0338
 		ldx #$01
 		stx L0339
 		stx playerAxeState ; 00:off / FF: on / 01:back to player
-		jsr S1233
+		jsr updatePlayerSprite
 		lda spriteX
-		ldy L0308
+		ldy currentXspeed
 		bpl L1791
 		clc
 		adc #$02
@@ -1167,8 +1224,8 @@ loadInitLevel
 		bne !+
 
 		ldx level
-		stx L037F
-L18b6		dec L037F
+		stx levelCnt
+L18b6		dec levelCnt
 		bmi !+
 		jsr scoreAdd100
 		jmp L18b6
@@ -1206,6 +1263,7 @@ L18ff		inc L0322
 		ldx L0322
 		lda LAD30,x
 		beq L1925
+
 		jsr S1926
 
 		ldx L0322
@@ -1231,12 +1289,15 @@ S1926		lda LAD30,x
 		rts
 
 ;
-S193a		inc L033C
+drawExitArrow:
+		inc L033C
 		lda L033C
 		ror
 		bcs L1952
+
 		ror
 		bcs L1952
+
 		ldx LAD84
 		ldy LAD85
 		lda LAD86
@@ -1250,16 +1311,16 @@ S1953		jsr S1441
 		inc spriteYNew
 		lda spriteX
 		clc
-		adc L0306
+		adc playerXspeed
 		sta spriteXNew
-		jsr S1233
+		jsr updatePlayerSprite
 		jsr drawNewSprite
 		ldx #$00
-		stx L0307
+		stx playerYspeed
 		stx L031E
 L1979		rts
 
-drawDigit	lda L0345,x
+drawDigit	lda playerData,x
 		tay
 		lda L033C,x
 		tax
@@ -1324,7 +1385,7 @@ updLifeCount	ldx #playerLifeCount-playerData ; #$06
 		jsr S1c6b
 		jmp restart
 
-L1a00		ldx #playerAxeCount-playerData
+L1a00		ldx #playerAxeCountLo-playerData
 		stx L0322
 !		ldx L0322
 		jsr drawDigit
@@ -1340,10 +1401,10 @@ resetVars2
 		stx playerScore+2
 		stx playerScore+3
 		stx playerScore+4
-		stx playerAxeCount
+		stx playerAxeCountLo
 		stx level
 		inx
-		stx L034D
+		stx playerAxeCountHi
 		inx
 		stx playerLifeCount
 		jsr L1a00
@@ -1575,22 +1636,25 @@ readSector	ldx track
 		jsr rwts
 		rts
 
-updAxeCount	ldx #$09
+updAxeCount	ldx #playerAxeCountLo-playerData
 		jsr drawDigit
-		dec playerAxeCount ; cheat
+		dec playerAxeCountLo ; cheat
 		bmi L1b48
-		ldx #$09
+
+		ldx #playerAxeCountLo-playerData
 		jsr drawDigit
 		rts
 
-L1b48		ldx #$09
-		stx playerAxeCount
+L1b48		ldx #playerAxeCountLo-playerData
+		stx playerAxeCountLo
 		jsr drawDigit
-		ldx L034D
+
+		ldx playerAxeCountHi
 		beq L1b62
+
 		ldx #$08
 		jsr drawDigit
-		dec L034D
+		dec playerAxeCountHi
 		ldx #$08
 		jsr drawDigit
 L1b62		rts
@@ -1614,8 +1678,8 @@ L1b81		ldx spriteID
 		stx spriteIDNew
 		jsr drawNewSprite
 		ldx #$00
-		stx L0306
-		stx L0307
+		stx playerXspeed
+		stx playerYspeed
 L1b92		rts
 
 S1b93		ldx playerDeadAnimIdx
@@ -1647,8 +1711,8 @@ S1b93		ldx playerDeadAnimIdx
 
 S1bca		ldx #$09
 		jsr drawDigit
-		inc playerAxeCount
-		ldx playerAxeCount
+		inc playerAxeCountLo
+		ldx playerAxeCountLo
 		cpx #$0a
 		beq L1bdf
 		ldx #$09
@@ -1656,12 +1720,12 @@ S1bca		ldx #$09
 		rts
 
 L1bdf		ldx #$00
-		stx playerAxeCount
+		stx playerAxeCountLo
 		ldx #$09
 		jsr drawDigit
 		ldx #$08
 		jsr drawDigit
-		inc L034D
+		inc playerAxeCountHi
 		ldx #$08
 		jsr drawDigit
 		rts
@@ -1763,14 +1827,15 @@ L1ca5		bit sys.KBDSTRB
 
 L1caf		rts
 
-S1cb0		inc L037A
-		lda L037A
+S1cb0		inc globals.soundCnt1
+		lda globals.soundCnt1
 		adc $7900
 		adc playerScore+3
-		sta L037A
+		sta globals.soundCnt1
 L1cbf		rts
 
-readJoystick	ldx inputMode ; 01:kbd ff:joystick
+readJoystick:
+		ldx inputMode ; 01:kbd ff:joystick
 		bpl L1cbf ; if kdb
 
 		ldx L0309
@@ -1801,7 +1866,7 @@ L1cde		ldx #$fe
 		cmp #$f0
 		bcc L1cf7
 		inx
-L1cf7		cpx L0306
+L1cf7		cpx playerXspeed
 		beq L1d01
 		bmi L1d32
 		jmp L1d39
@@ -1844,13 +1909,13 @@ L1d39		ldx keyRight
 resetVars	bit sys.KBDSTRB
 		stz playerDeadAnimIdx
 		stz L031E
-		stz L031F
+		stz globals.isPlayerJumping
 		stz playerAxeState ; 00:off / FF: on / 01:back to player
 		stz L0314
 		stz L0315
 		stz L0309
-		stz L0306
-		stz L0307
+		stz playerXspeed
+		stz playerYspeed
 
 		ldx assetKeyCnt
 		beq L1d6f
@@ -1993,8 +2058,10 @@ L1e5b		rts
 S1e5c		ldx playerAxeState ; 00:off / FF: on / 01:back to player
 		dex
 		bmi L1e5b
+
 		lda L0339
 		bpl L1e70
+
 		lda #$09
 		sec
 		sbc L0338
@@ -2003,9 +2070,9 @@ S1e5c		ldx playerAxeState ; 00:off / FF: on / 01:back to player
 L1e70		lda L0338
 L1e73		asl
 		asl
-		sta L0382
+		sta axeSndCnt1
 L1e78		lda #$02
-L1e7a		ldy L0382
+L1e7a		ldy axeSndCnt1
 		ldx soundSwitch
 L1e80		cmp sys.SPKR-$10,x
 		dey
@@ -2013,20 +2080,20 @@ L1e80		cmp sys.SPKR-$10,x
 		sec
 		sbc #$01
 		bne L1e7a
-		lda L0382
+		lda axeSndCnt1
 		sec
 		sbc #$01
-		sta L0382
+		sta axeSndCnt1
 		bne L1e78
 		rts
 
 S1e97		rol $4e
-		rol L037A
-		rol L0371
+		rol globals.soundCnt1
+		rol globals.sountCnt2
 		lda $4e
 		asl
 		eor $4f
-		eor L0371
+		eor globals.sountCnt2
 		rol
 		rol
 		rol
@@ -2035,13 +2102,13 @@ S1e97		rol $4e
 		pha
 		rol $4f
 		lda $4f
-		eor L037A
+		eor globals.soundCnt1
 		sta $4e
 		pla
-		sta L0371
+		sta globals.sountCnt2
 		adc $4e
-		adc L037A
-		sta L0372
+		adc globals.soundCnt1
+		sta globals.soundCnt3
 		rts
 ;
 ; LOADRANGE Y:range idx
