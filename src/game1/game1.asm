@@ -5,10 +5,12 @@
 		.segment GAME_CODE
 		.namespace game1
 
-		.export scoreAdd75
-		.export scoreAdd100
-		.export scoreAdd250
 		.export tone
+
+.macro assertGameStruct
+	labels = .array("LAC00","LAC20","LAC40","LAC60","LAC80","LACA0","LACC0","LACF0")
+	assertDefinedLabels labels, "Missing game interface fields"
+.end
 
 ; highscoreses
 startLevel 	=	$A000

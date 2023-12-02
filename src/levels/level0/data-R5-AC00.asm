@@ -1,4 +1,3 @@
-		.namespace level0
 		.org $AC00
 
 LAC00

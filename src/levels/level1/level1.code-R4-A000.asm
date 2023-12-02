@@ -154,7 +154,7 @@ Sa0e6		    ldx playerAxeState
 		    sta L7905
 		    ldx #$01
 		    stx L7909
-		    jsr scoreAdd75 ;L106A
+		    jsr game1.scoreAdd75 ;L106A
 
 		    jsr soundlib.L0a58
 

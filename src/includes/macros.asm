@@ -53,3 +53,20 @@
 	.end
 
 .end
+
+.macro assertDefinedLabels neededLabels, errmsg
+	.if .type(neededLabels) != "array"
+		.error "checkIfDefined needs an array of strings as label names"
+	.end
+
+	missingLabels = .array()
+	.for label of neededLabels
+		.if .undef(label)
+			t= .push(missingLabels, label)
+		.end
+	.end
+
+	.if .len(missingLabels) != 0
+		.error errmsg, " ", missingLabels
+	.end
+.end

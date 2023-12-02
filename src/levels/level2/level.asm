@@ -10,6 +10,6 @@
 	.include "data-R3-7A00.asm"
 
 	.segment L2_CODE
-	.include "code-R4-A000.asm"
+	.include "level2.code-R4-A000.asm"
 	; .include "data-R4-A200.asm"
 	.include "data-R5-AC00.asm"

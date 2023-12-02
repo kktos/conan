@@ -135,7 +135,7 @@ Sa0d9               ldx L7900
                     ;jsr spritelib.drawSprite
 
 
-                    jsr scoreAdd100
+                    jsr game1.scoreAdd100
                     jsr soundlib.L0a6e
 La110               rts
 
@@ -161,7 +161,7 @@ Sa111               ldx assetKeyCnt
                     ;lda #$2a
                     ;jsr spritelib.drawSprite
 
-                    jsr scoreAdd250
+                    jsr game1.scoreAdd250
                     jsr soundlib.L0a7d
 La144               rts
 
