@@ -23,8 +23,11 @@ LAC20 		=	$AC20
 ; top
 LAC40 		=	$AC40
 
+; ladder y top
 LAC60 		=	$AC60
+; ladder y bottom
 LAC80 		=	$AC80
+; ladder X pos
 LACA0 		=	$ACA0
 
 ; player boundaries
@@ -306,7 +309,7 @@ L1190			jsr readKeyboard
 			jsr S135d
 			jsr updatePlayerSprite
 			jsr movePlayer
-			jsr drawNewSprite
+			jsr drawPlayer
 			rts
 
 readKeyboard:
@@ -463,7 +466,8 @@ movePlayer:
 			jsr checkBoundsDrawPlayer
 			rts
 
-drawNewSprite		lda playerXspeed
+drawPlayer:
+			lda playerXspeed
 			bne L12d0
 
 			lda playerYspeed
@@ -580,7 +584,7 @@ L139b		ldx #$0E
 		stx spriteIDNew
 		jmp L13b5
 
-L13a3		lda jumpAnimIdx
+L13a3		lda globals.jumpAnimIdx
 		ldx currentXspeed
 		bmi L13ae
 		clc
@@ -588,18 +592,18 @@ L13a3		lda jumpAnimIdx
 L13ae		tax
 		lda globals.jumpAnimIDs,x
 		sta spriteIDNew
-L13b5		jsr drawNewSprite
+L13b5		jsr drawPlayer
 		jsr S15fe
 		jsr S1953
 		bcc L13c5
 
-		dec jumpAnimIdx
+		dec globals.jumpAnimIdx
 		bne L13cf
 
 L13c5		ldx #$00
 		stx L0315
 		ldx #$08
-		stx jumpAnimIdx
+		stx globals.jumpAnimIdx
 L13cf		rts
 
 ; 13D0
@@ -636,7 +640,7 @@ L13fc		ldx #$00
 		jmp S1381
 
 L1414		jsr S1953
-		jsr drawNewSprite
+		jsr drawPlayer
 		jsr S15fe
 		rts
 
@@ -662,7 +666,8 @@ L1433		inc playerYspeed
 		dec playerYspeed
 L1440		rts
 
-S1441		ldx playerYspeed
+S1441:
+		ldx playerYspeed
 		bmi L1485
 
 		ldx #$ff
@@ -718,7 +723,7 @@ onKeyDown	ldx L0309
 		stx playerYspeed
 		rts
 
-L149d		jsr S14ca
+L149d		jsr isPlayerOnLadder
 		bcc L14b2
 		ldx L0317
 		bpl L14b2
@@ -728,7 +733,7 @@ L149d		jsr S14ca
 		jmp L1553
 L14b2		rts
 
-L14b3		jsr S14ca
+L14b3		jsr isPlayerOnLadder
 		bcc L14b2
 		ldx L0317
 		bmi L14b2
@@ -737,45 +742,55 @@ L14b3		jsr S14ca
 		stx playerYspeed
 		inc L0309
 		jmp L1553
-S14ca		ldx #$ff
+
+isPlayerOnLadder:
+		ldx #$ff
 		stx L0322
 L14cf		inc L0322
 		ldx L0322
 		lda LAC60,x
 		beq L1543
+
 		lda LACA0,x
 		tay
 		dey
 		dey
 		cpy spriteX
 		beq L14f4
+
 		iny
 		cpy spriteX
 		beq L14f4
+
 		iny
 		cpy spriteX
 		beq L14f4
+
 		jmp L14cf
+
 L14f4		lda LAC60,x
 		cmp spriteY
 		beq L1527
 		bcs L14cf
+
 		lda LAC80,x
 		cmp spriteY
 		beq L1535
 		bcc L14cf
+
 		lda LACA0,x
 		sta spriteXNew
 		ldx spriteY
 		stx spriteYNew
 		ldx spriteID
 		stx spriteIDNew
-		jsr drawNewSprite
+		jsr drawPlayer
 		ldx #$00
 		stx L0317
 		stx playerXspeed
 		sec
 		rts
+
 L1527		ldx #$01
 		stx L0317
 		dex
@@ -783,6 +798,7 @@ L1527		ldx #$01
 		stx playerYspeed
 		sec
 		rts
+
 L1535		ldx #$ff
 		stx L0317
 		inx
@@ -796,7 +812,8 @@ L1543		clc
 		stx L0309
 		rts
 
-S154a		lda L0333
+toggleSpriteID:
+		lda L0333
 		eor #$01
 		sta L0333
 		rts
@@ -804,13 +821,15 @@ S154a		lda L0333
 L1553		jsr S1575
 		jsr updatePlayerSprite
 		jsr movePlayer
-		jsr drawNewSprite
-		jsr S14ca
+		jsr drawPlayer
+		jsr isPlayerOnLadder
 		ldx playerYspeed
 		beq L156a
-		jsr S154a
+
+		jsr toggleSpriteID
 L156a		ldx L0317
 		beq L1574
+
 		ldx #$00
 		stx L0309
 L1574		rts
@@ -855,7 +874,7 @@ L15ab:
 		stx L0315
 		stx L0314
 		stx globals.isPlayerJumping
-		jsr drawNewSprite
+		jsr drawPlayer
 !		rts
 
 isSpriteInRect:
@@ -890,14 +909,19 @@ L15cf		inc L0322
 L15fc		sec
 		rts
 
-S15fe		ldx spritelib.LB3F6
+S15fe:
+		ldx spritelib.LB3F6
 		beq L1637
+
 		ldx L031E
 		bne L1637
+
 		ldx L0373
 		bne L1637
+
 		jsr S164d
 		bcs L1637
+
 		jsr S1638
 		lda spriteXNew
 		sec
@@ -905,7 +929,7 @@ S15fe		ldx spritelib.LB3F6
 		sta spriteXNew
 		ldx spriteID
 		stx spriteIDNew
-		jsr drawNewSprite
+		jsr drawPlayer
 		ldx #$01
 		stx L0314
 		dex
@@ -913,6 +937,7 @@ S15fe		ldx spritelib.LB3F6
 		stx playerXspeed
 		inc L031E
 L1637		rts
+
 S1638		lda spriteX
 		sec
 		sbc playerXspeed
@@ -923,26 +948,32 @@ S1638		lda spriteX
 		sta spriteYNew
 		rts
 
-S164d		ldx #$ff
+S164d:
+		ldx #$ff
 		stx L0322
 L1652		inc L0322
 		ldx L0322
 		lda LAC60,x
 		beq L167f
+
 		cmp spriteY
 		bcs L1652
+
 		lda LAC80,x
 		cmp spriteY
 		bcc L1652
+
 		lda LACA0,x
 		sec
 		sbc #$08
 		cmp spriteX
 		bcs L1652
+
 		clc
 		adc #$0b
 		cmp spriteX
 		bcc L1652
+
 		sec
 		rts
 
@@ -988,7 +1019,7 @@ L16bd		ldx #$00
 
 		ldx spriteY
 		stx spriteYNew
-		jsr drawNewSprite
+		jsr drawPlayer
 L16d1		rts
 
 
@@ -1044,7 +1075,7 @@ L1711		tay
 L1729		sta spriteXNew
 		ldy spriteY
 		sty spriteYNew
-		jsr drawNewSprite
+		jsr drawPlayer
 
 		inc playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
 		rts
@@ -1089,7 +1120,7 @@ L175f		lda spriteY
 L1791		sta spriteXNew
 		ldx spriteY
 		stx spriteYNew
-		jsr drawNewSprite
+		jsr drawPlayer
 		rts
 
 S179e		ldx playerAxeState ; 00:off / FF: on / 01:back to player
@@ -1140,7 +1171,8 @@ L17fa		ldx #$08
 		stx L0339
 		jmp L17ad
 
-S1807		ldx L031A
+S1807:
+		ldx L031A
 		ldy #$00
 		sty spritelib.LB3F6
 		ldy L031B
@@ -1156,7 +1188,7 @@ L1819		jsr S184d
 		stx L031B
 		rts
 
-S182b		jsr S1f2d
+S182b		jsr testIncAxeCount
 		ldx spritelib.LB3F6
 		beq L1841
 		jsr S1b93
@@ -1304,8 +1336,9 @@ drawExitArrow:
 		jsr spritelib.drawSprite
 L1952		rts
 
-S1953		jsr S1441
-		bcs L1979
+S1953:
+		jsr S1441
+		bcs !+
 		lda LAC40,x
 		sta spriteYNew
 		inc spriteYNew
@@ -1314,11 +1347,11 @@ S1953		jsr S1441
 		adc playerXspeed
 		sta spriteXNew
 		jsr updatePlayerSprite
-		jsr drawNewSprite
+		jsr drawPlayer
 		ldx #$00
 		stx playerYspeed
 		stx L031E
-L1979		rts
+!		rts
 
 drawDigit	lda playerData,x
 		tay
@@ -1676,7 +1709,7 @@ L1b7c		ldx #$00
 		stx spriteXNew
 L1b81		ldx spriteID
 		stx spriteIDNew
-		jsr drawNewSprite
+		jsr drawPlayer
 		ldx #$00
 		stx playerXspeed
 		stx playerYspeed
@@ -1702,14 +1735,15 @@ S1b93		ldx playerDeadAnimIdx
 		adc #$11
 		cmp L031B
 		bcc L1b92
-		jsr S1bca
+		jsr incAxeCount
 		jsr L1819
 		jsr soundlib.L0AD7
 		pla
 		pla
 		rts
 
-S1bca		ldx #$09
+incAxeCount:
+		ldx #$09
 		jsr drawDigit
 		inc playerAxeCountLo
 		ldx playerAxeCountLo
@@ -2163,27 +2197,33 @@ S1f1e		ldx #$00
 		jsr rwts
 L1f2c		rts
 
-S1f2d		ldx playerDeadAnimIdx
+testIncAxeCount:
+		ldx playerDeadAnimIdx
 		bne L1f2c
+
 		lda spriteX
 		sec
 		sbc #$02
 		cmp L031A
 		bcs L1f2c
+
 		clc
 		adc #$04
 		cmp L031A
 		bcc L1f2c
+
 		lda spriteY
 		sec
 		sbc #$03
 		cmp L031B
 		bcs L1f2c
+
 		clc
 		adc #$11
 		cmp L031B
 		bcc L1f2c
-		jsr S1bca
+
+		jsr incAxeCount
 		jsr L1819
 		jsr soundlib.L0AD7
 		pla

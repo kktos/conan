@@ -274,14 +274,14 @@ loop2:
 
 		eor ($1c),y
 		sta ($1c),y
-Lb388 	inc mask
+Lb388 		inc mask
 		bne Lb390
 		inc mask+1
-Lb390 	iny
+Lb390 		iny
 		cpy #$4a
 		bne Lb397
 		ldy #$00
-Lb397 	dec dsWidth
+Lb397 		dec dsWidth
 		bne Lb377
 		ldx dsWidthInit
 		stx dsWidth
@@ -290,9 +290,9 @@ Lb397 	dec dsWidth
 		inc yPos
 		jmp Lb357
 
-Lb3ad 	rts
+Lb3ad 		rts
 
-Lb3ae 	ldx mask
+Lb3ae 		ldx mask
 		stx mask2
 		ldx mask+1
 		stx mask2+1

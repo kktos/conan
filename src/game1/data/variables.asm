@@ -39,9 +39,14 @@ playerAxeState
 ;00: normal / 01: axe behind / 02: axe forward
 playerAxeAnim	.hex 00
 
+; sprite... ? key ? axe ?
+; x
 L031A		.hex 00
+; y
 L031B		.hex 00
+; id
 L031C		.hex 1e
+
 L031D		.hex ff
 L031E		.hex 00
 
