@@ -4,7 +4,8 @@
   "description": "Conan: Hall of Volta on Apple //",
   "main": "index.js",
   "scripts": {
-    "build": "node ../../jsasm6502/dist/asm.js"
+    "build": "rimraf ./dist && asm6502 --conf jsasm.conf",
+    "build-local": "rimraf ./dist && node ../jsasm6502/dist/asm6502 --conf jsasm.conf"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/kktos/conan/issues"
   },
-  "homepage": "https://github.com/kktos/conan#readme"
+  "homepage": "https://github.com/kktos/conan#readme",
+  "devDependencies": {
+    "jsasm6502": "^1.7.0",
+    "rimraf": "^6.0.1"
+  }
 }
