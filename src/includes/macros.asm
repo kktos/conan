@@ -1,5 +1,5 @@
 
-.macro ifx ...parms
+.macro ifx ...parms {
 	.if .len(parms)!=2
 		.error "Macro ifx : needs 2 params"
 	.end
@@ -52,7 +52,7 @@
 		.error "Macro ifx : Invalid Operation ",op
 	.end
 
-.end
+}
 
 .macro assertDefinedLabels neededLabels, errmsg
 	.if .type(neededLabels) != "array"

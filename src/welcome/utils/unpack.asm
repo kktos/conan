@@ -13,9 +13,7 @@ run		sta hgrPage
 
 ; L0343		=	*+1
 
-		; ldx #$60
 		stx $1d
-                ; ldx #$00
                 stz $1c
 loop
 		jsr readPakByt ; read cmd

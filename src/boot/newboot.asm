@@ -1,8 +1,5 @@
 		.namespace boot
 
-
-                .org $800
-
                 .hex 01
 
 		jsr sys.SETKBD

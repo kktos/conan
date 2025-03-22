@@ -19,7 +19,7 @@ wait3
 		.db "wait"
 		.align $10
 
-.function clearScreen
+.function clearScreen {
 		stz yPos
 !		jsr clearByte
 		inc yPos
@@ -27,9 +27,9 @@ wait3
 		cpx #$b7
 		bne !-
 		rts
-.end
+yPos		.db 0
 
-.function clearByte
+clearByte:
 		jsr getHGRLineAddr
 		ldy #$27
 		lda #$00
@@ -37,15 +37,14 @@ wait3
 		dey
 		bpl !-
 		rts
-.end
 
-getHGRLineAddr	lda hgrLow,x
+getHGRLineAddr:
+		lda hgrLow,x
 		sta $1c
 		lda hgrHigh,x
 		sta $1d
 		rts
-yPos		.db 0
-
+}
 		.align $10
 		.db "clearScreen"
 		.align $10
