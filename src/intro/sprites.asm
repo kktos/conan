@@ -1,3 +1,4 @@
+		.align $100
 spritesAddr
 		.dw img_conan1, img_conan2, img_conan3, img_conan4, img_conan5
 		.dw img_conan6, img_conan7, img_conan8, img_conan9, img_conan10

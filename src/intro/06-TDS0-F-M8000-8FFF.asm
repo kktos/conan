@@ -329,6 +329,8 @@ showLevelBar
 ;L89f9
 		; .hex cc a0 ce cf ce 8d a0
 
+		.align $100
+
 ; sprites X
 L8a00		.hex 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e
 		.hex 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e
