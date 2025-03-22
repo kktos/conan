@@ -8,6 +8,9 @@ function displaySegmentsTracksSectors(segmentDir) {
 		console.log(
 		`T${hexa((offset>>12) & 0xFF,2)} S${hexa((offset>>8) & 0x0F,2)}`,
 		hexa(offset, 8),
+		hexa(org, 4),
+		hexa(len, 4),
+		hexa(padLen, 4),
 		name,
 		);
 	}
