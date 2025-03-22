@@ -2,6 +2,8 @@
 
 	.cpu "65C02"
 
+	.include "segments.asm"
+
 	.include "includes/macros.asm"
 	.include "includes/extended-cmds.asm"
 	.include "includes/disk-io.asm"
@@ -113,6 +115,8 @@
 	;
 	.include "intro/intro.asm"
 
+	.segment PAD2
+
 
 	;
 	; TRACK $10
@@ -121,52 +125,6 @@
 	.include "levels/level0/level.asm"
 	.include "levels/level1/level.asm"
 	.include "levels/level2/level.asm"
-
-/*
-	;
-	; TRACK $10
-	;
-	.segment L0_BKGD
-	.include "levels/level0/data-bkgnd-R0-7500.asm"
-
-	.segment L0_DATA
-	.include "levels/level0/data-R1-7500.asm"
-	.include "levels/level0/data-R2-7900.asm"
-	.include "levels/level0/data-R3-7A00.asm"
-
-	.segment L0_CODE
-	.include "levels/level0/code-R4-A000.asm"
-	; .include "levels/level0/data-R5-AC00.asm"
-
-
-	.segment L1_BKGD
-	.include "levels/level1/data-bkgnd-R0-7500.asm"
-
-	.segment L1_DATA
-	.include "levels/level1/data-R1-7500.asm"
-	.include "levels/level1/data-R2-7900.asm"
-	.include "levels/level1/data-R3-7A00.asm"
-
-	.segment L1_CODE
-	.include "levels/level1/code-R4-A000.asm"
-	.include "levels/level1/data-R4-A200.asm"
-	.include "levels/level1/data-R5-AC00.asm"
-
-
-	.segment L2_BKGD
-	.include "levels/level2/data-bkgnd-R0-7500.asm"
-
-	.segment L2_DATA
-	.include "levels/level2/data-R1-7500.asm"
-	.include "levels/level2/data-R2-7900.asm"
-	.include "levels/level2/data-R3-7A00.asm"
-
-	.segment L2_CODE
-	.include "levels/level2/code-R4-A000.asm"
-	; .include "levels/level2/data-R4-A200.asm"
-	.include "levels/level2/data-R5-AC00.asm"
-
-*/
 
 	.out ""
 	.out "***************"
