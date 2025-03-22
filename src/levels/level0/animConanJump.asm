@@ -1,4 +1,5 @@
-		.function animConanJump
+		.list file .filename
+.function animConanJump {
 
 		; ldx #$6b
 		; ldy #$9c
@@ -108,4 +109,4 @@ renderSpring
 		sta springCurId
 		rts
 
-		.end
+}

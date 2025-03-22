@@ -124,7 +124,7 @@ La0e5		    rts
 Sa0e6		    ldx playerAxeState
 		    beq La0e5
 		    ldx L7900
-		    lda L031A
+		    lda axeXpos
 		    sec
 		    sbc #$0c
 		    cmp batXposTbl,x
@@ -133,7 +133,7 @@ Sa0e6		    ldx playerAxeState
 		    adc #$10
 		    cmp batXposTbl,x
 		    bcc La139
-		    lda L031B
+		    lda axeYpos
 		    sec
 		    sbc #$0d
 		    cmp batYposTbl,x
@@ -161,7 +161,7 @@ Sa0e6		    ldx playerAxeState
 La139		    rts
 
 Sa13a		    ldx #$00
-		    stx spritelib.LB3F6
+		    stx spritelib.isCollision
 		    ldx L7903
 		    ldy L7904
 		    lda L7905

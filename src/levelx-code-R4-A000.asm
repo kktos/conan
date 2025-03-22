@@ -10,7 +10,7 @@ drawSpriteBis	sty spritelib.yPos
 		lda spritelib.spriteHi-1,y
 		sta $1d
 		ldy #$00
-		sty spritelib.LB3F7
+		sty spritelib.isFlipped
 		lda ($1c),y
 		sta spritelib.dsWidth
 		sta spritelib.dsWidthInit
@@ -20,7 +20,7 @@ drawSpriteBis	sty spritelib.yPos
 		stx spritelib.dsHeightInit
 		bpl La047
 
-		inc spritelib.LB3F7
+		inc spritelib.isFlipped
 		and #$7f
 		sta spritelib.dsHeight
 		lda spritelib.LB200,x
@@ -51,7 +51,7 @@ La05a               ldy spritelib.yPos
                     lda spritelib.hgrHi,y
                     sta $1d
                     ldx spritelib.dsHeightInit
-                    ldy spritelib.LB3F7
+                    ldy spritelib.isFlipped
                     beq La076
                     lda spritelib.LB000,x
                     tay

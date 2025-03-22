@@ -2,8 +2,6 @@
 
 L1000		=	$1000
 
-		.org $200
-
 main		ldx #$01
 		stx $0478
 		ldx #$04
@@ -109,12 +107,12 @@ L02be		sta ($1a),y
 		; ldx rwts_slot
 		; lda $c089,x
 		lda #$00
-		ldx #$60
+		ldx #>introScreenPage1
 		ldy #192
 		jsr unpack.run
 
 		lda #$20
-		ldx #$68
+		ldx #>introScreenPage2
 		ldy #192
 		; stx L0343
 		; ldx #$20

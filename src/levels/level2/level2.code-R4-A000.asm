@@ -8,7 +8,7 @@ drawSpriteBis
 		lda spritelib.spriteHi-1,y
 		sta $1d
 		ldy #$00
-		sty spritelib.LB3F7
+		sty spritelib.isFlipped
 		lda ($1c),y
 		sta spritelib.dsWidth
 		sta spritelib.dsWidthInit
@@ -17,7 +17,7 @@ drawSpriteBis
 		sta spritelib.dsHeight
 		stx spritelib.dsHeightInit
 		bpl La047
-		inc spritelib.LB3F7
+		inc spritelib.isFlipped
 		and #$7f
 		sta spritelib.dsHeight
 		lda spritelib.LB200,x
@@ -49,7 +49,7 @@ La05a               ldy spritelib.yPos
                     lda utils.hgrHigh,y
                     sta $1d
                     ldx spritelib.dsHeightInit
-                    ldy spritelib.LB3F7
+                    ldy spritelib.isFlipped
                     beq La076
                     lda spritelib.LB000,x
                     tay
@@ -128,7 +128,7 @@ Sa0d9               ldx L7900
                     ldx #$01
                     jsr Sa145
 
-		    drawSprite $27,$85,$9F
+		    drawSprite #$27:#$85:#$9F
                     ;ldx #$85
                     ;ldy #$9f
                     ;lda #$27
@@ -155,7 +155,7 @@ Sa111               ldx assetKeyCnt
                     ldx #$00
                     stx assetKeyCnt
 
-		    drawSprite $2A,$27,$7B
+		    drawSprite #$2A:#$27:#$7B
                     ;ldx #$27
                     ;ldy #$7b
                     ;lda #$2a

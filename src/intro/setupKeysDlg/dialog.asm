@@ -11,7 +11,7 @@ L1084		=	$1084
 
 		; .org $9000
 
-		.include "data.asm"
+		; .include "data.asm"
 
 ;
 ; called during intro screen if key R is pressed

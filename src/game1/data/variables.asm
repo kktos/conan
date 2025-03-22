@@ -33,19 +33,15 @@ jumpAnimIdx	.hex 08
 L0317		.hex 2c
 
 ;00:off / FF: on / 01:back to player
-playerAxeState
-		.hex 00
-
+playerAxeState	.hex 00
 ;00: normal / 01: axe behind / 02: axe forward
 playerAxeAnim	.hex 00
-
-; sprite... ? key ? axe ?
 ; x
-L031A		.hex 00
+axeXpos		.hex 00
 ; y
-L031B		.hex 00
+axeYpos		.hex 00
 ; id
-L031C		.hex 1e
+axeSpriteID	.hex 1e
 
 L031D		.hex ff
 L031E		.hex 00
@@ -265,14 +261,18 @@ L03ff               .db $ff
 
 block_size= *-block_start
 
-		.export "sprite"
+		.export "^sprite"
 		.export "player"
-		.export "key"
-		.export "L03"
-		.export "joy"
-		.export "asset"
+		.export "^key"
+		.export "^L03"
+		.export "^joy"
+		.export "^asset"
 
 		.export axeAnimIDs
+		.export axeXpos
+		.export axeYpos
+		.export axeSpriteID
+
 		.export level
 		.export highScore
 		.export track

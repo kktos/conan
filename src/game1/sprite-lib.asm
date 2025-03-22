@@ -13,18 +13,19 @@
 ; $AB00 00 x 256
 ; $AC00 00 x 256
 ; $AD00 00 x 256
-		.fill 256*7
+		; .fill 256*7
 
-		.org $AE00
+		; .org $AE00
 
-	.macro drawSprite id,x,y
-		ldx #x
-		ldy #y
-		lda #id
+.macro drawSprite %id:%x:%y {
+		ldx %x
+		ldy %y
+		lda %id
 		jsr spritelib.drawSprite
-	.end
+}
 
-drawSprite: 	sty yPos
+.function drawSprite {
+		sty yPos
 		tay
 		lda spriteLo-1,y
 		sta $1c
@@ -32,7 +33,7 @@ drawSprite: 	sty yPos
 		sta $1d
 
 		ldy #$00
-		sty LB3F7
+		sty isFlipped
 		lda ($1c),y
 		sta dsWidth
 		sta dsWidthInit
@@ -42,21 +43,11 @@ drawSprite: 	sty yPos
 		stx dsHeightInit
 		bpl Lae44
 
-		inc LB3F7
+		inc isFlipped
 		and #$7f
 		sta dsHeight
 		lda LB200,x
 		bra :+
-		; asl
-		; clc
-		; adc #$02
-		; tay
-		; lda ($1c),y
-		; sta pixels
-		; iny
-		; lda ($1c),y
-		; sta pixels+1
-		; jmp loop
 
 Lae44		lda LAF00,x
 :
@@ -77,7 +68,7 @@ loop:		ldy yPos
 		sta $1d
 		ldx dsHeightInit
 
-		ldy LB3F7
+		ldy isFlipped
 		beq :+
 
 		lda LB000,x
@@ -123,10 +114,139 @@ Lae9d               dec dsWidth
                     jmp loop
 
 Laeb3               rts
+}
 
-		; .align $100
+; $B300
+.function drawSpriteM {
+		sty yPos
+		tay
+		lda spriteLo-1,y
+		sta $1c
+		lda spriteHi-1,y
+		sta $1d
+		ldy #$00
+		sty isFlipped
+		lda ($1c),y
+		sta dsWidth   ; width
+		sta dsWidthInit
+		iny
+		lda ($1c),y
+		sta dsHeight   ; height
+		stx dsHeightInit
+		bpl Lb344
 
-		.org $AF00
+		inc isFlipped
+		and #$7f
+		sta dsHeight
+		lda LB200,x
+		asl
+		clc
+		adc #$02
+		tay
+		lda ($1c),y
+		sta mask
+		iny
+		lda ($1c),y
+		sta mask+1
+		jmp Lb357
+
+Lb344               lda LAF00,x
+		asl
+		clc
+		adc #$02
+		tay
+		lda ($1c),y
+		sta mask
+		iny
+		lda ($1c),y
+		sta mask+1
+
+Lb357               ldy yPos
+		lda utils.hgrLow,y
+		sta $1c
+		lda utils.hgrHigh,y
+		sta $1d
+		ldx dsHeightInit
+		ldy isFlipped
+		beq Lb373
+		lda LB000,x
+		tay
+		jmp Lb377
+
+Lb373               lda LB100,x
+                    tay
+Lb377               cpy #$28
+                    bcs Lb388
+                    lda ($1c),y
+                    bmi Lb388
+                    bne Lb3ae
+
+mask=*+1
+loop:
+		lda $ffff
+
+		eor ($1c),y
+		sta ($1c),y
+Lb388 		inc mask
+		bne Lb390
+		inc mask+1
+Lb390 		iny
+		cpy #$4a
+		bne Lb397
+		ldy #$00
+Lb397 		dec dsWidth
+		bne Lb377
+		ldx dsWidthInit
+		stx dsWidth
+		dec dsHeight
+		beq Lb3ad
+		inc yPos
+		jmp Lb357
+
+Lb3ad 		rts
+
+Lb3ae 		ldx mask
+		stx mask2
+		ldx mask+1
+		stx mask2+1
+
+mask2=*+1
+		and $ffff
+
+		beq loop
+		inc isCollision
+		jmp loop
+}
+
+; B3C5
+		; .hex B3
+		; .hex 4C 83 B3
+
+		; .hex 03 05 00 02 04 06 01
+		; .hex 00 80 00 80 00 80 00 80 00 20 40 60 80 A0 C0 E0
+		; .hex 04 04 05 05 06 06 07 07 08 08 08 08 08 08 08 08
+
+yPos       	.db $03
+dsWidth 	.db $05
+; LB3F2       	.db $00
+dsWidthInit 	.db $02
+dsHeight 	.db $04
+dsHeightInit 	.db $06
+isCollision	.db $01
+isFlipped       .db $03
+LB3F8        	.db $00
+; LB3F9        	.db $02
+; LB3FA        	.db $04
+; LB3FB        	.db $06
+; LB3FC        	.db $06
+; LB3FD 		.db $03
+; LB3FE        	.db $05
+; LB3FF        	.db $05
+
+
+		.align $100
+
+		; .org $AF00
 
 ; $AF00
 LAF00:
@@ -203,170 +323,6 @@ LB200:
 		.hex 04 06 01 03 05 00 02 04 06 01 03 05 00 02 04 06
 		.hex 00 02 04 06 01 03 05 00 02 04 06 01 03 05 00 02
 		.hex 04 06 01 03 05 00 02 04 06 01 03 05 00 02 04 06
-
-; $B300
-drawSpriteM         sty yPos
-                    tay
-                    lda spriteLo-1,y
-                    sta $1c
-                    lda spriteHi-1,y
-                    sta $1d
-                    ldy #$00
-                    sty LB3F7
-                    lda ($1c),y
-                    sta dsWidth   ; width
-                    sta dsWidthInit
-                    iny
-                    lda ($1c),y
-                    sta dsHeight   ; height
-                    stx dsHeightInit
-                    bpl Lb344
-
-                    inc LB3F7
-                    and #$7f
-                    sta dsHeight
-                    lda LB200,x
-                    asl
-                    clc
-                    adc #$02
-                    tay
-                    lda ($1c),y
-                    sta mask
-                    iny
-                    lda ($1c),y
-                    sta mask+1
-                    jmp Lb357
-
-Lb344               lda LAF00,x
-                    asl
-                    clc
-                    adc #$02
-                    tay
-                    lda ($1c),y
-                    sta mask
-                    iny
-                    lda ($1c),y
-                    sta mask+1
-
-Lb357               ldy yPos
-                    lda utils.hgrLow,y
-                    sta $1c
-                    lda utils.hgrHigh,y
-                    sta $1d
-                    ldx dsHeightInit
-                    ldy LB3F7
-                    beq Lb373
-                    lda LB000,x
-                    tay
-                    jmp Lb377
-
-Lb373               lda LB100,x
-                    tay
-Lb377               cpy #$28
-                    bcs Lb388
-                    lda ($1c),y
-                    bmi Lb388
-                    bne Lb3ae
-
-mask=*+1
-loop2:
-		lda $ffff
-
-		eor ($1c),y
-		sta ($1c),y
-Lb388 		inc mask
-		bne Lb390
-		inc mask+1
-Lb390 		iny
-		cpy #$4a
-		bne Lb397
-		ldy #$00
-Lb397 		dec dsWidth
-		bne Lb377
-		ldx dsWidthInit
-		stx dsWidth
-		dec dsHeight
-		beq Lb3ad
-		inc yPos
-		jmp Lb357
-
-Lb3ad 		rts
-
-Lb3ae 		ldx mask
-		stx mask2
-		ldx mask+1
-		stx mask2+1
-
-mask2=*+1
-		and $ffff
-
-		beq loop2
-		inc LB3F6
-		jmp loop2
-
-; B3C5
-		; .hex B3
-		; .hex 4C 83 B3
-
-		; .hex 03 05 00 02 04 06 01
-		; .hex 00 80 00 80 00 80 00 80 00 20 40 60 80 A0 C0 E0
-		; .hex 04 04 05 05 06 06 07 07 08 08 08 08 08 08 08 08
-
-yPos       	.db $03
-dsWidth 	.db $05
-LB3F2       	.db $00
-dsWidthInit 	.db $02
-dsHeight 	.db $04
-dsHeightInit 	.db $06
-LB3F6		.db $01
-LB3F7        	.db $03
-LB3F8        	.db $00
-LB3F9        	.db $02
-LB3FA        	.db $04
-LB3FB        	.db $06
-LB3FC        	.db $06
-LB3FD 		.db $03
-LB3FE        	.db $05
-LB3FF        	.db $05
-;$B3F0  03 05 00 02 04 06 01 03 00 02 04 06 06 03 05 05
-
-; hires addr lo - $B400
-; hgrLo:
-; 		.hex 00 00 00 00 00 00 00 00 80 80 80 80 80 80 80 80
-; 		.hex 00 00 00 00 00 00 00 00 80 80 80 80 80 80 80 80
-; 		.hex 00 00 00 00 00 00 00 00 80 80 80 80 80 80 80 80
-; 		.hex 00 00 00 00 00 00 00 00 80 80 80 80 80 80 80 80
-; 		.hex 28 28 28 28 28 28 28 28 A8 A8 A8 A8 A8 A8 A8 A8
-; 		.hex 28 28 28 28 28 28 28 28 A8 A8 A8 A8 A8 A8 A8 A8
-; 		.hex 28 28 28 28 28 28 28 28 A8 A8 A8 A8 A8 A8 A8 A8
-; 		.hex 28 28 28 28 28 28 28 28 A8 A8 A8 A8 A8 A8 A8 A8
-; 		.hex 50 50 50 50 50 50 50 50 D0 D0 D0 D0 D0 D0 D0 D0
-; 		.hex 50 50 50 50 50 50 50 50 D0 D0 D0 D0 D0 D0 D0 D0
-; 		.hex 50 50 50 50 50 50 50 50 D0 D0 D0 D0 D0 D0 D0 D0
-; 		.hex 50 50 50 50 50 50 50 50 D0 D0 D0 D0 D0 D0 D0 60
-; 		.hex 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60
-; 		.hex 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60
-; 		.hex 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60
-; 		.hex 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60
-
-; ; hires addr hi - $B500
-; hgrHi:
-; 		.hex 20 24 28 2C 30 34 38 3C 20 24 28 2C 30 34 38 3C
-; 		.hex 21 25 29 2D 31 35 39 3D 21 25 29 2D 31 35 39 3D
-; 		.hex 22 26 2A 2E 32 36 3A 3E 22 26 2A 2E 32 36 3A 3E
-; 		.hex 23 27 2B 2F 33 37 3B 3F 23 27 2B 2F 33 37 3B 3F
-; 		.hex 20 24 28 2C 30 34 38 3C 20 24 28 2C 30 34 38 3C
-; 		.hex 21 25 29 2D 31 35 39 3D 21 25 29 2D 31 35 39 3D
-; 		.hex 22 26 2A 2E 32 36 3A 3E 22 26 2A 2E 32 36 3A 3E
-; 		.hex 23 27 2B 2F 33 37 3B 3F 23 27 2B 2F 33 37 3B 3F
-; 		.hex 20 24 28 2C 30 34 38 3C 20 24 28 2C 30 34 38 3C
-; 		.hex 21 25 29 2D 31 35 39 3D 21 25 29 2D 31 35 39 3D
-; 		.hex 22 26 2A 2E 32 36 3A 3E 22 26 2A 2E 32 36 3A 3E
-; 		.hex 23 27 2B 2F 33 37 3B 3F 23 27 2B 2F 33 37 3B 0F
-; 		.hex 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
-; 		.hex 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
-; 		.hex 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
-; 		.hex 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
 
 ; sprites addr lo - $B600
 spriteLo:

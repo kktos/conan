@@ -64,8 +64,6 @@ LAD87 		=	$AD87
 ; y
 LAD88 		=	$AD88
 
-		.org $1000
-
 L1001=*+1
 L1002=*+2
 gameStart	jmp L108c
@@ -490,7 +488,7 @@ L12d0			lda spriteID ; clear current sprite
 			jsr spritelib.drawSpriteM
 
 			ldx #$00
-			stx spritelib.LB3F6
+			stx spritelib.isCollision
 			lda spriteIDNew ; get new sprite info
 			sta spriteID
 			ldx spriteXNew
@@ -910,7 +908,7 @@ L15fc		sec
 		rts
 
 S15fe:
-		ldx spritelib.LB3F6
+		ldx spritelib.isCollision
 		beq L1637
 
 		ldx L031E
@@ -1089,21 +1087,21 @@ L1739		ldx #$01
 		stx L033A
 		clc
 		adc #$07
-		sta L031A
+		sta axeXpos
 		jmp L175f
 
 L1754		sec
 		sbc #$03
-		sta L031A
+		sta axeXpos
 		ldx #$fd
 		stx L033A
 L175f		lda spriteY
 		clc
 		adc #$02
-		sta L031B
+		sta axeYpos
 		lda #$1e
-		sta L031C
-		jsr S1807
+		sta axeSpriteID
+		jsr drawAxe
 		ldx currentXspeed
 		stx L031D
 		ldx #$08
@@ -1128,27 +1126,27 @@ S179e		ldx playerAxeState ; 00:off / FF: on / 01:back to player
 		bpl L17a5
 		rts
 
-L17a5		jsr S184d
+L17a5		jsr eraseAxe
 		dec L0338
 		beq L17cd
-L17ad		lda L031A
+L17ad		lda axeXpos
 		clc
 		adc L033A
-		sta L031A
-		inc L031C
-		ldx L031C
+		sta axeXpos
+		inc axeSpriteID
+		ldx axeSpriteID
 		cpx #$21
 		bne L17c6
 		ldx #$1e
-		stx L031C
-L17c6		jsr S1807
+		stx axeSpriteID
+L17c6		jsr drawAxe
 		jsr S182b
 		rts
 
 L17cd		inc L0338
 		ldx L0339
 		bpl L17db
-		inc L031B
+		inc axeYpos
 		jmp L17ad
 
 L17db		ldx L031D
@@ -1171,44 +1169,44 @@ L17fa		ldx #$08
 		stx L0339
 		jmp L17ad
 
-S1807:
-		ldx L031A
-		ldy #$00
-		sty spritelib.LB3F6
-		ldy L031B
-		lda L031C
-		jsr spritelib.drawSpriteM
-		rts
+drawAxe:
+		stz spritelib.isCollision
+		ldx axeXpos
+		ldy axeYpos
+		lda axeSpriteID
+		jmp spritelib.drawSpriteM
 
-L1819		jsr S184d
+holsterAxe
+		jsr eraseAxe
 		ldx #$00
 		stx playerAxeState ; 00:off / FF: on / 01:back to player
 		stx playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
-		stx L031A
-		stx L031B
+		stx axeXpos
+		stx axeYpos
 		rts
 
 S182b		jsr testIncAxeCount
-		ldx spritelib.LB3F6
+		ldx spritelib.isCollision
 		beq L1841
+
 		jsr S1b93
 		jsr S185a
 		bcs L1841
 		jsr soundlib.L0A50
-L183e		jmp L1819
+L183e		bra holsterAxe
 
-L1841		ldx L031A
+L1841		ldx axeXpos
 		cpx #$f0
 		bcs L184c
 		cpx #$9d
 		bcs L183e
 L184c		rts
 
-S184d		ldx L031A
-		ldy L031B
-		lda L031C
-		jsr spritelib.drawSpriteM
-		rts
+eraseAxe
+		ldx axeXpos
+		ldy axeYpos
+		lda axeSpriteID
+		jmp spritelib.drawSpriteM
 
 S185a		ldx #$ff
 		stx L0322
@@ -1216,7 +1214,7 @@ L185f		inc L0322
 		ldx L0322
 		lda LAC60,x
 		beq L188f
-		lda L031B
+		lda axeYpos
 		cmp LAC60,x
 		bcc L185f
 		sec
@@ -1226,11 +1224,11 @@ L185f		inc L0322
 		lda LACA0,x
 		sec
 		sbc #$08
-		cmp L031A
+		cmp axeXpos
 		bcs L185f
 		clc
 		adc #$13
-		cmp L031A
+		cmp axeXpos
 		bcc L185f
 		sec
 		rts
@@ -1580,82 +1578,6 @@ init2		txa
 
 		.end
 
-		.if 0
-; L1A9B
-unpackToHgr	ldx #$00
-		stx $1c
-		stx Xpos
-		stx Ypos
-		ldx #$75 ; packed img at $7500
-		stx $1d
-
-nextPakByt	jsr readPakByt
-		cmp #$FE 	; is packed ?
-		beq repeatByte
-
-		jsr writeHGRbyte
-		jmp nextPakByt
-
-readPakByt	ldy #$00
-		lda ($1c),y
-		jsr nextByte
-		rts
-
-nextByte	inc $1c
-		bne L1ac4
-		inc $1d
-L1ac4		rts
-
-
-getPixAddr	ldx Ypos
-		; lda hgrHi,x
-		lda utils.hgrHigh,x
-		sta $1b
-		; lda hgrLo,x
-		lda utils.hgrLow,x
-		clc
-		adc Xpos
-		sta $1a
-		rts
-
-
-writeHGRbyte
-		sta L0369
-		jsr getPixAddr
-		lda L0369
-		ldy #$00
-		sta ($1a),y
-
-
-L1ae7		inc Ypos
-		ldx Ypos
-		cpx #183
-		bne L1b02
-		ldx #$00
-		stx Ypos
-		inc Xpos
-		ldx Xpos
-		cpx #40
-		bne L1b02
-		pla
-		pla
-L1b02		rts
-
-
-repeatByte
-		jsr readPakByt
-		sta L0367
-		jsr readPakByt
-		sta L0368
-
-L1b0f		lda L0367
-		jsr writeHGRbyte
-		dec L0368
-		bne L1b0f
-
-		jmp nextPakByt
-
-		.end
 ; 1B1D
 readSector	ldx track
 		stx rwts_trk
@@ -1720,23 +1642,23 @@ S1b93		ldx playerDeadAnimIdx
 		lda spriteX
 		sec
 		sbc #$05
-		cmp L031A
+		cmp axeXpos
 		bcs L1b92
 		clc
 		adc #$0c
-		cmp L031A
+		cmp axeXpos
 		bcc L1b92
 		lda spriteY
 		sec
 		sbc #$03
-		cmp L031B
+		cmp axeYpos
 		bcs L1b92
 		clc
 		adc #$11
-		cmp L031B
+		cmp axeYpos
 		bcc L1b92
 		jsr incAxeCount
-		jsr L1819
+		jsr holsterAxe
 		jsr soundlib.L0AD7
 		pla
 		pla
@@ -2204,27 +2126,27 @@ testIncAxeCount:
 		lda spriteX
 		sec
 		sbc #$02
-		cmp L031A
+		cmp axeXpos
 		bcs L1f2c
 
 		clc
 		adc #$04
-		cmp L031A
+		cmp axeXpos
 		bcc L1f2c
 
 		lda spriteY
 		sec
 		sbc #$03
-		cmp L031B
+		cmp axeYpos
 		bcs L1f2c
 
 		clc
 		adc #$11
-		cmp L031B
+		cmp axeYpos
 		bcc L1f2c
 
 		jsr incAxeCount
-		jsr L1819
+		jsr holsterAxe
 		jsr soundlib.L0AD7
 		pla
 		pla
