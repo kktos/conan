@@ -10,11 +10,13 @@
 		02 05 30 42 3A 42 44 42 4E 42 58 42 62 42 6C 42
 	.end
 
-	.hex	02	; width
-	.hex	05	; height
-	.hex	76 42 80 42 8A 42 94 42
-	.hex 	9E 42
-	.hex	A8 42 B2 42
+	.hex
+		02	; width
+		05	; height
+		76 42 80 42 8A 42 94 42
+		9E 42
+		A8 42 B2 42
+	.end
 
 	.hex
 		03 10 BC 42 EC 42 1C 43 4C 43 7C 43 AC 43 DC 43

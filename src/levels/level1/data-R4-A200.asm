@@ -1,8 +1,8 @@
 		.if * < $A200
-		.align $A200
+			.org $A200
 		.end
 		.if * > $A200
-		.error "this needs to be at $A200 !"
+			.error "this needs to be at $A200 !"
 		.end
 
 La200

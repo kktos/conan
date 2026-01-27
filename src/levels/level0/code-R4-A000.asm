@@ -2,29 +2,29 @@
 LA000      	jmp start
 
 drawSpriteBis
-		sty yPos
+		sty globals::yPos
 		tay
-		lda spritelib.spriteLo-1,y
+		lda spritelib::spriteLo-1,y
 		sta $1c
-		lda spritelib.spriteHi-1,y
+		lda spritelib::spriteHi-1,y
 		sta $1d
 
 		ldy #$00
-		sty spritelib.isFlipped
+		sty spritelib::isFlipped
 		lda ($1c),y
-		sta spritelib.dsWidth
-		sta spritelib.dsWidthInit
+		sta spritelib::dsWidth
+		sta spritelib::dsWidthInit
 		iny
 		lda ($1c),y
-		sta spritelib.dsHeight
-		stx Ypos
-		bpl !+
+		sta spritelib::dsHeight
+		stx globals::Ypos
+		bpl :+
 
-		inc spritelib.isFlipped
+		inc spritelib::isFlipped
 		and #$7f
-		sta spritelib.dsHeight
-		lda spritelib.LB200,x
-		bra !++
+		sta spritelib::dsHeight
+		lda spritelib::LB200,x
+		bra :++
 		; asl
 		; clc
 		; adc #$02
@@ -36,8 +36,8 @@ drawSpriteBis
 		; sta pixels+1
 		; jmp La05a
 
-!	     	lda spritelib.LAF00,x
-!
+:	     	lda spritelib::LAF00,x
+:
 		asl
 		clc
 		adc #$02
@@ -48,51 +48,51 @@ drawSpriteBis
 		lda ($1c),y
 		sta pixels+1
 
-La05a       	ldy yPos
-		lda utils.hgrLow,y
+La05a       	ldy globals::yPos
+		lda utils::hgrLow,y
 		sta $1c
-		lda utils.hgrHigh,y
+		lda utils::hgrHigh,y
 		sta $1d
-		ldx Ypos
+		ldx globals::Ypos
 
-		ldy spritelib.isFlipped
-		beq !+
+		ldy spritelib::isFlipped
+		beq :+
 
-		lda spritelib.LB000,x
-		bra !++
+		lda spritelib::LB000,x
+		bra :++
 
-!	      	lda spritelib.LB100,x
-!		tay
+:	      	lda spritelib::LB100,x
+:		tay
 
 La07a       	cpy #40
-		bcs !+
+		bcs :+
 
 pixels=*+1
 		lda $ffff
 		sta ($1c),y
-!	   	inc pixels
-		bne !+
+:	   	inc pixels
+		bne :+
 
 		inc pixels+1
-!	      	iny
+:	      	iny
 		cpy #74
-		bne !+
+		bne :+
 
 		ldy #$00
-!               dec spritelib.dsWidth
+:               dec spritelib::dsWidth
 		bne La07a
 
-		ldx spritelib.dsWidthInit
-		stx spritelib.dsWidth
-		dec spritelib.dsHeight
-		beq !+
-		inc yPos
+		ldx spritelib::dsWidthInit
+		stx spritelib::dsWidth
+		dec spritelib::dsHeight
+		beq :+
+		inc globals::yPos
 		jmp La05a
 
-!		rts
+:		rts
 
 ; title screen / conan jumping over spring / hi-score
-start               bit sys.KBDSTRB
+start               bit sys::KBDSTRB
                     jsr Sa379
 
 mainLoop
@@ -122,10 +122,10 @@ drawTitleBitmap
 		lda #$00
 		ldx #>titlePackedBitmap
 		ldy #183
-		jmp unpack.run
+		jmp unpack::run
 
 ; A15A
-displayHelp         jsr utils.clearScreen
+displayHelp         jsr utils::clearScreen
                     jsr Sa1f1
 
                     ldx L7907
@@ -194,18 +194,18 @@ displayHelp         jsr utils.clearScreen
 ;                     bpl La1e0
 ;                     rts
 
-; Sa1e6               lda utils.hgrLow,x
+; Sa1e6               lda utils::hgrLow,x
 ;                     sta $1c
-;                     lda utils.hgrHigh,x
+;                     lda utils::hgrHigh,x
 ;                     sta $1d
 ;                     rts
 
 Sa1f1
-		    drawSprite #$4f:#25:#16
+		    drawSprite #$4f,#25,#16
                     rts
 
 Sa1fb
-		    drawSprite #$50:#48:#16
+		    drawSprite #$50,#48,#16
                     rts
 
 Sa205               ldx #$0c
@@ -229,11 +229,11 @@ La20f               jsr Sa230
 Sa230               ldx L7901
                     lda L7902
                     ldy #$32
-                    jsr spritelib.drawSprite
+                    jsr spritelib::drawSprite
                     rts
 
 Sa23c
-                    drawSprite #$51:#20:#42
+                    drawSprite #$51, #20, #42
                     rts
 
 runAnimVolta
@@ -253,11 +253,11 @@ La24e
 
 animVolta
 		ldx L7903
-		drawSprite animVoltaSpriteIDs,x : $62 : $31
+		drawSprite <animVoltaSpriteIDs,x> , $62 , $31
 		rts
 
 Sa272
-		drawSprite #$52:#$5A:#29
+		drawSprite #$52 , #$5A , #29
 		rts
 
 Sa27c               ldx #$f0
@@ -282,37 +282,31 @@ La2a1      	jsr Sa2ad
 		rts
 
 Sa2ad
-		drawSprite L7905:L7904:#60
+		drawSprite L7905,L7904,#60
 		rts
 
 Sa2b9
-		drawSprite #$53:#$3a:#$54
+		drawSprite #$53,#$3a,#$54
 		rts
 
 Sa2c3
-		drawSprite #$54:#$2e:#$10
+		drawSprite #$54,#$2e,#$10
 		rts
 
 ; $A2CD
 .function displayHelpObj {
 
-		.define spriteList
-		- { id: $55, x: $0d, y: $30, name:"text key"}
-		- { id: $27, x: 15, y: 60, name:"img key"}
-		- { id: $57, x: $31, y: $27, name:"text locked door"}
-		- { id: $5C, x: $3A, y: $3C, name:"img locked door"}
-		- { id: $58, x: $59, y: $27, name:"text unlocked door"}
-		- { id: $5d, x: $67, y: $3C, name:"img unlocked door"}
-		- { id: $59, x: $25, y: $64, name:"text gem"}
-		- { id: $28, x: $28, y: $6e, name:"img gem"}
-		- { id: $5a, x: $53, y: $5b, name:"text gem holder"}
-		- { id: $56, x: $5b, y: $6d, name:"img gem holder"}
-		- { id: $5b, x: $2e, y: $88, name:"text extra sword"}
-		- { id: $1e, x: $40, y: $9b, name:"img extra sword"}
-		.end
+		.define spriteList from "spritelist.yaml"
+
+		; .echo "****************"
+		; .echo "spriteList"
+		; .echo "****************"
+		; .echo spriteList
+		; .echo "****************"
 
 		.for sprite of spriteList
-		drawSprite #sprite.id : #sprite.x : #sprite.y
+		.echo .hex(sprite.id),sprite.x,sprite.y,sprite.name
+		drawSprite #sprite.id , #sprite.x , #sprite.y
 		jsr waitAndExitOnEvent
 		.end
 
@@ -323,24 +317,24 @@ Sa2c3
 waitAndExitOnEvent
 		ldx L7906
 waitAndExitOnEvent2
-!       	lda #$18
-		jsr utils.WAIT
+:       	lda #$18
+		jsr utils::WAIT
 		jsr exitOnEvent2
 		dex
-		bne !-
+		bne :-
 		rts
 
 checkUserInput
 		lda #$ff
-		jsr utils.WAIT
+		jsr utils::WAIT
 		jsr exitOnEvent2
 		dex
 		bne checkUserInput
 		rts
 
 Sa379               ldx #$00
-La37b               lda highScore,x
-                    cmp playerScore,x
+La37b               lda globals::highScore,x
+                    cmp globals::playerScore,x
                     bcc La38b
                     bne La38a
                     inx
@@ -349,8 +343,8 @@ La37b               lda highScore,x
 La38a               rts
 
 La38b               ldx #$04
-La38d               lda playerScore,x
-                    sta highScore,x
+La38d               lda globals::playerScore,x
+                    sta globals::highScore,x
                     dex
                     bpl La38d
                     rts
@@ -360,8 +354,8 @@ La38d               lda playerScore,x
 
 ; draw highscore
 drawHiScore
-		    drawSprite #$4c : #$28 : #$8c ; hi-sc
-		    drawSprite #$4d : #$3b : #$8c ; ore :
+		    drawSprite #$4c , #$28 , #$8c ; hi-sc
+		    drawSprite #$4d , #$3b , #$8c ; ore :
                     jsr drawHSvalue
                     rts
 
@@ -381,13 +375,13 @@ La48a               ldx L790A
                     jsr Sa4a9
                     rts
 
-Sa4a0               lda highScore,x
+Sa4a0               lda globals::highScore,x
                     cmp #$00
                     bne Sa4a9
                     lda #$0a
 Sa4a9               ldx L7908 ; x pos
                     ldy L7909 ; y pos
-                    jsr spritelib.drawSprite ; draw sprite
+                    jsr spritelib::drawSprite ; draw sprite
                     lda L7908 ; x pos
                     clc
                     adc #$04 ; add char sprte width
@@ -401,14 +395,14 @@ exitOnEvent         jsr Sa4c4
                     pla
 La4c3               rts
 
-Sa4c4               lda sys.KBD
+Sa4c4               lda sys::KBD
                     bmi La4da
-                    ldy sys.BUTNO
+                    ldy sys::BUTNO
                     bpl La4e0
-                    ldy sys.BUTN1
+                    ldy sys::BUTN1
                     bmi La4e0
                     ldy #$ff
-                    sty inputMode
+                    sty globals::inputMode
                     lda #$00
 La4da               cmp #$9e
                     beq La4ec
@@ -427,16 +421,16 @@ exitOnEvent2        jsr Sa4c4
                     pla
                     rts
 
-La4ec               jsr utils.clearScreen
+La4ec               jsr utils::clearScreen
                     ldx #$12
                     ldy #$10
                     lda #$5e ; special thanks
-                    jsr spritelib.drawSprite
+                    jsr spritelib::drawSprite
 
-                    bit sys.KBDSTRB
+                    bit sys::KBDSTRB
                     ldx #$40
 La4fd               lda #$ff
-                    jsr utils.WAIT
+                    jsr utils::WAIT
                     dex
                     bne La4fd
 

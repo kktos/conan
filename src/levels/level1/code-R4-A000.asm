@@ -2,7 +2,7 @@
 startLevel
 		jsr Sa017
 		lda #$80
-		jsr utils.wait
+		jsr utils::wait
 
 		ldx L7902
 		bne La016
@@ -44,7 +44,7 @@ drawBat		ldx L7900
 		sta L7901
 		lda batSpriteTbl,x
 		ldx L7901
-		jsr spritelib.drawSpriteM
+		jsr spritelib::drawSpriteM
 		rts
 
 La05c		bmi La016
@@ -82,7 +82,7 @@ La095		ldx #$ff
 		rts
 
 Sa09b		ldx L7900
-		lda spriteX
+		lda globals::spriteX
 		sec
 		sbc #$06
 		cmp batXposTbl,x
@@ -93,7 +93,7 @@ Sa09b		ldx L7900
 		cmp batXposTbl,x
 		bcc La0e5
 
-		lda spriteY
+		lda globals::spriteY
 		sec
 		sbc #$08
 		cmp batYposTbl,x
@@ -104,27 +104,27 @@ Sa09b		ldx L7900
 		cmp batYposTbl,x
 		bcc La0e5
 
-		ldx playerDeadAnimIdx
+		ldx globals::playerDeadAnimIdx
 		bne La0e5
 
 		ldx #$01
-		stx playerDeadAnimIdx
-		ldx spriteX
-		ldy spriteY
-		lda spriteID
-		jsr spritelib.drawSpriteM ; clear player current sprite
+		stx globals::playerDeadAnimIdx
+		ldx globals::spriteX
+		ldy globals::spriteY
+		lda globals::spriteID
+		jsr spritelib::drawSpriteM ; clear player current sprite
 
-		ldx spriteX
-		ldy spriteY
+		ldx globals::spriteX
+		ldy globals::spriteY
 		lda #$19
-		jsr spritelib.drawSpriteM ; player death sprite 1st frame
+		jsr spritelib::drawSpriteM ; player death sprite 1st frame
 
 La0e5		    rts
 
-Sa0e6		    ldx playerAxeState
+Sa0e6		    ldx globals::playerAxeState
 		    beq La0e5
 		    ldx L7900
-		    lda axeXpos
+		    lda globals::axeXpos
 		    sec
 		    sbc #$0c
 		    cmp batXposTbl,x
@@ -133,7 +133,7 @@ Sa0e6		    ldx playerAxeState
 		    adc #$10
 		    cmp batXposTbl,x
 		    bcc La139
-		    lda axeYpos
+		    lda globals::axeYpos
 		    sec
 		    sbc #$0d
 		    cmp batYposTbl,x
@@ -154,18 +154,18 @@ Sa0e6		    ldx playerAxeState
 		    sta L7905
 		    ldx #$01
 		    stx L7909
-		    jsr game1.scoreAdd75 ;L106A
+		    jsr game1::scoreAdd75 ;L106A
 
-		    jsr soundlib.L0a58
+		    jsr soundlib::L0a58
 
 La139		    rts
 
 Sa13a		    ldx #$00
-		    stx spritelib.isCollision
+		    stx spritelib::isCollision
 		    ldx L7903
 		    ldy L7904
 		    lda L7905
-		    jsr spritelib.drawSpriteM
+		    jsr spritelib::drawSpriteM
 		    rts
 
 Sa14c		    ldx L7909
@@ -216,18 +216,18 @@ La167		    inx
 		    jsr Sa13a
 La1af		    rts
 
-Sa1b0		    ldx spriteX
+Sa1b0		    ldx globals::spriteX
 		    cpx #$7a
 		    bcc La1d1
-		    ldx L0309
+		    ldx globals::L0309
 		    beq La1d1
 
-		    ldx #playerLifeCount-playerData
+		    ldx #globals::playerLifeCount-globals::playerData
 		    jsr drawDigit
 
-		    inc playerLifeCount
+		    inc globals::playerLifeCount
 
-		    ldx #playerLifeCount-playerData
+		    ldx #globals::playerLifeCount-globals::playerData
 		    jsr drawDigit
 
 		    ldx #$60
@@ -235,14 +235,14 @@ Sa1b0		    ldx spriteX
 		    jsr $0b23
 La1d1		    rts
 
-drawDigit	    lda playerData,x
+drawDigit	    lda globals::playerData,x
 		    tay
-		    lda L033C,x
+		    lda globals::L033C,x
 		    tax
 		    tya
 		    ldy #$b9
 		    cmp #$00
 		    bne La1e3
 		    lda #$0a
-La1e3		    jsr spritelib.drawSprite
+La1e3		    jsr spritelib::drawSprite
 		    rts

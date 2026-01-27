@@ -40,12 +40,12 @@ LAD20		=	$AD20
 LAD30		=	$AD30
 LAD40		=	$AD40
 
-; initial player pos, sprite, currentXspeed
+; initial player pos, sprite, globals::currentXspeed
 ; x
 LAD80 		=	$AD80
 ; y
 LAD81 		=	$AD81
-; spriteID
+; globals::spriteID
 LAD82 		=	$AD82
 ; currentXSpeed
 LAD83 		=	$AD83
@@ -69,12 +69,12 @@ L1002=*+2
 gameStart	jmp L108c
 
 ;L1004=*+1
-!		lda sys.KBD
-		bpl !-
+:		lda sys::KBD
+		bpl :-
 
 		jmp L102d
 
-L100b		bit sys.KBDSTRB
+L100b		bit sys::KBDSTRB
 		stx $1c
 		ldx #$3e
 		stx $1d
@@ -82,14 +82,14 @@ L100b		bit sys.KBDSTRB
 		sta ($1c),y
 		lda ($22),y
 		dex
-		bne !-
+		bne :-
 		dec $1b
 		inc $1b
 		ldx $1d
 		cpx #$3d
-		bne !-
-		bit sys.SPKR
-		bit sys.SPKR
+		bne :-
+		bit sys::SPKR
+		bit sys::SPKR
 
 L102d		jmp L108c
 
@@ -144,9 +144,9 @@ scoreAdd250	jsr scoreAdd100
 
 ;107B
 tone		txa
-L107c		ldx soundSwitch
+L107c		ldx globals::soundSwitch
 		pha
-		lda sys.SPKR-$10,x
+		lda sys::SPKR-$10,x
 		pla
 L1084		tax
 L1085		dex
@@ -173,7 +173,7 @@ levelLoop	jsr resetVars
 		jsr loadInitLevel
 
 :		jsr startLevel
-		stz L0383
+		stz globals::L0383
 		jsr readJoyX
 		jsr S179e
 		jsr S1891
@@ -195,110 +195,110 @@ levelLoop	jsr resetVars
 		jmp :-
 
 onKeyNext
-		bit sys.KBDSTRB
-		inc level
+		bit sys::KBDSTRB
+		inc globals::level
 		jmp L18e6
 
-readUserInput	lda sys.KBD
-		sta keypressed
+readUserInput	lda sys::KBD
+		sta globals::keypressed
 
-		cmp keySoundSwitch ; D3/53/S
+		cmp globals::keySoundSwitch ; D3/53/S
 		beq L1154
 
-		cmp keyPause ; 9B/1B/esc
+		cmp globals::keyPause ; 9B/1B/esc
 		beq onKeyPause ; pause
 
-		cmp keyRestart ; 8D/0D/return
-		beq onKeyRestart ; restart level
+		cmp globals::keyRestart ; 8D/0D/return
+		beq onKeyRestart ; restart globals::level
 
 		cmp #$EE ; n : next
-		beq onKeyNext ; next level
+		beq onKeyNext ; next globals::level
 
-		cmp keyJoystick
+		cmp globals::keyJoystick
 		beq L1142 ; joystick only
 
-		cmp keyKeyboard
+		cmp globals::keyKeyboard
 		beq L114b ; keyboard only
 
-		cmp keyLeft ; 88/08/left arrow
+		cmp globals::keyLeft ; 88/08/left arrow
 		bne L10fc
 
-		bit sys.KBDSTRB
+		bit sys::KBDSTRB
 
-L10fc		cmp keyRight ;95/15/right arrow
+L10fc		cmp globals::keyRight ;95/15/right arrow
 		bne L1104
 
-		bit sys.KBDSTRB
+		bit sys::KBDSTRB
 L1104		jsr readJoystick
 		rts
 
 ; 1108
 onKeyRestart	jsr updateHiScore
-		bit sys.KBDSTRB
+		bit sys::KBDSTRB
 		jmp levelLoop
 
 resetGame
-		bit sys.KBDSTRB
-		bit sys.TEXTOFF
-		bit sys.MIXEDOFF
-		bit sys.HIRESON
-		bit sys.PAGE2OFF
+		bit sys::KBDSTRB
+		bit sys::TEXTOFF
+		bit sys::MIXEDOFF
+		bit sys::HIRESON
+		bit sys::PAGE2OFF
 		jmp restart
 
 ; 1123
-onKeyPause		bit sys.KBDSTRB
-L1126			lda sys.KBD
-			sta keypressed
+onKeyPause		bit sys::KBDSTRB
+L1126			lda sys::KBD
+			sta globals::keypressed
 			bmi L1139
-			ldx inputMode ; 01:kbd ff:joystick
+			ldx globals::inputMode ; 01:kbd ff:joystick
 			bpl L1126 ; if kbd
 
-			lda sys.BUTNO
+			lda sys::BUTNO
 			bpl L1126
 			rts
 
-L1139			cmp keyPause ; 9B/1B/esc
+L1139			cmp globals::keyPause ; 9B/1B/esc
 			bne onKeyPause
-			bit sys.KBDSTRB
+			bit sys::KBDSTRB
 			rts
 
 L1142			ldx #$ff ; input = joystick
-			stx inputMode
-			bit sys.KBDSTRB
+			stx globals::inputMode
+			bit sys::KBDSTRB
 			rts
 
 L114b			ldx #$01 ; input = keyboard
-			stx inputMode
-			bit sys.KBDSTRB
+			stx globals::inputMode
+			bit sys::KBDSTRB
 			rts
 
-L1154			bit sys.KBDSTRB
-			lda soundSwitch
+L1154			bit sys::KBDSTRB
+			lda globals::soundSwitch
 			eor #$10
-			sta soundSwitch
+			sta globals::soundSwitch
 			rts
 
-S1160			ldx playerDeadAnimIdx
+S1160			ldx globals::playerDeadAnimIdx
 			beq L1168
 			jmp L198f
 
-L1168			ldx L0314
+L1168			ldx globals::L0314
 			beq L1170
 			jmp L15ab
 
-L1170			ldx L0315
+L1170			ldx globals::L0315
 			beq L1178
 			jmp S1381
 
-L1178			ldx globals.isPlayerJumping
+L1178			ldx globals::isPlayerJumping
 			beq L1180
 			jmp L13e5
 
-L1180			ldx L0309
+L1180			ldx globals::L0309
 			beq L1188
 			jmp L1553
 
-L1188			ldx playerAxeState ; 00:off / FF: on / 01:back to player
+L1188			ldx globals::playerAxeState ; 00:off / FF: on / 01:back to player
 			bpl L1190
 			jmp L1702
 
@@ -311,51 +311,51 @@ L1190			jsr readKeyboard
 			rts
 
 readKeyboard:
-			ldx L0378
+			ldx globals::L0378
 			bne L11fd
 
-			ldx keypressed
+			ldx globals::keypressed
 			bpl L11fd
 
 			; jsr logKey
 
-			cpx keyPause
+			cpx globals::keyPause
 			beq L11fd
 
-			cpx keyLeft
+			cpx globals::keyLeft
 			bne L11bd
-			bit sys.KBDSTRB
+			bit sys::KBDSTRB
 			jmp onKeyLeft
 
-L11bd			cpx keyRight
+L11bd			cpx globals::keyRight
 			bne L11c8
-			bit sys.KBDSTRB
+			bit sys::KBDSTRB
 			jmp onKeyRight
 
-L11c8			cpx keyUp
+L11c8			cpx globals::keyUp
 			bne L11d0
 			jmp onKeyUp
 
-L11d0			cpx keyDown
+L11d0			cpx globals::keyDown
 			bne L11d8
 			jmp onKeyDown
 
 L11d8
-			cpx keyAxe
+			cpx globals::keyAxe
 			bne L11e4
-			bit sys.KBDSTRB
+			bit sys::KBDSTRB
 			jmp onKeyAxe
 
-L11e4			cpx keyJump
+L11e4			cpx globals::keyJump
 			bne L11ef
-			bit sys.KBDSTRB
+			bit sys::KBDSTRB
 			jmp onKeyJump
 
 L11ef
-			stz playerXspeed
-			stz playerYspeed
-			stz keypressed
-			bit sys.KBDSTRB
+			stz globals::playerXspeed
+			stz globals::playerYspeed
+			stz globals::keypressed
+			bit sys::KBDSTRB
 L11fd			rts
 
 
@@ -367,11 +367,11 @@ onKeyRight		jsr S120a
 			bcc L1228
 			rts
 
-S120a			ldx globals.isPlayerJumping
+S120a			ldx globals::isPlayerJumping
 			bne L121b
-			ldx L0309
+			ldx globals::L0309
 			bne L121b
-			ldx L0314
+			ldx globals::L0314
 			bne L121b
 			clc
 			rts
@@ -379,178 +379,178 @@ S120a			ldx globals.isPlayerJumping
 L121b			sec
 			rts
 
-L121d			dec playerXspeed
-			ldx playerXspeed
+L121d			dec globals::playerXspeed
+			ldx globals::playerXspeed
 			cpx #$fd
 			beq L1228
 			rts
 
-L1228			inc playerXspeed
-			ldx playerXspeed
+L1228			inc globals::playerXspeed
+			ldx globals::playerXspeed
 			cpx #$03
 			beq L121d
 			rts
 
 updatePlayerSprite:
-			ldx L0309
+			ldx globals::L0309
 			beq L123f
 
-			ldx L0333
-			stx spriteIDNew
+			ldx globals::L0333
+			stx globals::spriteIDNew
 			rts
 
-L123f			ldx globals.isPlayerJumping
+L123f			ldx globals::isPlayerJumping
 			bne L128b
 
-			lda playerXspeed
+			lda globals::playerXspeed
 			beq L1275
 
 			ror
 			bcs L1256
 
-			lda L030A
+			lda globals::L030A
 			cmp #$03
 			bne L1256
 
-			dec L030A
-L1256			lda L030A
+			dec globals::L030A
+L1256			lda globals::L030A
 			cmp #$01
 			bne L1262
 
 			ldx #$04
-			stx L030A
-L1262			lda L030A
-			ldy currentXspeed
+			stx globals::L030A
+L1262			lda globals::L030A
+			ldy globals::currentXspeed
 			bmi L126d
 
 			clc
 			adc #$04
 L126d			tax
-			lda globals.playerAnimIDs,x
-			sta spriteIDNew
+			lda globals::playerAnimIDs,x
+			sta globals::spriteIDNew
 			rts
 
 L1275			ldx #$04
-			stx L030A
-			ldy currentXspeed
+			stx globals::L030A
+			ldy globals::currentXspeed
 			bmi L1285
 			ldx #$0C
-			stx spriteIDNew
+			stx globals::spriteIDNew
 			rts
 
 L1285			ldx #$0B
-			stx spriteIDNew
+			stx globals::spriteIDNew
 			rts
 
-L128b			ldx currentXspeed
+L128b			ldx globals::currentXspeed
 			bmi L1296
 			ldx #$10
-			stx spriteIDNew
+			stx globals::spriteIDNew
 			rts
 
 L1296			ldx #$0E
-			stx spriteIDNew
+			stx globals::spriteIDNew
 			rts
 
 movePlayer:
-			lda spriteX
+			lda globals::spriteX
 			clc
-			adc playerXspeed
-			sta spriteXNew
-			lda spriteY
+			adc globals::playerXspeed
+			sta globals::spriteXnew
+			lda globals::spriteY
 			clc
-			adc playerYspeed
-			sta spriteYNew
+			adc globals::playerYspeed
+			sta globals::spriteYNew
 			jsr checkBoundsDrawPlayer
 			rts
 
 drawPlayer:
-			lda playerXspeed
+			lda globals::playerXspeed
 			bne L12d0
 
-			lda playerYspeed
+			lda globals::playerYspeed
 			bne L12d0
 
-			lda L0309
+			lda globals::L0309
 			bne L12cf
 
-			lda spriteID
+			lda globals::spriteID
 			cmp #$0d
 			bcs L12d0
 
-			cmp spriteIDNew
+			cmp globals::spriteIDNew
 			bne L12d0
 L12cf			rts
 
-L12d0			lda spriteID ; clear current sprite
-			ldx spriteX
-			ldy spriteY
-			jsr spritelib.drawSpriteM
+L12d0			lda globals::spriteID ; clear current sprite
+			ldx globals::spriteX
+			ldy globals::spriteY
+			jsr spritelib::drawSpriteM
 
 			ldx #$00
-			stx spritelib.isCollision
-			lda spriteIDNew ; get new sprite info
-			sta spriteID
-			ldx spriteXNew
-			stx spriteX
-			ldy spriteYNew
-			sty spriteY
-			jsr spritelib.drawSpriteM
+			stx spritelib::isCollision
+			lda globals::spriteIDNew ; get new sprite info
+			sta globals::spriteID
+			ldx globals::spriteXnew
+			stx globals::spriteX
+			ldy globals::spriteYNew
+			sty globals::spriteY
+			jsr spritelib::drawSpriteM
 			rts
 
-S12f7			ldx L037E
+S12f7			ldx globals::L037E
 			beq L1312
 
-			stx spriteX
-			stx spriteXNew
+			stx globals::spriteX
+			stx globals::spriteXnew
 			ldy #$00
-			sty L037E
+			sty globals::L037E
 			ldy #$e0
-			sty spriteY
-			sty spriteYNew
+			sty globals::spriteY
+			sty globals::spriteYNew
 			jmp L1324
 
 L1312			ldx LAD80
-			stx spriteX
-			stx spriteXNew
+			stx globals::spriteX
+			stx globals::spriteXnew
 			ldy LAD81
-			sty spriteY
-			sty spriteYNew
+			sty globals::spriteY
+			sty globals::spriteYNew
 
 L1324			lda LAD83
-			sta currentXspeed
+			sta globals::currentXspeed
 			lda LAD82
-			sta spriteID
-			sta spriteIDNew
-			jsr spritelib.drawSpriteM
+			sta globals::spriteID
+			sta globals::spriteIDNew
+			jsr spritelib::drawSpriteM
 
 			ldx #$00
-			stx playerXspeed
-			stx playerYspeed
-			stx L0309
-			stx globals.isPlayerJumping
-			stx L031E
-			stx L0314
-			stx L0315
+			stx globals::playerXspeed
+			stx globals::playerYspeed
+			stx globals::L0309
+			stx globals::isPlayerJumping
+			stx globals::L031E
+			stx globals::L0314
+			stx globals::L0315
 			rts
 
-S134e		ldx playerXspeed
+S134e		ldx globals::playerXspeed
 		cpx #$01
 		beq L1359
 		cpx #$ff
 		bne L135c
-L1359		stx currentXspeed
+L1359		stx globals::currentXspeed
 L135c		rts
 
-S135d		dec L030A
+S135d		dec globals::L030A
 		bne L1367
 		ldx #$04
-		stx L030A
-L1367		lda L030A
+		stx globals::L030A
+L1367		lda globals::L030A
 		asl
 		asl
 		tax
-		lda playerXspeed
+		lda globals::playerXspeed
 		beq L1377
 
 		ldy #$10
@@ -558,83 +558,83 @@ L1367		lda L030A
 L1377		rts
 
 ; dead code ?!?
-L1378		sty L0377
+L1378		sty globals::L0377
 		lda #$90
-		jsr utils.wait
+		jsr utils::wait
 		rts
 
 S1381		jsr movePlayer
 
-		ldx L0314
+		ldx globals::L0314
 		beq L13a3
 
 		jsr isSpriteInRect ; c=1 if true
 		bcs L13a3
 
-		ldx currentXspeed
+		ldx globals::currentXspeed
 		bmi L139b
 
 		ldx #$10
-		stx spriteIDNew
+		stx globals::spriteIDNew
 		jmp L13b5
 
 L139b		ldx #$0E
-		stx spriteIDNew
+		stx globals::spriteIDNew
 		jmp L13b5
 
-L13a3		lda globals.jumpAnimIdx
-		ldx currentXspeed
+L13a3		lda globals::jumpAnimIdx
+		ldx globals::currentXspeed
 		bmi L13ae
 		clc
 		adc #$08
 L13ae		tax
-		lda globals.jumpAnimIDs,x
-		sta spriteIDNew
+		lda globals::jumpAnimIDs,x
+		sta globals::spriteIDNew
 L13b5		jsr drawPlayer
 		jsr S15fe
 		jsr S1953
 		bcc L13c5
 
-		dec globals.jumpAnimIdx
+		dec globals::jumpAnimIdx
 		bne L13cf
 
 L13c5		ldx #$00
-		stx L0315
+		stx globals::L0315
 		ldx #$08
-		stx globals.jumpAnimIdx
+		stx globals::jumpAnimIdx
 L13cf		rts
 
 ; 13D0
-onKeyJump	inc globals.isPlayerJumping
-		lda playerYspeed
+onKeyJump	inc globals::isPlayerJumping
+		lda globals::playerYspeed
 		sec
 		sbc #$05
-		sta playerYspeed
+		sta globals::playerYspeed
 		ldx #$01
-		stx L0321
-		stx L0383
+		stx globals::L0321
+		stx globals::L0383
 		rts
 
 
 L13e5		jsr movePlayer
 		jsr updatePlayerSprite
-		ldx L0321
+		ldx globals::L0321
 		bmi L13fc
 
-		inc L0315
-		dec L0321
-		dec L0321
+		inc globals::L0315
+		dec globals::L0321
+		dec globals::L0321
 		jmp L1414
 
 L13fc		ldx #$00
-		stx globals.isPlayerJumping
+		stx globals::isPlayerJumping
 		ldx #$04
-		stx L030A
+		stx globals::L030A
 		jsr S1953
 		bcc L1414
 
-		inc L0314
-		inc L0315
+		inc globals::L0314
+		inc globals::L0315
 		jmp S1381
 
 L1414		jsr S1953
@@ -642,41 +642,41 @@ L1414		jsr S1953
 		jsr S15fe
 		rts
 
-S141e		ldx L0309
+S141e		ldx globals::L0309
 		bne L1440
 
-		ldx L0314
+		ldx globals::L0314
 		bne L1433
 
-		ldx L0315
+		ldx globals::L0315
 		bne L1433
 
-		ldx globals.isPlayerJumping
+		ldx globals::isPlayerJumping
 		bne L1433
 
 		rts
 
-L1433		inc playerYspeed
-		ldx playerYspeed
+L1433		inc globals::playerYspeed
+		ldx globals::playerYspeed
 		cpx #$06
 		bne L1440
 
-		dec playerYspeed
+		dec globals::playerYspeed
 L1440		rts
 
 S1441:
-		ldx playerYspeed
+		ldx globals::playerYspeed
 		bmi L1485
 
 		ldx #$ff
-		stx L0322
+		stx globals::L0322
 
-L144b		inc L0322
-		ldx L0322
+L144b		inc globals::L0322
+		ldx globals::L0322
 		lda LAC40,x
 		beq L1485
 
-		lda spriteXNew
+		lda globals::spriteXnew
 		cmp LAC00,x
 		bcc L144b
 
@@ -688,64 +688,64 @@ L144b		inc L0322
 L1465		lda LAC40,x
 		clc
 		adc #$03
-		cmp spriteYNew
+		cmp globals::spriteYNew
 		bcc L144b
 
 		sec
-		sbc playerYspeed
+		sbc globals::playerYspeed
 		sec
 		sbc #$03
 		cmp #$f8
 		bcs L1480
 
-		cmp spriteYNew
+		cmp globals::spriteYNew
 		bcs L144b
 
-L1480		stx L0379
+L1480		stx globals::L0379
 		clc
 		rts
 L1485		sec
 		rts
 
 ; 1487
-onKeyUp 	ldx L0309
+onKeyUp 	ldx globals::L0309
 		beq L149d
 		ldx #$fe
-		stx playerYspeed
+		stx globals::playerYspeed
 		rts
 
 ; 1492
-onKeyDown	ldx L0309
+onKeyDown	ldx globals::L0309
 		beq L14b3
 		ldx #$02
-		stx playerYspeed
+		stx globals::playerYspeed
 		rts
 
 L149d		jsr isPlayerOnLadder
 		bcc L14b2
-		ldx L0317
+		ldx globals::L0317
 		bpl L14b2
 		ldx #$fe
-		stx playerYspeed
-		inc L0309
+		stx globals::playerYspeed
+		inc globals::L0309
 		jmp L1553
 L14b2		rts
 
 L14b3		jsr isPlayerOnLadder
 		bcc L14b2
-		ldx L0317
+		ldx globals::L0317
 		bmi L14b2
 		beq L14b2
 		ldx #$02
-		stx playerYspeed
-		inc L0309
+		stx globals::playerYspeed
+		inc globals::L0309
 		jmp L1553
 
 isPlayerOnLadder:
 		ldx #$ff
-		stx L0322
-L14cf		inc L0322
-		ldx L0322
+		stx globals::L0322
+L14cf		inc globals::L0322
+		ldx globals::L0322
 		lda LAC60,x
 		beq L1543
 
@@ -753,67 +753,67 @@ L14cf		inc L0322
 		tay
 		dey
 		dey
-		cpy spriteX
+		cpy globals::spriteX
 		beq L14f4
 
 		iny
-		cpy spriteX
+		cpy globals::spriteX
 		beq L14f4
 
 		iny
-		cpy spriteX
+		cpy globals::spriteX
 		beq L14f4
 
 		jmp L14cf
 
 L14f4		lda LAC60,x
-		cmp spriteY
+		cmp globals::spriteY
 		beq L1527
 		bcs L14cf
 
 		lda LAC80,x
-		cmp spriteY
+		cmp globals::spriteY
 		beq L1535
 		bcc L14cf
 
 		lda LACA0,x
-		sta spriteXNew
-		ldx spriteY
-		stx spriteYNew
-		ldx spriteID
-		stx spriteIDNew
+		sta globals::spriteXnew
+		ldx globals::spriteY
+		stx globals::spriteYNew
+		ldx globals::spriteID
+		stx globals::spriteIDNew
 		jsr drawPlayer
 		ldx #$00
-		stx L0317
-		stx playerXspeed
+		stx globals::L0317
+		stx globals::playerXspeed
 		sec
 		rts
 
 L1527		ldx #$01
-		stx L0317
+		stx globals::L0317
 		dex
-		stx playerXspeed
-		stx playerYspeed
+		stx globals::playerXspeed
+		stx globals::playerYspeed
 		sec
 		rts
 
 L1535		ldx #$ff
-		stx L0317
+		stx globals::L0317
 		inx
-		stx playerXspeed
-		stx playerYspeed
+		stx globals::playerXspeed
+		stx globals::playerYspeed
 		sec
 		rts
 
 L1543		clc
 		ldx #$00
-		stx L0309
+		stx globals::L0309
 		rts
 
 toggleSpriteID:
-		lda L0333
+		lda globals::L0333
 		eor #$01
-		sta L0333
+		sta globals::L0333
 		rts
 
 L1553		jsr S1575
@@ -821,69 +821,69 @@ L1553		jsr S1575
 		jsr movePlayer
 		jsr drawPlayer
 		jsr isPlayerOnLadder
-		ldx playerYspeed
+		ldx globals::playerYspeed
 		beq L156a
 
 		jsr toggleSpriteID
-L156a		ldx L0317
+L156a		ldx globals::L0317
 		beq L1574
 
 		ldx #$00
-		stx L0309
+		stx globals::L0309
 L1574		rts
 
-S1575		ldx keypressed
+S1575		ldx globals::keypressed
 		bpl L1592
 
-		cpx keyUp
+		cpx globals::keyUp
 		bne L1582
 		jmp onKeyUp
 
-L1582		cpx keyDown
+L1582		cpx globals::keyDown
 		bne L158a
 		jmp onKeyDown
 
 L158a		ldx #$00
-		stx playerXspeed
-		stx playerYspeed
+		stx globals::playerXspeed
+		stx globals::playerYspeed
 L1592		rts
 
 S1593		jsr S1441
 		bcc L15aa
-		ldx globals.isPlayerJumping
+		ldx globals::isPlayerJumping
 		bne L15aa
-		ldx L0309
+		ldx globals::L0309
 		bne L15aa
-		ldx playerAxeState ; 00:off / FF: on / 01:back to player
+		ldx globals::playerAxeState ; 00:off / FF: on / 01:back to player
 		bmi L15aa
-		inc L0314
+		inc globals::L0314
 L15aa		rts
 
 L15ab:
-		ldx L0315
-		bne !+
+		ldx globals::L0315
+		bne :+
 
-		inc L0315
-!		jsr S1381
+		inc globals::L0315
+:		jsr S1381
 		jsr S1441
-		bcs !+
+		bcs :+
 
 		ldx #$00
-		stx L0315
-		stx L0314
-		stx globals.isPlayerJumping
+		stx globals::L0315
+		stx globals::L0314
+		stx globals::isPlayerJumping
 		jsr drawPlayer
-!		rts
+:		rts
 
 isSpriteInRect:
 		ldx #$ff
-		stx L0322
-L15cf		inc L0322
-		ldx L0322
+		stx globals::L0322
+L15cf		inc globals::L0322
+		ldx globals::L0322
 		lda LAC40,x
 		beq L15fc
 
-		lda spriteXNew
+		lda globals::spriteXnew
 		cmp LAC00,x
 		bcc L15cf
 
@@ -893,12 +893,12 @@ L15cf		inc L0322
 		lda LAC40,x
 		clc
 		adc #$06
-		cmp spriteYNew
+		cmp globals::spriteYNew
 		bcc L15cf
 
 		sec
 		sbc #$10
-		cmp spriteYNew
+		cmp globals::spriteYNew
 		bcs L15cf
 
 		clc
@@ -908,68 +908,68 @@ L15fc		sec
 		rts
 
 S15fe:
-		ldx spritelib.isCollision
+		ldx spritelib::isCollision
 		beq L1637
 
-		ldx L031E
+		ldx globals::L031E
 		bne L1637
 
-		ldx L0373
+		ldx globals::L0373
 		bne L1637
 
 		jsr S164d
 		bcs L1637
 
 		jsr S1638
-		lda spriteXNew
+		lda globals::spriteXnew
 		sec
-		sbc playerXspeed
-		sta spriteXNew
-		ldx spriteID
-		stx spriteIDNew
+		sbc globals::playerXspeed
+		sta globals::spriteXnew
+		ldx globals::spriteID
+		stx globals::spriteIDNew
 		jsr drawPlayer
 		ldx #$01
-		stx L0314
+		stx globals::L0314
 		dex
-		stx playerYspeed
-		stx playerXspeed
-		inc L031E
+		stx globals::playerYspeed
+		stx globals::playerXspeed
+		inc globals::L031E
 L1637		rts
 
-S1638		lda spriteX
+S1638		lda globals::spriteX
 		sec
-		sbc playerXspeed
-		sta spriteXNew
-		lda spriteY
+		sbc globals::playerXspeed
+		sta globals::spriteXnew
+		lda globals::spriteY
 		sec
-		sbc playerYspeed
-		sta spriteYNew
+		sbc globals::playerYspeed
+		sta globals::spriteYNew
 		rts
 
 S164d:
 		ldx #$ff
-		stx L0322
-L1652		inc L0322
-		ldx L0322
+		stx globals::L0322
+L1652		inc globals::L0322
+		ldx globals::L0322
 		lda LAC60,x
 		beq L167f
 
-		cmp spriteY
+		cmp globals::spriteY
 		bcs L1652
 
 		lda LAC80,x
-		cmp spriteY
+		cmp globals::spriteY
 		bcc L1652
 
 		lda LACA0,x
 		sec
 		sbc #$08
-		cmp spriteX
+		cmp globals::spriteX
 		bcs L1652
 
 		clc
 		adc #$0b
-		cmp spriteX
+		cmp globals::spriteX
 		bcc L1652
 
 		sec
@@ -980,14 +980,14 @@ L167f		clc
 
 checkBoundsDrawPlayer:
 		ldx #$ff
-		stx L0322
+		stx globals::L0322
 
-L1686		inc L0322
-		ldx L0322
+L1686		inc globals::L0322
+		ldx globals::L0322
 		lda LACF0,x
 		beq L16d1
 
-		lda spriteXNew
+		lda globals::spriteXnew
 		cmp LACC0,x
 		beq L16a1
 		tay
@@ -997,205 +997,205 @@ L1686		inc L0322
 		bne L1686
 
 L16a1		lda LACF0,x
-		cmp spriteYNew
+		cmp globals::spriteYNew
 		bne L1686
 
 		lda LACC0,x
-		sta spriteXNew
+		sta globals::spriteXnew
 
-		ldx currentXspeed
+		ldx globals::currentXspeed
 		bmi L16ba
 
-		dec spriteXNew
+		dec globals::spriteXnew
 		jmp L16bd
 
-L16ba		inc spriteXNew
+L16ba		inc globals::spriteXnew
 L16bd		ldx #$00
-		stx playerXspeed
-		stx playerYspeed
+		stx globals::playerXspeed
+		stx globals::playerYspeed
 		jsr updatePlayerSprite
 
-		ldx spriteY
-		stx spriteYNew
+		ldx globals::spriteY
+		stx globals::spriteYNew
 		jsr drawPlayer
 L16d1		rts
 
 
 ; 16D2
-onKeyAxe	ldx L0309
+onKeyAxe	ldx globals::L0309
 		bne L1701
 
-		ldx L0314
+		ldx globals::L0314
 		bne L1701
 
-		ldx L0315
+		ldx globals::L0315
 		bne L1701
 
-		ldx globals.isPlayerJumping
+		ldx globals::isPlayerJumping
 		bne L1701
 
-		ldx playerAxeState ; 00:off / FF: on / 01:back to player
+		ldx globals::playerAxeState ; 00:off / FF: on / 01:back to player
 		bne L1701
 
-		ldx playerAxeCountHi
+		ldx globals::playerAxeCountHi
 		bne L16f5
 
-		ldx playerAxeCountLo
+		ldx globals::playerAxeCountLo
 		beq L1701
 
 L16f5		ldx #$ff
-		stx playerAxeState ; 00:off / FF: on / 01:back to player
+		stx globals::playerAxeState ; 00:off / FF: on / 01:back to player
 		inx
-		stx playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
+		stx globals::playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
 		jsr updAxeCount
 L1701		rts
 
-L1702		lda playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
+L1702		lda globals::playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
 		cmp #$02
 		beq L1739
-		ldy currentXspeed
+		ldy globals::currentXspeed
 		bmi L1711
 		clc
 		adc #$02
 L1711		tay
-		lda axeAnimIDs,y
-		sta spriteIDNew
-		lda spriteX
-		ldx playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
+		lda globals::axeAnimIDs,y
+		sta globals::spriteIDNew
+		lda globals::spriteX
+		ldx globals::playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
 		dex
 		bne L1729
 
-		ldy currentXspeed
+		ldy globals::currentXspeed
 		bpl L1729
 		sec
 		sbc #$02
 
-L1729		sta spriteXNew
-		ldy spriteY
-		sty spriteYNew
+L1729		sta globals::spriteXnew
+		ldy globals::spriteY
+		sty globals::spriteYNew
 		jsr drawPlayer
 
-		inc playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
+		inc globals::playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
 		rts
 
 L1739		ldx #$01
-		stx playerAxeState ; 00:off / FF: on / 01:back to player
-		lda spriteX
-		ldy currentXspeed
+		stx globals::playerAxeState ; 00:off / FF: on / 01:back to player
+		lda globals::spriteX
+		ldy globals::currentXspeed
 		bmi L1754
 		ldx #$03
-		stx L033A
+		stx globals::L033A
 		clc
 		adc #$07
-		sta axeXpos
+		sta globals::axeXpos
 		jmp L175f
 
 L1754		sec
 		sbc #$03
-		sta axeXpos
+		sta globals::axeXpos
 		ldx #$fd
-		stx L033A
-L175f		lda spriteY
+		stx globals::L033A
+L175f		lda globals::spriteY
 		clc
 		adc #$02
-		sta axeYpos
+		sta globals::axeYpos
 		lda #$1e
-		sta axeSpriteID
+		sta globals::axeSpriteID
 		jsr drawAxe
-		ldx currentXspeed
-		stx L031D
+		ldx globals::currentXspeed
+		stx globals::L031D
 		ldx #$08
-		stx L0338
+		stx globals::L0338
 		ldx #$01
-		stx L0339
-		stx playerAxeState ; 00:off / FF: on / 01:back to player
+		stx globals::L0339
+		stx globals::playerAxeState ; 00:off / FF: on / 01:back to player
 		jsr updatePlayerSprite
-		lda spriteX
-		ldy currentXspeed
+		lda globals::spriteX
+		ldy globals::currentXspeed
 		bpl L1791
 		clc
 		adc #$02
-L1791		sta spriteXNew
-		ldx spriteY
-		stx spriteYNew
+L1791		sta globals::spriteXnew
+		ldx globals::spriteY
+		stx globals::spriteYNew
 		jsr drawPlayer
 		rts
 
-S179e		ldx playerAxeState ; 00:off / FF: on / 01:back to player
+S179e		ldx globals::playerAxeState ; 00:off / FF: on / 01:back to player
 		dex
 		bpl L17a5
 		rts
 
 L17a5		jsr eraseAxe
-		dec L0338
+		dec globals::L0338
 		beq L17cd
-L17ad		lda axeXpos
+L17ad		lda globals::axeXpos
 		clc
-		adc L033A
-		sta axeXpos
-		inc axeSpriteID
-		ldx axeSpriteID
+		adc globals::L033A
+		sta globals::axeXpos
+		inc globals::axeSpriteID
+		ldx globals::axeSpriteID
 		cpx #$21
 		bne L17c6
 		ldx #$1e
-		stx axeSpriteID
+		stx globals::axeSpriteID
 L17c6		jsr drawAxe
 		jsr S182b
 		rts
 
-L17cd		inc L0338
-		ldx L0339
+L17cd		inc globals::L0338
+		ldx globals::L0339
 		bpl L17db
-		inc axeYpos
+		inc globals::axeYpos
 		jmp L17ad
 
-L17db		ldx L031D
+L17db		ldx globals::L031D
 		bmi L17ed
-		dec L033A
-		ldx L033A
+		dec globals::L033A
+		ldx globals::L033A
 		cpx #$fd
 		beq L17fa
 		jmp L17ad
 
-L17ed		inc L033A
-		ldx L033A
+L17ed		inc globals::L033A
+		ldx globals::L033A
 		cpx #$03
 		beq L17fa
 		jmp L17ad
 
 L17fa		ldx #$08
-		stx L0338
+		stx globals::L0338
 		ldx #$ff
-		stx L0339
+		stx globals::L0339
 		jmp L17ad
 
 drawAxe:
-		stz spritelib.isCollision
-		ldx axeXpos
-		ldy axeYpos
-		lda axeSpriteID
-		jmp spritelib.drawSpriteM
+		stz spritelib::isCollision
+		ldx globals::axeXpos
+		ldy globals::axeYpos
+		lda globals::axeSpriteID
+		jmp spritelib::drawSpriteM
 
 holsterAxe
 		jsr eraseAxe
 		ldx #$00
-		stx playerAxeState ; 00:off / FF: on / 01:back to player
-		stx playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
-		stx axeXpos
-		stx axeYpos
+		stx globals::playerAxeState ; 00:off / FF: on / 01:back to player
+		stx globals::playerAxeAnim ; 00: normal / 01: axe behind / 02: axe forward
+		stx globals::axeXpos
+		stx globals::axeYpos
 		rts
 
 S182b		jsr testIncAxeCount
-		ldx spritelib.isCollision
+		ldx spritelib::isCollision
 		beq L1841
 
 		jsr S1b93
 		jsr S185a
 		bcs L1841
-		jsr soundlib.L0A50
+		jsr soundlib::L0A50
 L183e		bra holsterAxe
 
-L1841		ldx axeXpos
+L1841		ldx globals::axeXpos
 		cpx #$f0
 		bcs L184c
 		cpx #$9d
@@ -1203,18 +1203,18 @@ L1841		ldx axeXpos
 L184c		rts
 
 eraseAxe
-		ldx axeXpos
-		ldy axeYpos
-		lda axeSpriteID
-		jmp spritelib.drawSpriteM
+		ldx globals::axeXpos
+		ldy globals::axeYpos
+		lda globals::axeSpriteID
+		jmp spritelib::drawSpriteM
 
 S185a		ldx #$ff
-		stx L0322
-L185f		inc L0322
-		ldx L0322
+		stx globals::L0322
+L185f		inc globals::L0322
+		ldx globals::L0322
 		lda LAC60,x
 		beq L188f
-		lda axeYpos
+		lda globals::axeYpos
 		cmp LAC60,x
 		bcc L185f
 		sec
@@ -1224,11 +1224,11 @@ L185f		inc L0322
 		lda LACA0,x
 		sec
 		sbc #$08
-		cmp axeXpos
+		cmp globals::axeXpos
 		bcs L185f
 		clc
 		adc #$13
-		cmp axeXpos
+		cmp globals::axeXpos
 		bcc L185f
 		sec
 		rts
@@ -1236,10 +1236,10 @@ L185f		inc L0322
 L188f		clc
 		rts
 
-S1891		ldx spriteY
+S1891		ldx globals::spriteY
 		cpx LAD88
 		bne L18a7
-		ldx spriteX
+		ldx globals::spriteX
 		cpx LAD87
 		beq L18a8
 		dex
@@ -1247,56 +1247,58 @@ S1891		ldx spriteY
 		beq L18a8
 L18a7		rts
 
-L18a8		jsr soundlib.L0A00
+L18a8		jsr soundlib::L0A00
 
 loadInitLevel
-		ldx L037E
-		bne !+
+		ldx globals::L037E
+		bne :+
 
-		ldx level
-		stx levelCnt
-L18b6		dec levelCnt
-		bmi !+
+		ldx globals::level
+		stx globals::levelCnt
+L18b6		dec globals::levelCnt
+		bmi :+
 		jsr scoreAdd100
 		jmp L18b6
 
-!		ldx L037E
+		.echo "HOOK",.hex(*)
+
+:		ldx globals::L037E
 		beq L18d9
 
-		ldx #level-playerData
-		stx level
+		ldx #globals::level-globals::playerData
+		stx globals::level
 		jsr drawDigit
-		dec level
-		ldx #level-playerData
+		dec globals::level
+		ldx #globals::level-globals::playerData
 		jsr drawDigit
 		jmp L18e6
 
-L18d9		ldx #level-playerData
+L18d9		ldx #globals::level-globals::playerData
 		jsr drawDigit
-		inc level
-		ldx #level-playerData
+		inc globals::level
+		ldx #globals::level-globals::playerData
 		jsr drawDigit
 
-L18e6		ldx level
+L18e6		ldx globals::level
 		jsr loadLevel
 
 		ldx #$00
-		stx playerAxeState ; 00:off / FF: on / 01:back to player
-		stx keypressed
-		bit sys.KBDSTRB
+		stx globals::playerAxeState ; 00:off / FF: on / 01:back to player
+		stx globals::keypressed
+		bit sys::KBDSTRB
 		jmp S12f7
 
 ;
 S18fa		ldx #$ff
-		stx L0322
-L18ff		inc L0322
-		ldx L0322
+		stx globals::L0322
+L18ff		inc globals::L0322
+		ldx globals::L0322
 		lda LAD30,x
 		beq L1925
 
 		jsr S1926
 
-		ldx L0322
+		ldx globals::L0322
 		inc LAD40,x
 		lda LAD40,x
 		cmp #$24
@@ -1312,16 +1314,16 @@ L1925		rts
 S1926		lda LAD30,x
 		tay
 		lda LAD20,x
-		sta L033B
+		sta globals::L033B
 		lda LAD40,x
-		ldx L033B
-		jsr spritelib.drawSprite
+		ldx globals::L033B
+		jsr spritelib::drawSprite
 		rts
 
 ;
 drawExitArrow:
-		inc L033C
-		lda L033C
+		inc globals::L033C
+		lda globals::L033C
 		ror
 		bcs L1952
 
@@ -1331,60 +1333,60 @@ drawExitArrow:
 		ldx LAD84
 		ldy LAD85
 		lda LAD86
-		jsr spritelib.drawSprite
+		jsr spritelib::drawSprite
 L1952		rts
 
 S1953:
 		jsr S1441
-		bcs !+
+		bcs :+
 		lda LAC40,x
-		sta spriteYNew
-		inc spriteYNew
-		lda spriteX
+		sta globals::spriteYNew
+		inc globals::spriteYNew
+		lda globals::spriteX
 		clc
-		adc playerXspeed
-		sta spriteXNew
+		adc globals::playerXspeed
+		sta globals::spriteXnew
 		jsr updatePlayerSprite
 		jsr drawPlayer
 		ldx #$00
-		stx playerYspeed
-		stx L031E
-!		rts
+		stx globals::playerYspeed
+		stx globals::L031E
+:		rts
 
-drawDigit	lda playerData,x
+drawDigit	lda globals::playerData,x
 		tay
-		lda L033C,x
+		lda globals::L033C,x
 		tax
 		tya
 		ldy #$b9
 		cmp #$00
 		bne L198b
 		lda #$0a
-L198b		jsr spritelib.drawSprite
+L198b		jsr spritelib::drawSprite
 		rts
 
-L198f		jsr soundlib.L0A2D
-		ldx playerDeadAnimIdx
+L198f		jsr soundlib::L0A2D
+		ldx globals::playerDeadAnimIdx
 		cpx #$08
 		bcs L19bd
 		jsr S19aa
-		inc playerDeadAnimIdx
-		ldx playerDeadAnimIdx
+		inc globals::playerDeadAnimIdx
+		ldx globals::playerDeadAnimIdx
 		cpx #$08 ; anim player dying: 7 frames
 		beq L19a9
 		jsr S19aa
 L19a9		rts
 
-S19aa		ldx playerDeadAnimIdx
-		lda playerDeadAnimIdx,x
-		sta spriteID
-		ldx spriteX
-		ldy spriteY
-		jsr spritelib.drawSpriteM
+S19aa		ldx globals::playerDeadAnimIdx
+		lda globals::playerDeadAnimIdx,x
+		sta globals::spriteID
+		ldx globals::spriteX
+		ldy globals::spriteY
+		jsr spritelib::drawSpriteM
 		rts
 
-L19bd		inc playerDeadAnimIdx
-		ldx playerDeadAnimIdx
+L19bd		inc globals::playerDeadAnimIdx
+		ldx globals::playerDeadAnimIdx
 		cpx #$18
 		beq L19c8
 		rts
@@ -1392,52 +1394,52 @@ L19bd		inc playerDeadAnimIdx
 L19c8		jsr updLifeCount
 		jsr S12f7
 		ldx #$00
-		stx playerDeadAnimIdx
-		ldy playerAxeState ; 00:off / FF: on / 01:back to player
-		bpl !+
+		stx globals::playerDeadAnimIdx
+		ldy globals::playerAxeState ; 00:off / FF: on / 01:back to player
+		bpl :+
 
-		stx playerAxeState ; 00:off / FF: on / 01:back to player
-!		bit sys.KBDSTRB
+		stx globals::playerAxeState ; 00:off / FF: on / 01:back to player
+:		bit sys::KBDSTRB
 		rts
 
-updLifeCount	ldx #playerLifeCount-playerData ; #$06
+updLifeCount	ldx #globals::playerLifeCount-globals::playerData ; #$06
 		jsr drawDigit
-		dec playerLifeCount ; cheat
-		bmi !+
+		dec globals::playerLifeCount ; cheat
+		bmi :+
 
-		ldx #playerLifeCount-playerData ; #$06
+		ldx #globals::playerLifeCount-globals::playerData ; #$06
 		jsr drawDigit
 		rts
 
-!		inc playerLifeCount
-		ldx #playerLifeCount-playerData
+:		inc globals::playerLifeCount
+		ldx #globals::playerLifeCount-globals::playerData
 		jsr drawDigit
 		jsr updateHiScore
 		jsr S1c6b
 		jmp restart
 
-L1a00		ldx #playerAxeCountLo-playerData
-		stx L0322
-!		ldx L0322
+L1a00		ldx #globals::playerAxeCountLo-globals::playerData
+		stx globals::L0322
+:		ldx globals::L0322
 		jsr drawDigit
-		dec L0322
-		bne !-
+		dec globals::L0322
+		bne :-
 		rts
 
 resetVars2
 		jsr L1a00
 		ldx #$00
-		stx playerScore
-		stx playerScore+1
-		stx playerScore+2
-		stx playerScore+3
-		stx playerScore+4
-		stx playerAxeCountLo
-		stx level
+		stx globals::playerScore
+		stx globals::playerScore+1
+		stx globals::playerScore+2
+		stx globals::playerScore+3
+		stx globals::playerScore+4
+		stx globals::playerAxeCountLo
+		stx globals::level
 		inx
-		stx playerAxeCountHi
+		stx globals::playerAxeCountHi
 		inx
-		stx playerLifeCount
+		stx globals::playerLifeCount
 		jsr L1a00
 		rts
 
@@ -1449,7 +1451,7 @@ fcode		.cstr "L0_CODE"
 		.out "loadLevel : ",.hex(loadLevel)
 		.end
 
-loadLevel	stx L0381
+loadLevel	stx globals::L0381
 ; 		lda #$00
 ; L1a3c		dex
 ; 		bmi init2
@@ -1474,7 +1476,10 @@ init2		txa
 		lda #$00
 		ldx #$75
 		ldy #183
-		jsr unpack.run
+		jsr unpack::run
+
+brk
+nop
 
 ;		.call unpack($00 $75 183)
 
@@ -1484,7 +1489,7 @@ init2		txa
 		rts
 
 		.if 0
-		sta rangeIdx
+		sta globals::rangeIdx
 		tay
 		;
 		; R0 : background image
@@ -1510,8 +1515,8 @@ init2		txa
 		; ldx #$75
 		; jsr unpack.run
 
-		inc rangeIdx
-		ldy rangeIdx
+		inc globals::rangeIdx
+		ldy globals::rangeIdx
 
 		;
 		; R1 : data (anim?, sprites)
@@ -1523,8 +1528,8 @@ init2		txa
 		stx rwts_buf+1
 		jsr loadRange
 
-		inc rangeIdx
-		ldy rangeIdx
+		inc globals::rangeIdx
+		ldy globals::rangeIdx
 
 		;
 		; R2 : data
@@ -1536,8 +1541,8 @@ init2		txa
 		stx rwts_buf+1
 		jsr loadRange
 
-		inc rangeIdx
-		ldy rangeIdx
+		inc globals::rangeIdx
+		ldy globals::rangeIdx
 
 		;
 		; R3 : data
@@ -1549,8 +1554,8 @@ init2		txa
 		stx rwts_buf+1
 		jsr loadRange
 
-		inc rangeIdx
-		ldy rangeIdx
+		inc globals::rangeIdx
+		ldy globals::rangeIdx
 
 		;
 		; R4 : code
@@ -1562,8 +1567,8 @@ init2		txa
 		stx rwts_buf+1
 		jsr loadRange
 
-		inc rangeIdx
-		ldy rangeIdx
+		inc globals::rangeIdx
+		ldy globals::rangeIdx
 
 		;
 		; R5 : data
@@ -1579,9 +1584,9 @@ init2		txa
 		.end
 
 ; 1B1D
-readSector	ldx track
+readSector	ldx globals::track
 		stx rwts_trk
-		ldx sector
+		ldx globals::sector
 		stx rwts_sec
 		ldx #$00
 		stx rwts_vol
@@ -1591,25 +1596,25 @@ readSector	ldx track
 		jsr rwts
 		rts
 
-updAxeCount	ldx #playerAxeCountLo-playerData
+updAxeCount	ldx #globals::playerAxeCountLo-globals::playerData
 		jsr drawDigit
-		dec playerAxeCountLo ; cheat
+		dec globals::playerAxeCountLo ; cheat
 		bmi L1b48
 
-		ldx #playerAxeCountLo-playerData
+		ldx #globals::playerAxeCountLo-globals::playerData
 		jsr drawDigit
 		rts
 
-L1b48		ldx #playerAxeCountLo-playerData
-		stx playerAxeCountLo
+L1b48		ldx #globals::playerAxeCountLo-globals::playerData
+		stx globals::playerAxeCountLo
 		jsr drawDigit
 
-		ldx playerAxeCountHi
+		ldx globals::playerAxeCountHi
 		beq L1b62
 
 		ldx #$08
 		jsr drawDigit
-		dec playerAxeCountHi
+		dec globals::playerAxeCountHi
 		ldx #$08
 		jsr drawDigit
 L1b62		rts
@@ -1618,48 +1623,48 @@ S1b63		jsr S1441
 		bcs L1b69
 		rts
 
-L1b69		ldx spriteX
+L1b69		ldx globals::spriteX
 		cpx #$f0
 		bcs L1b7c
 		cpx #$89
 		bcc L1b92
 		ldx #$88
-		stx spriteXNew
+		stx globals::spriteXnew
 		jmp L1b81
 
 L1b7c		ldx #$00
-		stx spriteXNew
-L1b81		ldx spriteID
-		stx spriteIDNew
+		stx globals::spriteXnew
+L1b81		ldx globals::spriteID
+		stx globals::spriteIDNew
 		jsr drawPlayer
 		ldx #$00
-		stx playerXspeed
-		stx playerYspeed
+		stx globals::playerXspeed
+		stx globals::playerYspeed
 L1b92		rts
 
-S1b93		ldx playerDeadAnimIdx
+S1b93		ldx globals::playerDeadAnimIdx
 		bne L1b92
-		lda spriteX
+		lda globals::spriteX
 		sec
 		sbc #$05
-		cmp axeXpos
+		cmp globals::axeXpos
 		bcs L1b92
 		clc
 		adc #$0c
-		cmp axeXpos
+		cmp globals::axeXpos
 		bcc L1b92
-		lda spriteY
+		lda globals::spriteY
 		sec
 		sbc #$03
-		cmp axeYpos
+		cmp globals::axeYpos
 		bcs L1b92
 		clc
 		adc #$11
-		cmp axeYpos
+		cmp globals::axeYpos
 		bcc L1b92
 		jsr incAxeCount
 		jsr holsterAxe
-		jsr soundlib.L0AD7
+		jsr soundlib::L0AD7
 		pla
 		pla
 		rts
@@ -1667,8 +1672,8 @@ S1b93		ldx playerDeadAnimIdx
 incAxeCount:
 		ldx #$09
 		jsr drawDigit
-		inc playerAxeCountLo
-		ldx playerAxeCountLo
+		inc globals::playerAxeCountLo
+		ldx globals::playerAxeCountLo
 		cpx #$0a
 		beq L1bdf
 		ldx #$09
@@ -1676,12 +1681,12 @@ incAxeCount:
 		rts
 
 L1bdf		ldx #$00
-		stx playerAxeCountLo
+		stx globals::playerAxeCountLo
 		ldx #$09
 		jsr drawDigit
 		ldx #$08
 		jsr drawDigit
-		inc playerAxeCountHi
+		inc globals::playerAxeCountHi
 		ldx #$08
 		jsr drawDigit
 		rts
@@ -1691,10 +1696,10 @@ S1bf7		jsr S1bfe
 		rts
 
 S1bfe		ldx #$3b
-		stx unknown_yPos
+		stx globals::unknown_yPos
 L1c03		jsr S1c11
-		inc unknown_yPos
-		ldx unknown_yPos
+		inc globals::unknown_yPos
+		ldx globals::unknown_yPos
 		cpx #$7e
 		bne L1c03
 		rts
@@ -1713,35 +1718,35 @@ S1c20		ldx #$00
 		ldx #$75
 		stx $1d
 		ldx #$41
-		stx unknown_yPos
+		stx globals::unknown_yPos
 L1c2d		jsr S1c3b
-		inc unknown_yPos
-		ldx unknown_yPos
+		inc globals::unknown_yPos
+		ldx globals::unknown_yPos
 		cpx #$79
 		bne L1c2d
 		rts
 
 S1c3b		jsr getHGRLineAddr
 		ldy #$0d
-		sty unknown_xPos
+		sty globals::unknown_xPos
 L1c43		ldy #$00
 		lda ($1c),y
-		ldy unknown_xPos
+		ldy globals::unknown_xPos
 		sta ($1a),y
 		inc $1c
 		bne L1c52
 		inc $1d
-L1c52		inc unknown_xPos
-		ldy unknown_xPos
+L1c52		inc globals::unknown_xPos
+		ldy globals::unknown_xPos
 		cpy #$1c
 		bne L1c43
 		rts
 
 getHGRLineAddr
-		ldx unknown_yPos
-		lda utils.hgrLow,x
+		ldx globals::unknown_yPos
+		lda utils::hgrLow,x
 		sta $1a
-		lda utils.hgrHigh,x
+		lda utils::hgrHigh,x
 		sta $1b
 		rts
 
@@ -1750,7 +1755,7 @@ S1c6b		jsr S1e97
 		asl
 		asl
 		sta rwts_sec
-		lda level
+		lda globals::level
 		clc
 		adc #$1a
 		sta rwts_trk
@@ -1761,13 +1766,13 @@ S1c6b		jsr S1e97
 		jsr readTrack
 		jsr S1bf7
 
-		bit sys.KBDSTRB
+		bit sys::KBDSTRB
 		ldy #$60
 
 L1c93		lda #$ff
-		jsr utils.wait
+		jsr utils::wait
 
-		lda sys.KBD
+		lda sys::KBD
 		bmi L1ca5
 
 		jsr readJoyBtn0
@@ -1776,40 +1781,40 @@ L1c93		lda #$ff
 		dey
 		bne L1c93
 
-L1ca5		bit sys.KBDSTRB
+L1ca5		bit sys::KBDSTRB
 		cpy #$00
 		beq L1caf
 		jmp levelLoop
 
 L1caf		rts
 
-S1cb0		inc globals.soundCnt1
-		lda globals.soundCnt1
+S1cb0		inc globals::soundCnt1
+		lda globals::soundCnt1
 		adc $7900
-		adc playerScore+3
-		sta globals.soundCnt1
+		adc globals::playerScore+3
+		sta globals::soundCnt1
 L1cbf		rts
 
 readJoystick:
-		ldx inputMode ; 01:kbd ff:joystick
+		ldx globals::inputMode ; 01:kbd ff:joystick
 		bpl L1cbf ; if kdb
 
-		ldx L0309
+		ldx globals::L0309
 		beq L1ccf
 		ldx #$00
 		jmp L1d01
 
-L1ccf		ldx sys.BUTNO
+L1ccf		ldx sys::BUTNO
 		bmi L1d16
 
-		ldx playerAxeState ; 00:off / FF: on / 01:back to player
+		ldx globals::playerAxeState ; 00:off / FF: on / 01:back to player
 		bne L1cde
 
-		ldx sys.BUTN1
+		ldx sys::BUTN1
 		bmi L1d1d
 
 L1cde		ldx #$fe
-		lda joyX
+		lda globals::joyX
 		cmp #$10
 		bcc L1cf7
 		inx
@@ -1822,12 +1827,12 @@ L1cde		ldx #$fe
 		cmp #$f0
 		bcc L1cf7
 		inx
-L1cf7		cpx playerXspeed
+L1cf7		cpx globals::playerXspeed
 		beq L1d01
 		bmi L1d32
 		jmp L1d39
 
-L1d01		ldy joyY
+L1d01		ldy globals::joyY
 		cpy #$30
 		bcc L1d24
 		cpy #$d0
@@ -1835,78 +1840,78 @@ L1d01		ldy joyY
 		cpx #$00
 		bne L1d15
 		ldx #$ff
-		stx keypressed
+		stx globals::keypressed
 L1d15		rts
 
-L1d16		ldx keyJump
-		stx keypressed
+L1d16		ldx globals::keyJump
+		stx globals::keypressed
 		rts
 
-L1d1d		ldx keyAxe
-		stx keypressed
+L1d1d		ldx globals::keyAxe
+		stx globals::keypressed
 		rts
 
-L1d24		ldx keyUp
-		stx keypressed
+L1d24		ldx globals::keyUp
+		stx globals::keypressed
 		rts
 
-L1d2b		ldx keyDown
-		stx keypressed
+L1d2b		ldx globals::keyDown
+		stx globals::keypressed
 		rts
 
-L1d32		ldx keyLeft
-		stx keypressed
+L1d32		ldx globals::keyLeft
+		stx globals::keypressed
 		rts
 
-L1d39		ldx keyRight
-		stx keypressed
+L1d39		ldx globals::keyRight
+		stx globals::keypressed
 		rts
 
-resetVars	bit sys.KBDSTRB
-		stz playerDeadAnimIdx
-		stz L031E
-		stz globals.isPlayerJumping
-		stz playerAxeState ; 00:off / FF: on / 01:back to player
-		stz L0314
-		stz L0315
-		stz L0309
-		stz playerXspeed
-		stz playerYspeed
+resetVars	bit sys::KBDSTRB
+		stz globals::playerDeadAnimIdx
+		stz globals::L031E
+		stz globals::isPlayerJumping
+		stz globals::playerAxeState ; 00:off / FF: on / 01:back to player
+		stz globals::L0314
+		stz globals::L0315
+		stz globals::L0309
+		stz globals::playerXspeed
+		stz globals::playerYspeed
 
-		ldx assetKeyCnt
+		ldx globals::assetKeyCnt
 		beq L1d6f
 
-		ldx #assetKey
+		ldx #globals::assetKey
 		jsr drawAsset
-		stz assetKeyCnt
+		stz globals::assetKeyCnt
 
-L1d6f		ldx assetGemCnt
+L1d6f		ldx globals::assetGemCnt
 		beq L1d7e
 
-		ldx #assetGem
+		ldx #globals::assetGem
 		jsr drawAsset
-		stz assetGemCnt
+		stz globals::assetGemCnt
 L1d7e		rts
 
 readJoyX	ldx #$00
-		jsr utils.PREAD
-		sty joyX
+		jsr utils::PREAD
+		sty globals::joyX
 		rts
 
 readJoyY	ldx #$01
-		jsr utils.PREAD
-		sty joyY
+		jsr utils::PREAD
+		sty globals::joyY
 		rts
 
 drawAsset	txa
 		tay
-		lda assetXpos-1,y
+		lda globals::assetXpos-1,y
 		tax
 		tya
 		clc
 		adc #$26
 		ldy #185
-		jsr spritelib.drawSprite
+		jsr spritelib::drawSprite
 		rts
 
 ;
@@ -1916,69 +1921,69 @@ drawAsset	txa
 drawScore	ldx #$05
 		jsr drawDigit
 		ldx #$05
-		inc playerScore+4
-		ldy playerScore+4
+		inc globals::playerScore+4
+		ldy globals::playerScore+4
 		cpy #$0a
-		beq !+
+		beq :+
 		jsr drawDigit
 		rts
 
-!		lda #$00
-		sta playerScore+4
+:		lda #$00
+		sta globals::playerScore+4
 		jsr drawDigit
 
 drawScore10	ldx #$04
 		jsr drawDigit
 		ldx #$04
-		inc playerScore+3
-		ldy playerScore+3
+		inc globals::playerScore+3
+		ldy globals::playerScore+3
 		cpy #$0a
-		beq !+
+		beq :+
 		jsr drawDigit
 		rts
 
-!		lda #$00
-		sta playerScore+3
+:		lda #$00
+		sta globals::playerScore+3
 		jsr drawDigit
 
 drawScore100	ldx #$03
 		jsr drawDigit
 		ldx #$03
-		inc playerScore+2
-		ldy playerScore+2
+		inc globals::playerScore+2
+		ldy globals::playerScore+2
 		cpy #$0a
-		beq !+
+		beq :+
 		jsr drawDigit
 		rts
 
-!		lda #$00
-		sta playerScore+2
+:		lda #$00
+		sta globals::playerScore+2
 		jsr drawDigit
 
 drawScore1000	ldx #$02
 		jsr drawDigit
 		ldx #$02
-		inc playerScore+1
-		ldy playerScore+1
+		inc globals::playerScore+1
+		ldy globals::playerScore+1
 		cpy #$0a
-		beq !+
+		beq :+
 		jsr drawDigit
 		rts
 
-!		lda #$00
-		sta playerScore+1
+:		lda #$00
+		sta globals::playerScore+1
 		jsr drawDigit
 		ldx #$01
 		jsr drawDigit
-		inc playerScore
+		inc globals::playerScore
 		ldx #$01
 		jsr drawDigit
 		rts
 
 updateHiScore
 		ldx #$00
-L1e25		lda highScore,x
-		cmp playerScore,x
+L1e25		lda globals::highScore,x
+		cmp globals::playerScore,x
 		bcc L1e35
 		bne L1e34
 		inx
@@ -1987,23 +1992,23 @@ L1e25		lda highScore,x
 L1e34		rts
 
 L1e35		ldx #$04
-L1e37		lda playerScore,x
-		sta highScore,x
+L1e37		lda globals::playerScore,x
+		sta globals::highScore,x
 		dex
 		bpl L1e37
 L1e40		rts
 
 resetIfLastLevel
-		ldx level
+		ldx globals::level
 		cpx #$09
 		bne L1e40
-		dec level
+		dec globals::level
 		jmp resetGame
 
-readJoyBtn0	lda inputMode ; 01:kbd ff:joystick
+readJoyBtn0	lda globals::inputMode ; 01:kbd ff:joystick
 		bpl L1e5a ; if kbd
 
-		lda sys.BUTNO
+		lda sys::BUTNO
 		bpl L1e5a
 		sec
 		rts
@@ -2011,45 +2016,45 @@ readJoyBtn0	lda inputMode ; 01:kbd ff:joystick
 L1e5a		clc
 L1e5b		rts
 
-S1e5c		ldx playerAxeState ; 00:off / FF: on / 01:back to player
+S1e5c		ldx globals::playerAxeState ; 00:off / FF: on / 01:back to player
 		dex
 		bmi L1e5b
 
-		lda L0339
+		lda globals::L0339
 		bpl L1e70
 
 		lda #$09
 		sec
-		sbc L0338
+		sbc globals::L0338
 		jmp L1e73
 
-L1e70		lda L0338
+L1e70		lda globals::L0338
 L1e73		asl
 		asl
-		sta axeSndCnt1
+		sta globals::axeSndCnt1
 L1e78		lda #$02
-L1e7a		ldy axeSndCnt1
-		ldx soundSwitch
-L1e80		cmp sys.SPKR-$10,x
+L1e7a		ldy globals::axeSndCnt1
+		ldx globals::soundSwitch
+L1e80		cmp sys::SPKR-$10,x
 		dey
 		bne L1e80
 		sec
 		sbc #$01
 		bne L1e7a
-		lda axeSndCnt1
+		lda globals::axeSndCnt1
 		sec
 		sbc #$01
-		sta axeSndCnt1
+		sta globals::axeSndCnt1
 		bne L1e78
 		rts
 
 S1e97		rol $4e
-		rol globals.soundCnt1
-		rol globals.sountCnt2
+		rol globals::soundCnt1
+		rol globals::sountCnt2
 		lda $4e
 		asl
 		eor $4f
-		eor globals.sountCnt2
+		eor globals::sountCnt2
 		rol
 		rol
 		rol
@@ -2058,49 +2063,49 @@ S1e97		rol $4e
 		pha
 		rol $4f
 		lda $4f
-		eor globals.soundCnt1
+		eor globals::soundCnt1
 		sta $4e
 		pla
-		sta globals.sountCnt2
+		sta globals::sountCnt2
 		adc $4e
-		adc globals.soundCnt1
-		sta globals.soundCnt3
+		adc globals::soundCnt1
+		sta globals::soundCnt3
 		rts
 ;
 ; LOADRANGE Y:range idx
 ;
 ; 1EC3
-loadRange	lda levels.rangeTracks,y
-		sta track
-		lda levels.rangeSectors,y
-		sta sector
+loadRange	lda levels::rangeTracks,y
+		sta globals::track
+		lda levels::rangeSectors,y
+		sta globals::sector
 		iny
-		lda levels.rangeTracks,y
-		sta trackend
-		lda levels.rangeSectors,y
-		sta sectorend
+		lda levels::rangeTracks,y
+		sta globals::trackend
+		lda levels::rangeSectors,y
+		sta globals::sectorend
 		ldx #$00
 		stx rwts_buf
 
 		; check if ptrs =. exit of true
-!		ldx sector
-		cpx sectorend
+:		ldx globals::sector
+		cpx globals::sectorend
 		bne L1ef2
-		ldx track
-		cpx trackend
+		ldx globals::track
+		cpx globals::trackend
 		bne L1ef2
 		rts
 
 L1ef2		jsr readSector
 		inc rwts_buf+1
-		inc sector
-		ldx sector
+		inc globals::sector
+		ldx globals::sector
 		cpx #$10
-		bne !-
+		bne :-
 		ldx #$00
-		stx sector
-		inc track
-		jmp !-
+		stx globals::sector
+		inc globals::track
+		jmp :-
 
 
 readTrack	jsr S1f1e
@@ -2120,34 +2125,34 @@ S1f1e		ldx #$00
 L1f2c		rts
 
 testIncAxeCount:
-		ldx playerDeadAnimIdx
+		ldx globals::playerDeadAnimIdx
 		bne L1f2c
 
-		lda spriteX
+		lda globals::spriteX
 		sec
 		sbc #$02
-		cmp axeXpos
+		cmp globals::axeXpos
 		bcs L1f2c
 
 		clc
 		adc #$04
-		cmp axeXpos
+		cmp globals::axeXpos
 		bcc L1f2c
 
-		lda spriteY
+		lda globals::spriteY
 		sec
 		sbc #$03
-		cmp axeYpos
+		cmp globals::axeYpos
 		bcs L1f2c
 
 		clc
 		adc #$11
-		cmp axeYpos
+		cmp globals::axeYpos
 		bcc L1f2c
 
 		jsr incAxeCount
 		jsr holsterAxe
-		jsr soundlib.L0AD7
+		jsr soundlib::L0AD7
 		pla
 		pla
 		rts

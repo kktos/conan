@@ -1,5 +1,5 @@
 		.if * != $7A00
-		.error "this needs to be at $7A00 !"
+		.error "this needs to be at $7A00 !", .hex(*)
 		.end
 
 		.hex

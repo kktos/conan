@@ -1,4 +1,5 @@
-		.list file .filename
+		; .list file=.filename+".lst"
+
 .function animConanJump {
 
 		; ldx #$6b
@@ -24,7 +25,7 @@ renderAnimFrame
 		lda spriteXtabl,x
 		tax
 		pla
-		jsr spritelib.drawSpriteM
+		jsr spritelib::drawSpriteM
 		rts
 
 renderNextFrame
@@ -54,6 +55,8 @@ La3fb
 		pla
 		pla
 		rts
+
+		.echo "processSpringAnim",.hex(*), .segment.name, .hex(.segment.start)
 
 processSpringAnim
 		ldx isSpringRunning

@@ -5,8 +5,8 @@ L0A00               ldx #$f8
 L0a02               ldy #$04
                     txa
                     pha
-                    ldx soundSwitch
-L0a09               lda sys.SPKR-$10,x
+                    ldx globals::soundSwitch
+L0a09               lda sys::SPKR-$10,x
                     dey
                     bne L0a09
                     pla
@@ -34,9 +34,9 @@ L0a2d               lda $034f
                     asl
                     asl
 L0a39               ldy #$04
-L0a3b               ldx soundSwitch
+L0a3b               ldx globals::soundSwitch
                     pha
-                    lda sys.SPKR-$10,x
+                    lda sys::SPKR-$10,x
                     pla
                     tax
 L0a44               dex
@@ -80,8 +80,8 @@ L0a7d               jsr S0a88
 
 S0a88               lda #$01
 L0a8a               ldy #$08
-L0a8c               ldx soundSwitch
-                    cmp sys.SPKR-$10,x
+L0a8c               ldx globals::soundSwitch
+                    cmp sys::SPKR-$10,x
                     tax
 L0a93               dex
                     bne L0a93
@@ -94,8 +94,8 @@ L0a93               dex
 
 L0a9f               lda #$7f
 L0aa1               ldy #$08
-L0aa3               ldx soundSwitch
-                    cmp sys.SPKR-$10,x
+L0aa3               ldx globals::soundSwitch
+                    cmp sys::SPKR-$10,x
                     tax
 L0aaa               dex
                     bne L0aaa
@@ -191,12 +191,12 @@ L0b3f               ldx #$10
                     rts
 
 S0b51               rol $4e
-                    rol globals.soundCnt1
-                    rol globals.sountCnt2
+                    rol globals::soundCnt1
+                    rol globals::sountCnt2
                     lda $4e
                     asl
                     eor $4f
-                    eor globals.sountCnt2
+                    eor globals::sountCnt2
                     rol
                     rol
                     rol
@@ -205,13 +205,13 @@ S0b51               rol $4e
                     pha
                     rol $4f
                     lda $4f
-                    eor globals.soundCnt1
+                    eor globals::soundCnt1
                     sta $4e
                     pla
-                    sta globals.sountCnt2
+                    sta globals::sountCnt2
                     adc $4e
-                    adc globals.soundCnt1
-                    sta globals.soundCnt3
+                    adc globals::soundCnt1
+                    sta globals::soundCnt3
                     rts
 
 		.align $10

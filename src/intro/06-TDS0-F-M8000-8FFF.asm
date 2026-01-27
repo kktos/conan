@@ -26,7 +26,7 @@ run		lda #$00
 		sta L8ffe
 		lda #$30
 		sta L8ffd
-		lda sys.KBDSTRB
+		lda sys::KBDSTRB
 		lda #$00
 		sta hgrPage
 		lda #$60
@@ -42,12 +42,12 @@ L883c		dec scrollYpos
 		cpy #$c0
 		beq L8853
 		jsr drawImgWithMask
-		; bit sys.KBDSTRB
+		; bit sys::KBDSTRB
 		; jmp L883c
 
-!		lda sys.KBD
+:		lda sys::KBD
 		bpl L883c
-		bit sys.KBDSTRB
+		bit sys::KBDSTRB
 
 
 L8853
@@ -67,14 +67,14 @@ loop:
 		; inx
 		; bra loop
 
-		jsr utils.clearScreen
+		jsr utils::clearScreen
 		lda L8ffe
 		ldy #$0c
 		ldx #$05
 		jsr drawImg
-!		lda sys.KBD
-		bpl !-
-		bit sys.KBDSTRB
+:		lda sys::KBD
+		bpl :-
+		bit sys::KBDSTRB
 
 		inc L8ffe
 		lda L8ffe
@@ -126,13 +126,13 @@ L886f		jsr S8881
 		jmp L886f
 
 S8881		ldy #$08
-L8883		lda sys.KBD
+L8883		lda sys::KBD
 		bpl L888b
 		jmp L89c3
 
 L888b		lda #$10
-		; jsr sys.WAIT
-		jsr utils.wait
+		; jsr sys::WAIT
+		jsr utils::wait
 		dey
 		bne L8883
 		rts
@@ -287,7 +287,7 @@ L899e               lda #$00
 L89c2               rts
 
                     ; if "R" is pressed, launch key settings dialog
-L89c3               cmp #"r
+L89c3               cmp #"r"
 ;"
                     beq L89cb
 
@@ -296,7 +296,7 @@ L89c3               cmp #"r
                     clc
                     rts
 
-L89cb               jsr setup_dlg.run
+L89cb               jsr setup_dlg::run
                     pla
                     pla
                     sec
@@ -306,7 +306,7 @@ L89cb               jsr setup_dlg.run
 ; FLIP DISK
 ;
 
-showFlipDisk	lda sys.KBDSTRB
+showFlipDisk	lda sys::KBDSTRB
 
 ; display "flip disk"
 		lda #$15 	; img id
@@ -314,11 +314,11 @@ showFlipDisk	lda sys.KBDSTRB
 		ldy #183 	; y coord
 		jsr drawImg
 
-L89e7		lda sys.KBD
+L89e7		lda sys::KBD
 		bpl L89e7
 
 showLevelBar
-		lda sys.KBDSTRB
+		lda sys::KBDSTRB
 
 ; display player bottom info [score men level axe]
 		lda #$16 	; img id
@@ -332,20 +332,20 @@ showLevelBar
 		.align $100
 
 ; sprites X
-L8a00		.hex 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e
-		.hex 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e
+L8a00		.hex { 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e }
+		.hex { 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e 0e }
 ; sprites Y
-L8a20		.hex 36 36 36 36 36 34 34 34 34 32 32 32 32 2f 2f 2f
-		.hex 2c 2c 2c 29 29 29 27 27 27 25 25 24 24 23 22 20
+L8a20		.hex { 36 36 36 36 36 34 34 34 34 32 32 32 32 2f 2f 2f }
+		.hex { 2c 2c 2c 29 29 29 27 27 27 25 25 24 24 23 22 20 }
 ; sprites ID
-L8a40		.hex 0b 0b 0b 0b 0b 0a 0a 0a 0a 09 09 09 09 08 08 08
-		.hex 07 07 07 06 06 06 05 05 05 04 04 03 03 02 01 00
+L8a40		.hex { 0b 0b 0b 0b 0b 0a 0a 0a 0a 09 09 09 09 08 08 08 }
+		.hex { 07 07 07 06 06 06 05 05 05 04 04 03 03 02 01 00 }
 ; xpos for the knight anim
-L8a60		.hex ec ed ee ef f0 f1 f2 f3 f4 f5 f6 f7 f8 f9 fa fb
-		.hex fc fd fe ff 00 01 02 03 04 05 06 07 08 09 0a 0a
+L8a60		.hex { ec ed ee ef f0 f1 f2 f3 f4 f5 f6 f7 f8 f9 fa fb }
+		.hex { fc fd fe ff 00 01 02 03 04 05 06 07 08 09 0a 0a }
 ; sprite IDs for the knight anim - null terminated
-L8a80		.hex 13 14 13 14 13 14 13 14 13 14 13 14 13 14 13 14
-		.hex 13 14 13 14 13 14 13 14 13 14 13 14 13 14 13 00
+L8a80		.hex { 13 14 13 14 13 14 13 14 13 14 13 14 13 14 13 14 }
+		.hex { 13 14 13 14 13 14 13 14 13 14 13 14 13 14 13 00 }
 
 		; .hex
 		; 13 14 13 14 13 14 00 00 00 00 00 00 00 00 00 00
@@ -389,20 +389,20 @@ L8a80		.hex 13 14 13 14 13 14 13 14 13 14 13 14 13 14 13 14
 		; 01 01 00 00 01 01 00 00 01 71 66 4c 1f 3f 7e 7c
 		; .end
 
-L8ff0		.hex 79
-L8ff1		.hex 73
-L8ff2		.hex 66
-L8ff3		.hex 4e
-L8ff4		.hex 1f
-L8ff5		.hex 31
-L8ff6		.hex 60
-L8ff7		.hex 4c
-L8ff8		.hex 19
-isAnimDone	.db 0
-L8ffa		.hex 66
-L8ffb		.hex 0c
-L8ffc		.hex 61
-L8ffd		.hex 31
-L8ffe		.hex 60
-L8fff		.hex 4c
-L5ff7		.db 0
+L8ff0		.db $79
+L8ff1		.db $73
+L8ff2		.db $66
+L8ff3		.db $4e
+L8ff4		.db $1f
+L8ff5		.db $31
+L8ff6		.db $60
+L8ff7		.db $4c
+L8ff8		.db $19
+isAnimDone	.db $00
+L8ffa		.db $66
+L8ffb		.db $0c
+L8ffc		.db $61
+L8ffd		.db $31
+L8ffe		.db $60
+L8fff		.db $4c
+L5ff7		.db $00

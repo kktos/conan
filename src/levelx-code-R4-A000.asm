@@ -92,7 +92,7 @@ La0a2               dec spritelib.dsWidth
 
 La0b8               rts
 
-start               ldx playerDeadAnimIdx
+start               ldx globals.playerDeadAnimIdx
                     bne La0c1
 
                     jsr Sa155
@@ -109,24 +109,24 @@ La0c1               jsr Sa0d9
 Sa0d9               ldx L7900
                     bne La110
 
-                    ldx spriteX
+                    ldx globals.spriteX
                     cpx #$82
                     bcc La110
 
                     cpx #$d0
                     bcs La110
 
-                    ldx spriteY
+                    ldx globals.spriteY
                     cpx #$98
                     bcc La110
 
                     cpx #$c0
                     bcs La110
 
-                    ldx assetKeyCnt
+                    ldx globals.globals.assetKeyCnt
                     bne La110
 
-                    inc assetKeyCnt
+                    inc globals.globals.assetKeyCnt
                     ldx #$01
                     jsr Sa145
                     ldx #$85
@@ -137,14 +137,14 @@ Sa0d9               ldx L7900
                     jsr soundlib.L0a6e
 La110               rts
 
-Sa111               ldx assetKeyCnt
+Sa111               ldx globals.globals.assetKeyCnt
                     beq La110
 
-                    ldx spriteX
+                    ldx globals.spriteX
                     cpx #$2e
                     bcs La144
 
-                    ldx spriteY
+                    ldx globals.spriteY
                     cpx #$7b
                     bcc La144
 
@@ -155,7 +155,7 @@ Sa111               ldx assetKeyCnt
                     stx L7900
                     jsr Sa145
                     ldx #$00
-                    stx assetKeyCnt
+                    stx globals.globals.assetKeyCnt
                     ldx #$27
                     ldy #$7b
                     lda #$2a
@@ -166,7 +166,7 @@ La144               rts
 
 Sa145               txa
                     tay
-                    lda assetXpos-1,y
+                    lda globals.assetXpos-1,y
                     tax
                     tya
                     clc
@@ -175,12 +175,12 @@ Sa145               txa
                     jsr spritelib.drawSprite
                     rts
 
-Sa155         	ldx playerDeadAnimIdx
+Sa155         	ldx globals.playerDeadAnimIdx
 		bne La165
 
-		; spriteY >= 168
-		; spriteY < 240
-		ldx spriteY
+		; globals.spriteY >= 168
+		; globals.spriteY < 240
+		ldx globals.spriteY
 		cpx #168
 		bcc La165
 
@@ -189,17 +189,17 @@ Sa155         	ldx playerDeadAnimIdx
 
 La165          	rts
 
-		; spriteX >= 80
-La166 		ldx spriteX
+		; globals.spriteX >= 80
+La166 		ldx globals.spriteX
 		cpx #80
 		bcc La192
 
 		ldx #$08
-		stx playerDeadAnimIdx
-		ldx spriteX
+		stx globals.playerDeadAnimIdx
+		ldx globals.spriteX
 		stx L7902
-		ldy spriteY
-		lda spriteID
+		ldy globals.spriteY
+		lda globals.spriteID
 		jsr spritelib.drawSpriteM
 		inc L7901
 		ldx #$01
@@ -210,38 +210,38 @@ La166 		ldx spriteX
 		rts
 
 La192          	ldx #$01
-		stx playerDeadAnimIdx
-		ldx spriteX
-		ldy spriteY
-		lda spriteID
+		stx globals.playerDeadAnimIdx
+		ldx globals.spriteX
+		ldy globals.spriteY
+		lda globals.spriteID
 		jsr spritelib.drawSpriteM
-		ldx spriteX
-		ldy spriteY
+		ldx globals.spriteX
+		ldy globals.spriteY
 		lda #$19
 		jsr spritelib.drawSpriteM
 		rts
 
 Sa1af               ldx L7900
                     bne La1bb
-                    ldx spriteX
+                    ldx globals.spriteX
                     cpx #$2c
                     bcc La1bc
 La1bb               rts
 
-La1bc               ldx spriteX
-                    ldy spriteY
-                    lda spriteID
+La1bc               ldx globals.spriteX
+                    ldy globals.spriteY
+                    lda globals.spriteID
                     jsr spritelib.drawSpriteM
-                    lda spriteX
+                    lda globals.spriteX
                     sec
-                    sbc playerXspeed
-                    sta spriteX
+                    sbc globals.playerXspeed
+                    sta globals.spriteX
                     ldx #$00
-                    stx playerXspeed
-                    stx playerYspeed
-                    ldx spriteX
-                    ldy spriteY
-                    lda spriteID
+                    stx globals.playerXspeed
+                    stx globals.playerYspeed
+                    ldx globals.spriteX
+                    ldy globals.spriteY
+                    lda globals.spriteID
                     jsr spritelib.drawSpriteM
 La1e6               rts
 
@@ -299,15 +299,15 @@ La220               ldx L7905
                     jsr Sa257
 La256               rts
 
-Sa257               ldx spriteX
-                    ldy spriteY
-                    lda spriteID
+Sa257               ldx globals.spriteX
+                    ldy globals.spriteY
+                    lda globals.spriteID
                     jsr spritelib.drawSpriteM
                     rts
 
-		; spriteY >= 239
-		; spriteY < 26
-Sa264         	ldx spriteY
+		; globals.spriteY >= 239
+		; globals.spriteY < 26
+Sa264         	ldx globals.spriteY
 		cpx #239
 		bcs La272
 
@@ -319,17 +319,17 @@ Sa264         	ldx spriteY
 La272    	lda L7905
 		sec
 		sbc #$0a
-		cmp spriteX
+		cmp globals.spriteX
 		bcs La288
 		clc
 		adc #$22
-		cmp spriteX
+		cmp globals.spriteX
 		bcc La288
 		jmp La2a6
 
-		; spriteY >= 43
-		; spriteY < 14
-La288   	lda spriteY
+		; globals.spriteY >= 43
+		; globals.spriteY < 14
+La288   	lda globals.spriteY
 		cmp #43
 		bcs La2ac
 
@@ -339,12 +339,12 @@ La288   	lda spriteY
 		lda L7906
 		sec
 		sbc #9
-		cmp spriteX
+		cmp globals.spriteX
 		bcs La2ac
 
 		clc
 		adc #30
-		cmp spriteX
+		cmp globals.spriteX
 		bcc La2ac
 
 La2a6         	ldx #$04
