@@ -1,3 +1,4 @@
+	.module level0
 	.namespace level0
 
 	.segment L0_BKGD
@@ -16,4 +17,4 @@
 
 	assertGameStruct
 
-	.end
+	.end namespace

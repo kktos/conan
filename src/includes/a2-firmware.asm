@@ -1,5 +1,8 @@
 		.namespace sys
 
+CH			= $24
+CV			= $25
+
 KBD			= $C000
 KBDSTRB			= $C010
 
@@ -30,7 +33,8 @@ PREAD 			= $FB1E
 SETKBD 			= $FE89
 SETVID 			= $FE93
 INIT 			= $FB2F
-
+HOME 			= $FC58
+COUT 			= $FDED
 WAIT 			= $FCA8
 
 ; $C600 boot loader

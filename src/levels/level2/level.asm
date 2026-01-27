@@ -1,3 +1,4 @@
+	.module level2
 
 	.namespace level2
 

@@ -1,3 +1,4 @@
+	.module level1
 
 .namespace level1
 
@@ -10,11 +11,11 @@
 	.include "data-R3-7A00.asm"
 
 	.segment L1_CODE
-	.include "level1.code-R4-A000.asm"
+	.include "code-R4-A000.asm"
 	.include "data-R4-A200.asm"
 	.include "level1.data-R5-AC00.asm"
 
 
 	assertGameStruct
 
-.end
+.end namespace

@@ -1,5 +1,4 @@
 		.namespace utils
-		.org $D000
 
 		.include "unpack.asm"
 
@@ -21,11 +20,11 @@ wait3
 
 .function clearScreen {
 		stz yPos
-!		jsr clearByte
+:		jsr clearByte
 		inc yPos
 		ldx yPos
 		cpx #$b7
-		bne !-
+		bne :-
 		rts
 yPos		.db 0
 
@@ -33,9 +32,9 @@ clearByte:
 		jsr getHGRLineAddr
 		ldy #$27
 		lda #$00
-!		sta ($1c),y
+:		sta ($1c),y
 		dey
-		bpl !-
+		bpl :-
 		rts
 
 getHGRLineAddr:
@@ -50,16 +49,16 @@ getHGRLineAddr:
 		.align $10
 
 PREAD
-		lda  sys.PTRIG 		; TRIGGER PADDLES
+		lda  sys::PTRIG 		; TRIGGER PADDLES
 		ldy  #$00 		; INIT COUNT
 		nop         		; COMPENSATE FOR 1ST COUNT
 		nop
-!		lda  sys.PADDL0,x 	;  COUNT Y-REG EVERY
-		bpl  !+  		; 12 uSec [actually 11]
+:		lda  sys::PADDL0,x 	;  COUNT Y-REG EVERY
+		bpl  :+  		; 12 uSec [actually 11]
 		iny
-		bne  !-       		;EXIT AT 255 MAX
+		bne  :-       		;EXIT AT 255 MAX
 		dey
-!		rts
+:		rts
 
 		.align $10
 		.db "PREAD"

@@ -1,6 +1,6 @@
 		.namespace welcome
 
-L1000		=	$1000
+;L1000		=	$1000
 
 main		ldx #$01
 		stx $0478
@@ -26,7 +26,7 @@ L0254		jsr S02af
 		; variables-page03
 ; L0257		ldx #$00
 ; L0259		lda L1000,x
-; 		sta L0300,x
+; 		sta globals.L0300,x
 ; 		inx
 ; 		bne L0259
 
@@ -37,7 +37,7 @@ L0254		jsr S02af
 		; nop
 		; nop
 
-		jsr intro.showLevelBar
+		jsr intro::showLevelBar
 
 		;
 		; load T6 to T9 in $4000:7FFF
@@ -59,12 +59,12 @@ L0254		jsr S02af
 		read_file fspritelib
 
 		; jsr intro.showFlipDisk
-		jmp game1.gameStart
+		jmp game1::gameStart
 
 ; clear hires1
 S02af		ldy #$00
 		sty $1a
-		sty rwts_buf
+		;sty rwts_buf
 		; sty L0810
 		ldx #$20
 		stx $1b
@@ -76,10 +76,10 @@ L02be		sta ($1a),y
 		dex
 		bpl L02be
 
-		bit sys.PAGE2OFF
-		bit sys.TEXTOFF
-		bit sys.MIXEDOFF
-		bit sys.HIRESON
+		bit sys::PAGE2OFF
+		bit sys::TEXTOFF
+		bit sys::MIXEDOFF
+		bit sys::HIRESON
 
 ; 05.0 load disk[A000-AFFF] to MEM[6000-6FFF]
 ; first screen
@@ -95,8 +95,8 @@ L02be		sta ($1a),y
 		; read_diskw $0A00, $6000, $0E00
 		read_file fwelcome_data
 
-		lda sys.LCBANK2
-		lda sys.LCBANK2
+		lda sys::LCBANK2
+		lda sys::LCBANK2
 
 		; read_diskw $0102, $D000, $0E00
 		read_file futils
@@ -109,7 +109,7 @@ L02be		sta ($1a),y
 		lda #$00
 		ldx #>introScreenPage1
 		ldy #192
-		jsr unpack.run
+		jsr unpack::run
 
 		lda #$20
 		ldx #>introScreenPage2
@@ -117,7 +117,7 @@ L02be		sta ($1a),y
 		; stx L0343
 		; ldx #$20
 		; stx L0810
-		jsr unpack.run
+		jsr unpack::run
 
 		;
 		; load TB to TF in $6000:AFFF and T4S0:$1000 ->L0257
@@ -128,10 +128,10 @@ L02be		sta ($1a),y
 		;;; useless now
 		; read_diskw $0400, $1000, $0100
 
-		bit sys.KBDSTRB
+		bit sys::KBDSTRB
 
 		; splash screens with anim
-		jmp intro.run
+		jmp intro::run
 
 		; .include "unpack.asm"
 		; .include "read-disk.asm"

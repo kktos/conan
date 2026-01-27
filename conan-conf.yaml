@@ -1,0 +1,31 @@
+
+input:
+  source: src/main.asm
+#   segments:
+#     - { name: main, start: 4096, size: 8192, padValue: 255 }
+#     - { name: data, start: 20480, size: 4096, resizable: true }
+
+output:
+  object:
+    path: dist/new_conan.bin
+
+  linker:
+    script: link/conan.linker.asm
+
+  listing:
+    enabled: true
+    path: dist/new_conan.lst
+    passes:
+      pass1: false
+      pass2: true
+
+  symbols:
+#     enabled: true
+    path: dist/new_conan.sym
+
+  segments:
+#     enabled: true
+    path: dist/new_conan.seg
+
+
+

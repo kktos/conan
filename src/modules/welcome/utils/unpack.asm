@@ -37,11 +37,11 @@ L0365		rts
 ; set hires address from tables to ($1A)
 getPixAddr
 		ldx Ypos
-		lda utils.hgrHigh,x
+		lda utils::hgrHigh,x
 		clc
 		adc hgrPage
 		sta $1b
-		lda utils.hgrLow,x
+		lda utils::hgrLow,x
 		clc
 		adc Xpos
 		sta $1a
@@ -79,11 +79,11 @@ repeatByte
 		sta repeatValue
 		jsr readPakByt ; read packed byte
 		sta repeatCount
-!
+:
 		lda repeatValue
 		jsr writeHGRbyte
 		dec repeatCount
-		bne !-
+		bne :-
 
 		jmp loop
 

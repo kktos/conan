@@ -40,7 +40,7 @@ BOOT3:
 
 		read_file fwelcome
 
-		jmp welcome.main
+		jmp welcome::main
 
 fwelcome:
 		.cstr "WELCOME"

@@ -20,8 +20,8 @@
 		; LEN
 		.dw len
 
-!		bit $C0FF
-		bpl !-
+:		bit $C0FF
+		bpl :-
 	.end
 
 	.macro read_file(filename) {
@@ -29,8 +29,8 @@
 		.db $42, $11
 		.dw filename
 
-!		bit $C0FF
-		bpl !-
+:		bit $C0FF
+		bpl :-
 	}
 
 	.macro log(fmt, parm1) {
