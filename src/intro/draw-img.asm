@@ -29,9 +29,9 @@ drawImg		sty yPos
 
                     ldx #$00
 L801f               ldy yPos
-                    lda utils.hgrLow,y ; hires addr lo
+                    lda utils::hgrLow,y ; hires addr lo
                     sta $1a
-                    lda utils.hgrHigh,y ; hires addr hi
+                    lda utils::hgrHigh,y ; hires addr hi
                     clc
                     adc hgrPage ; page1:+$00 / page2:+$20
                     sta $1b
@@ -81,10 +81,10 @@ drawImgWithMask	sty L81F0
 
 		ldx #$00
 L811f               ldy L81F0
-                    lda utils.hgrLow,y
+                    lda utils::hgrLow,y
                     sta $1a
                     sta $1e
-                    lda utils.hgrHigh,y
+                    lda utils::hgrHigh,y
                     sta $1b
                     clc
                     adc #$20
