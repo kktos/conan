@@ -25,7 +25,7 @@ freeBlock= $07
 files= []
 
 .FOR module OF .UNWRITTEN_MODULES as idx
-	.log "  " + module.name, .hex(freeBlock)
+	.log "  "+.hex(freeBlock,4), .hex(module.size,4), module.name,
 
 	writeFileEntry module.name, freeBlock, $06, module.segments[0].start, module.size
 
@@ -67,18 +67,18 @@ freeBlock= $07
 	blockLen= file[2]
 	segments= file[3]
 
-	.log "--FILE", name, .hex(block), .hex(block*512), blockLen
+	.log "--FILE", name, .hex(block*512), blockLen
 
 	blocks= ""
 	.REPEAT blockLen as idx
 		.BYTE block + idx
 		blocks=blocks+", "+.hex((block + idx) * 512)
 	.END
-	.log blocks
+	#.log blocks
 	.ALIGN 512
 
 	.FOR seg OF segments as idx
-		.log seg.name
+		.log "  " + seg.name, .hex(seg.size,4)
 		.WRITE SEGMENT(seg.name)
 	.END
 .END
