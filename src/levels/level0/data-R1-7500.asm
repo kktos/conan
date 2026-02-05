@@ -1,44 +1,76 @@
+
+; level 0 sprites directory, starting at id $40
+
+; $41 - $50
 L7500
-		.hex
-		02 12 00 7a 24 7a 48 7a 6c 7a 90 7a b4 7a d8 7a
-		02 12 fc 7a 20 7b 44 7b 68 7b 8c 7b b0 7b d4 7b
-		02 93 f8 7b 1e 7c 44 7c 6a 7c 90 7c b6 7c dc 7c
-		02 92 02 7d 26 7d 4a 7d 6e 7d 92 7d b6 7d da 7d
-		03 93 fe 7d 37 7e 70 7e a9 7e e2 7e 1b 7f 54 7f
-		03 93 8d 7f c6 7f ff 7f 38 80 71 80 aa 80 e3 80
-		04 8d 1c 81 50 81 84 81 b8 81 ec 81 20 82 54 82
-		04 91 88 82 cc 82 10 83 54 83 98 83 dc 83 20 84
+		; $41:$46 - Anim Volta
+		.hex 02 12 00 7a 24 7a 48 7a 6c 7a 90 7a b4 7a d8 7a
+		.hex 02 12 fc 7a 20 7b 44 7b 68 7b 8c 7b b0 7b d4 7b
+		.hex 02 93 f8 7b 1e 7c 44 7c 6a 7c 90 7c b6 7c dc 7c
+		.hex 02 92 02 7d 26 7d 4a 7d 6e 7d 92 7d b6 7d da 7d
+		; $45 - volta colored
+		.hex 03 93 fe 7d 37 7e 70 7e a9 7e e2 7e 1b 7f 54 7f
+		; $46 - volta white
+		.hex 03 93 8d 7f c6 7f ff 7f 38 80 71 80 aa 80 e3 80
 
-		02 0f 64 84 82 84 a0 84 be 84 dc 84 fa 84 18 85
-		02 0f 36 85 54 85 72 85 90 85 ae 85 cc 85 ea 85
-		02 04 08 86 10 86 18 86 20 86 28 86 30 86 38 86
-		06 05 40 86 5e 86 7c 86 9a 86 b8 86 d6 86 f4 86
-		05 05 12 87 2b 87 44 87 5d 87 76 87 8f 87 a8 87
-		02 05 f0 87 f0 87 f0 87 f0 87 f0 87 f0 87 f0 87
-		1b 4b 00 88 00 88 00 88 00 88 00 88 00 88 00 88
-		0c 07 e9 8f e9 8f e9 8f e9 8f e9 8f e9 8f e9 8f
-		.end
+		; $47 - bird flying 1
+		.hex 04 8d 1c 81 50 81 84 81 b8 81 ec 81 20 82 54 82
+		; $48 - bird flying 2
+		.hex 04 91 88 82 cc 82 10 83 54 83 98 83 dc 83 20 84
+		; $49 - spring 1
+		.hex 02 0f 64 84 82 84 a0 84 be 84 dc 84 fa 84 18 85
+		; $4A - spring 2
+		.hex 02 0f 36 85 54 85 72 85 90 85 ae 85 cc 85 ea 85
+		; $4B - spring 3 ?
+		.hex 02 04 08 86 10 86 18 86 20 86 28 86 30 86 38 86
 
+		; $4C - HI-SC
+		.hex 06 05 40 86 5e 86 7c 86 9a 86 b8 86 d6 86 f4 86
+		; $4D - ORE
+		.hex 05 05 12 87 2b 87 44 87 5d 87 76 87 8f 87 a8 87
+		; $4E - space - used to erase the spring
+		.hex 02 05 f0 87 f0 87 f0 87 f0 87 f0 87 f0 87 f0 87
+		; $4F - Help "introduction"
+		.hex 1b 4b 00 88 00 88 00 88 00 88 00 88 00 88 00 88
+		; $50 - Help "characters"
+		.hex 0c 07 e9 8f e9 8f e9 8f e9 8f e9 8f e9 8f e9 8f
+
+
+; $51 - $60
 L7600
-		.hex
-		06 05 3d 90 3d 90 3d 90 3d 90 3d 90 3d 90 3d 90
-		07 05 5b 90 5b 90 5b 90 5b 90 5b 90 5b 90 5b 90
-		07 0d 7e 90 7e 90 7e 90 7e 90 7e 90 7e 90 7e 90
-		09 07 d9 90 d9 90 d9 90 d9 90 d9 90 d9 90 d9 90
-		04 05 18 91 18 91 18 91 18 91 18 91 18 91 18 91
-		02 07 2c 91 2c 91 2c 91 2c 91 2c 91 2c 91 2c 91
-		07 0c 3a 91 3a 91 3a 91 3a 91 3a 91 3a 91 3a 91
-		0a 0c 8e 91 8e 91 8e 91 8e 91 8e 91 8e 91 8e 91
+		; $51 - Help "conan"
+		.hex 06 05 3d 90 3d 90 3d 90 3d 90 3d 90 3d 90 3d 90
+		; $52 - Help "volta"
+		.hex 07 05 5b 90 5b 90 5b 90 5b 90 5b 90 5b 90 5b 90
+		; $53 - Help "avian ally"
+		.hex 07 0d 7e 90 7e 90 7e 90 7e 90 7e 90 7e 90 7e 90
+		; $54 - Help "objects"
+		.hex 09 07 d9 90 d9 90 d9 90 d9 90 d9 90 d9 90 d9 90
+		; $55 - Help "key"
+		.hex 04 05 18 91 18 91 18 91 18 91 18 91 18 91 18 91
+		; $56 - Help
+		.hex 02 07 2c 91 2c 91 2c 91 2c 91 2c 91 2c 91 2c 91
+		; $57 - Help "locked door"
+		.hex 07 0c 3a 91 3a 91 3a 91 3a 91 3a 91 3a 91 3a 91
+		; $58 - Help "unlocked door"
+		.hex 0a 0c 8e 91 8e 91 8e 91 8e 91 8e 91 8e 91 8e 91
+		; $59 - Help "gem"
+		.hex 04 05 06 92 06 92 06 92 06 92 06 92 06 92 06 92
+		; $5A - Help "gem holder"
+		.hex 07 0c 1a 92 1a 92 1a 92 1a 92 1a 92 1a 92 1a 92
+		; $5B - Help "extra sword"
+		.hex 09 0d 6e 92 6e 92 6e 92 6e 92 6e 92 6e 92 6e 92
 
-		04 05 06 92 06 92 06 92 06 92 06 92 06 92 06 92
-		07 0c 1a 92 1a 92 1a 92 1a 92 1a 92 1a 92 1a 92
-		09 0d 6e 92 6e 92 6e 92 6e 92 6e 92 6e 92 6e 92
-		03 12 e3 92 e3 92 e3 92 e3 92 e3 92 e3 92 e3 92
-		03 12 19 93 19 93 19 93 19 93 19 93 19 93 19 93
-		1e 38 4f 93 4f 93 4f 93 4f 93 4f 93 4f 93 4f 93
-		a0 86 a9 95 20 f9 08 20 d3 0e 4c fc 11 42 4c 4f
-		41 44 20 4c 4f 20 54 4f 20 48 49 00 a0 11 a9 79
-		.end
+		; $5C - Help icon locked door
+		.hex 03 12 e3 92 e3 92 e3 92 e3 92 e3 92 e3 92 e3 92
+		; $5D - Help icon unlocked door
+		.hex 03 12 19 93 19 93 19 93 19 93 19 93 19 93 19 93
+
+		; $5E - SPECIAL THANKS
+		.hex 1e 38 4f 93 4f 93 4f 93 4f 93 4f 93 4f 93 4f 93
+
+		.hex a0 86 a9 95 20 f9 08 20 d3 0e 4c fc 11 42 4c 4f
+		.hex 41 44 20 4c 4f 20 54 4f 20 48 49 00 a0 11 a9 79
 
 L7700
 		.hex

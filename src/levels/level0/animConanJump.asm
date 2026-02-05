@@ -56,7 +56,7 @@ La3fb
 		pla
 		rts
 
-		.echo "processSpringAnim",.hex(*), .segment.name, .hex(.segment.start)
+		; .echo "processSpringAnim",.hex(*), .segment.name, .hex(.segment.start)
 
 processSpringAnim
 		ldx isSpringRunning
@@ -95,20 +95,23 @@ eraseSpring
 		ldx #$45
 		ldy #$a3
 		lda #$4e
-		jsr drawSpriteBis
+		; jsr drawSpriteBis
+		jsr spritelib::drawSpriteM
 		ldx #$45
 		ldy #$9e
 		lda #$4e
-		jsr drawSpriteBis
+		; jsr drawSpriteBis
+		jsr spritelib::drawSpriteM
 		rts
 
 renderSpring
 		ldx #$45
 		lda springCurId
 		ldy springCurYpos
-		jsr drawSpriteBis
+		; jsr drawSpriteBis
+		jsr spritelib::drawSpriteM
 		lda springCurId
-		eor #$03
+		eor #$03		; flip between $49 and $4A
 		sta springCurId
 		rts
 
