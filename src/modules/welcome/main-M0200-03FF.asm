@@ -8,13 +8,13 @@ main		ldx #$01
 		stx $04f8
 		ldx #$21
 		stx $0578
-		ldx #$60
-		stx $05f8
-		stx $0678
+		; ldx #$60
+		; stx $05f8
+		; stx $0678
 		ldx #$02
 		stx $06f8
-		ldx #$c6
-		stx $07f8
+		; ldx #$c6
+		; stx $07f8
 
                     ; will load data
                     ; and run intro screen
@@ -30,12 +30,6 @@ L0254		jsr S02af
 ; 		inx
 ; 		bne L0259
 
-		;;; useless now
-		; MVPw L1000, variables.block_start, variables.block_size
-
-		; nop
-		; nop
-		; nop
 
 		jsr intro::showLevelBar
 
@@ -47,16 +41,19 @@ L0254		jsr S02af
 		;
 		; .include "load-part2.asm"
 
+		; read_diskw $0300, $A700, $B700-$A700
+		read_file fspritelib
+
 		; read_diskw $0500, $1000, $1000
 		read_file fgame_code
+
 		; read_diskw $0600, $4000, $4000
-		read_file fgame_data
+		; is it useful ?
+		read_file fsprites_data
 
 		; read_diskw $0400, $0300, $1000-$0300
 		read_file fvariables
 
-		; read_diskw $0300, $A700, $B700-$A700
-		read_file fspritelib
 
 		; jsr intro.showFlipDisk
 		jmp game1::gameStart
@@ -93,10 +90,11 @@ L02be		sta ($1a),y
 
 		; read_diskw $0A00, $6000, $1000
 		; read_diskw $0A00, $6000, $0E00
+
 		read_file fwelcome_data
 
-		lda sys::LCBANK2
-		lda sys::LCBANK2
+		;lda sys::LCBANK2
+		;lda sys::LCBANK2
 
 		; read_diskw $0102, $D000, $0E00
 		read_file futils
@@ -107,12 +105,12 @@ L02be		sta ($1a),y
 		; ldx rwts_slot
 		; lda $c089,x
 		lda #$00
-		ldx #>introScreenPage1
+		ldx #>welcome_data::introScreenPage1
 		ldy #192
 		jsr unpack::run
 
 		lda #$20
-		ldx #>introScreenPage2
+		ldx #>welcome_data::introScreenPage2
 		ldy #192
 		; stx L0343
 		; ldx #$20
@@ -136,12 +134,12 @@ L02be		sta ($1a),y
 		; .include "unpack.asm"
 		; .include "read-disk.asm"
 
-fwelcome_data:	.cstr "WELCOME_DATA"
-fgame_data:	.cstr "GAME_DATA"
-fgame_code:	.cstr "GAME_CODE"
-fspritelib:	.cstr "SPRITELIB"
-fvariables:	.cstr "VARIABLES"
-futils:		.cstr "UTILS"
-fintro:		.cstr "INTRO"
+fwelcome_data:	.pstr "WELCOME.DATA"
+fsprites_data:	.pstr "SPRITES.DATA"
+fgame_code:	.pstr "GAME"
+fspritelib:	.pstr "SPRITELIB"
+fvariables:	.pstr "VARIABLES"
+futils:		.pstr "UTILS"
+fintro:		.pstr "INTRO"
 
 		; .align $100,$FF

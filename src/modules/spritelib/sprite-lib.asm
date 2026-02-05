@@ -1,7 +1,5 @@
 ; disk T3 into $A700:B6FF
 
-		.namespace spritelib
-
 		; .export hgrHi
 		; .export hgrLo
 
@@ -327,6 +325,11 @@ LB200:		.hex {
 			04 06 01 03 05 00 02 04 06 01 03 05 00 02 04 06
 		}
 
+;
+; $00-$35 : global sprites ($36-$3F seem unused)
+; $40-xx : level sprites
+;
+
 ; sprites addr lo - $B600
 spriteLo:	.hex {
 			00 10 20 30 40 50 60 70 80 90 A0 B0 C0 D0 E0 F0
@@ -340,15 +343,19 @@ spriteLo:	.hex {
 		}
 
 ; sprites addr hi - $B680
-spriteHi:	.hex {
-			0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C
-			0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D
-			0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E
-			0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
+spriteHi:
+		.repeat 16*4 as idx {
+			.db  >global_sprites + .floor((idx-1)/16)
+		}
+
+		.hex {
+			; 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C
+			; 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D
+			; 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E
+			; 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F
 			75 75 75 75 75 75 75 75 75 75 75 75 75 75 75 75
 			76 76 76 76 76 76 76 76 76 76 76 76 76 76 76 76
 			77 77 77 77 77 77 77 77 77 77 77 77 77 77 77 77
 			78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78
 		}
 
-		.end namespace

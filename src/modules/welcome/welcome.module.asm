@@ -14,8 +14,3 @@
 	; jump game1
 	;
 	.include "main-M0200-03FF.asm"
-
-	.segment UTILS
-	; S2-SF
-	.include "utils/utils.asm"
-	;.include "utils/sprite-lib.asm"
