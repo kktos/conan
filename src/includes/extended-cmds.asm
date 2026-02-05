@@ -24,18 +24,32 @@
 		bpl :-
 	.end
 
-	.macro read_file(filename) {
-		; WDM disk_read_file
-		.db $42, $11
-		.dw filename
+; 	.macro read_file(filename) {
+; 		; WDM disk_read_file
+; 		.db $42, $11
+; 		.dw filename
 
-:		bit $C0FF
-		bpl :-
-	}
+; :		bit $C0FF
+; 		bpl :-
+; 	}
 
 	.macro log(fmt, parm1) {
 		.db $42,$FF
 		.cstr fmt
 		.db 1
 		.dw parm1
+	}
+
+	.macro read_file(filename) {
+		ldx #<filename
+		ldy #>filename
+		jsr tinyDOS::LoadFile
+	}
+
+	.macro addMemRegion(filename, addr, len, bank) {
+		BRK $03
+		.dw addr
+		.dw len
+		.dw filename
+		.dw bank
 	}
