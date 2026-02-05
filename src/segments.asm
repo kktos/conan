@@ -1,21 +1,24 @@
-.segment BOOTLOADER	{ start: $0800, size: $0100 }
+.segment BOOTLOADER	{ start: $0800, size: $00A0 }
 .segment TINY_DOS	{ start: $D000, size: $0300 }
 
-.segment BOOT1		{ start: $0800, end: $08FF }
-.segment LOADER		{ start: $B700, end: $BFFF }
-.segment BOOT3		{ start: $B700, end: $B7FF }
-.segment BOOT2		{ start: $4100, end: $45FF }
+; .segment BOOT1		{ start: $0800, end: $08FF }
+; .segment LOADER		{ start: $B700, end: $BFFF }
+; .segment BOOT3		{ start: $B700, end: $B7FF }
+; .segment BOOT2		{ start: $4100, end: $45FF }
 
 .segment WELCOME	{ start: $0200, end: $03FF, pad: $00 }
-.segment SPRITELIB	{ start: $D000, end: $DFFF, pad: $00 }
-.segment UTILS		{ start: $D000, end: $DFFF, pad: $00 }
+.segment WELCOME_DATA	{ start: $6000, end: $6FFF, pad: $55 }
+
+.segment UTILS		{ start: $D800, size: 0 }
+; .segment SPRITELIB	{ start: $E000, end: $EFFF, pad: $00 }
+.segment SPRITELIB	{ start: $E000, size: 0 }
+.segment INTRO		{ start: $8000, end: $AFFF, pad: $00 }
 
 ;.segment PAD1		{ start: $0000, end: $0FFF, pad: $55 }
-.segment VARIABLES	{ start: $0300, end: $FFF, pad: $55 }
-.segment GAME_CODE	{ start: $1000, end: $1FFF, pad: $00 }
-.segment GAME_DATA	{ start: $4000, end: $7FFF, pad: $00 }
-.segment WELCOME_DATA	{ start: $6000, end: $6FFF, pad: $55 }
-.segment INTRO		{ start: $8000, end: $AFFF, pad: $00 }
+; .segment VARIABLES	{ start: $0300, end: $FFF, pad: $55 }
+.segment VARIABLES	{ start: $0300, size: $100 }
+.segment GAME		{ start: $1000, end: $1FFF, pad: $00 }
+.segment SPRITES_DATA	{ start: $4000, end: $7FFF, pad: $00 }
 ;.segment PAD2		{ start: $0000, end: $1FFF, pad: $55 }
 
 .segment L0_BKGD	{ start: $7500, end: $7CFF, pad: $AA }
