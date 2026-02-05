@@ -3,7 +3,7 @@ tmpPtr		= $00
 srcPtr		= $02
 dstPtr		= $04
 sizePtr		= $06
-
+LINE10 		= $528
 	.db 1
 Start:
 	stx smartport::unit
@@ -21,6 +21,8 @@ Start:
 	sta tmpPtr
 	lda (tmpPtr)
 	sta tmpPtr
+
+        jsr sys::HOME
 
 	lda sys::LCBANK2
 	lda sys::LCBANK2
@@ -63,36 +65,29 @@ RelocateLoop:
 	bne RelocateLoop
 
 	lda tmpPtr
-	sta SmartPortEntry+1
+	sta tinyDOS::SmartPortEntry+1
 	lda tmpPtr+1
-	sta SmartPortEntry+2
+	sta tinyDOS::SmartPortEntry+2
+
+	;
+	; add mem region
+	;
+
+	BRK
+	.db $03
+	.dw dosSegment.start
+	.dw dosSegment.size
+	.dw regionname
+	.dw $0000
 
 	ldx #<TargetName
 	ldy #>TargetName
-	jsr LoadFile
-	jmp (tmpPtr)
-
-ErrorMsg:
-        .byte "UNABLE TO LOAD "
+	jsr tinyDOS::LoadFile
+	jmp (srcPtr)
 
 TargetName:
-        .byte "WELCOME"
-        .byte 0
+        .pstr "WELCOME"
 
-ShowError:
-        jsr sys::HOME
+regionname:
+        .cstr "tiny_dos"
 
-        lda #$12
-	sta sys::CV
-        lda #$6
-	sta sys::CH
-
-        ldx #0
-PrintLoop:
-        lda ErrorMsg,x
-        beq Hang
-        jsr sys::COUT
-        inx
-        bne PrintLoop
-Hang:
-        bra Hang
