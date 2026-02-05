@@ -6,8 +6,8 @@ input:
 #     - { name: data, start: 20480, size: 4096, resizable: true }
 
 output:
-  object:
-    path: dist/new_conan.bin
+#   object:
+#     path: dist/new_conan.bin
 
   linker:
     script: link/conan.linker.asm
@@ -20,7 +20,7 @@ output:
       pass2: true
 
   symbols:
-#     enabled: true
+    enabled: true
     path: dist/new_conan.sym
 
   segments:

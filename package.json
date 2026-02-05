@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Conan: Hall of Volta on Apple //",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "rimraf ./dist && asm6502 --conf jsasm.conf",
     "build-local": "rimraf ./dist && node ../jsasm6502/dist/asm6502 --conf jsasm.conf",
@@ -19,8 +20,10 @@
   },
   "homepage": "https://github.com/kktos/conan#readme",
   "devDependencies": {
+    "@jimp/utils": "^1.6.0",
+    "jimp": "^1.6.0",
     "jsasm6502": "^1.7.0",
-    "rimraf": "^6.0.1",
-    "serve": "^14.2.4"
+    "rimraf": "^6.1.2",
+    "serve": "^14.2.5"
   }
 }

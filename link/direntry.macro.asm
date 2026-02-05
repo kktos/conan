@@ -51,7 +51,7 @@
 	.WORD block
 
 	# blocks used (file length/block size)
-	.WORD (length/512)+1
+	.WORD .ceil(length/512)+1
 
 	# EOF
 	.BYTE length & 0xFF, length >> 8 & 0xFF, length >> 16 & 0xFF
