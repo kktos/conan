@@ -19,7 +19,7 @@ L0804               ldx #$ff
 
 L0812               clc
                     ldx #$00
-                    stx globals::L0309
+                    stx globals::isClimbing
                     rts
 
 L0819               lda globals::L0333
@@ -38,7 +38,7 @@ L0822               jsr $1544
 L0839               ldx globals::L0317
                     beq L0843
                     ldx #$00
-                    stx globals::L0309
+                    stx globals::isClimbing
 L0843               rts
 
 L0844               ldx globals::keypressed
@@ -60,7 +60,7 @@ L0860               jsr $1417
                     bcc L0872
                     ldx globals::isPlayerJumping
                     bne L0872
-                    ldx globals::L0309
+                    ldx globals::isClimbing
                     bne L0872
                     inc globals::L0314
 L0872               rts

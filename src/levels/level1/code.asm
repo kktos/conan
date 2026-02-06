@@ -1,22 +1,23 @@
+;code-R4-A000
 
 startLevel
 		jsr Sa017
 		lda #$80
 		jsr utils::wait
 
-		ldx L7902
+		ldx batState
 		bne La016
 
 		jsr Sa0e6
 
 		jsr Sa09b
-		jsr Sa1b0
+		jsr checkForExtraLife
 La016		rts
 
-Sa017		ldx L7902
+Sa017		ldx batState
 		bne La05c
 
-		ldx L7900
+		ldx batPathIndex
 		lda batXposTbl,x
 		cmp batXposTbl+1,x
 		bne redrawBat
@@ -29,48 +30,48 @@ Sa017		ldx L7902
 		cmp batSpriteTbl+1,x
 		bne redrawBat
 
-		inc L7900
+		inc batPathIndex
 		rts
 
 redrawBat	jsr drawBat
-		inc L7900
+		inc batPathIndex
 		jsr drawBat
 		rts
 
-drawBat		ldx L7900
+drawBat		ldx batPathIndex
 		lda batYposTbl,x
 		tay
 		lda batXposTbl,x
-		sta L7901
+		sta batTempX
 		lda batSpriteTbl,x
-		ldx L7901
+		ldx batTempX
 		jsr spritelib::drawSpriteM
 		rts
 
 La05c		bmi La016
 
-		ldx L790A
+		ldx splashActive
 		bne La079
 
 		jsr Sa13a
-		inc L7904
-		inc L7904
-		inc L7904
+		inc effectY
+		inc effectY
+		inc effectY
 		jsr Sa14c
 		jsr Sa13a
 		jsr Sa165
 		rts
 
-La079		dec L790B
+La079		dec splashTimer
 		bmi La07f
 
 		rts
 
 La07f		jsr Sa13a
 		ldx #$06
-		stx L790B
-		inc L7905
-		ldx L7905
+		stx splashTimer
+		inc effectSpriteID
+		ldx effectSpriteID
 		cpx #$4a
 		beq La095
 
@@ -78,10 +79,10 @@ La07f		jsr Sa13a
 		rts
 
 La095		ldx #$ff
-		stx L7902
+		stx batState
 		rts
 
-Sa09b		ldx L7900
+Sa09b		ldx batPathIndex
 		lda globals::spriteX
 		sec
 		sbc #$06
@@ -123,7 +124,7 @@ La0e5		    rts
 
 Sa0e6		    ldx globals::playerAxeState
 		    beq La0e5
-		    ldx L7900
+		    ldx batPathIndex
 		    lda globals::axeXpos
 		    sec
 		    sbc #$0c
@@ -144,16 +145,16 @@ Sa0e6		    ldx globals::playerAxeState
 		    bcc La139
 
 		    ldx #$01
-		    stx L7902
-		    ldx L7900
+		    stx batState
+		    ldx batPathIndex
 		    lda batXposTbl,x
-		    sta L7903
+		    sta effectX
 		    lda batYposTbl,x
-		    sta L7904
+		    sta effectY
 		    lda batSpriteTbl,x
-		    sta L7905
+		    sta effectSpriteID
 		    ldx #$01
-		    stx L7909
+		    stx effectAnimFrameIdx
 		    jsr game1::scoreAdd75 ;L106A
 
 		    jsr soundlib::L0a58
@@ -162,21 +163,21 @@ La139		    rts
 
 Sa13a		    ldx #$00
 		    stx spritelib::isCollision
-		    ldx L7903
-		    ldy L7904
-		    lda L7905
+		    ldx effectX
+		    ldy effectY
+		    lda effectSpriteID
 		    jsr spritelib::drawSpriteM
 		    rts
 
-Sa14c		    ldx L7909
-		    lda L7905,x
-		    sta L7905
-		    inc L7909
-		    ldx L7909
+Sa14c		    ldx effectAnimFrameIdx
+		    lda effectSpriteID,x
+		    sta effectSpriteID
+		    inc effectAnimFrameIdx
+		    ldx effectAnimFrameIdx
 		    cpx #$04
 		    bne La164
 		    ldx #$01
-		    stx L7909
+		    stx effectAnimFrameIdx
 La164		    rts
 
 Sa165		    ldx #$ff
@@ -185,56 +186,59 @@ La167		    inx
 		    beq La1af
 		    clc
 		    adc #$08
-		    cmp L7904
+		    cmp effectY
 		    bcs La167
 
 		    clc
 		    adc #$08
-		    cmp L7904
+		    cmp effectY
 		    bcc La167
 
 		    lda LAC00,x
-		    cmp L7903
+		    cmp effectX
 		    bcs La167
 
 		    lda LAC20,x
-		    cmp L7903
+		    cmp effectX
 		    bcc La167
 
-		    stx L790C
+		    stx splashRectIdx
 		    jsr Sa13a
 		    ldx #$08
-		    stx L790A
-		    stx L790B
-		    ldx L790C
+		    stx splashActive
+		    stx splashTimer
+		    ldx splashRectIdx
 		    lda LAC40,x
 		    clc
 		    adc #$0d
-		    sta L7904
+		    sta effectY
 		    ldx #$47
-		    stx L7905
+		    stx effectSpriteID
 		    jsr Sa13a
 La1af		    rts
 
-Sa1b0		    ldx globals::spriteX
-		    cpx #$7a
+;SA1B0
+checkForExtraLife:
+		    ldx globals::spriteX
+		    cpx #122	; $7a
 		    bcc La1d1
-		    ldx globals::L0309
+		    ldx globals::isClimbing
 		    beq La1d1
 
 		    ldx #globals::playerLifeCount-globals::playerData
-		    jsr drawDigit
+		    jsr game1::drawDigit
 
 		    inc globals::playerLifeCount
 
 		    ldx #globals::playerLifeCount-globals::playerData
-		    jsr drawDigit
+		    jsr game1::drawDigit
 
 		    ldx #$60
-		    stx Sa1b0
-		    jsr $0b23
+		    stx checkForExtraLife
+		    jsr soundlib::L0b23
 La1d1		    rts
 
+/*
 drawDigit	    lda globals::playerData,x
 		    tay
 		    lda globals::L033C,x
@@ -246,3 +250,4 @@ drawDigit	    lda globals::playerData,x
 		    lda #$0a
 La1e3		    jsr spritelib::drawSprite
 		    rts
+*/

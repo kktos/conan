@@ -17,7 +17,8 @@ playerYspeed	.db 0
 
 currentXspeed	.db $ff
 
-L0309		.db $00
+; L0309
+isClimbing	.db $00
 L030a		.db $04
 
 keypressed	.db $00

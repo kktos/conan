@@ -168,6 +168,7 @@ L0b06               ldx #$03
                     jsr tone
                     rts
 
+; extra life sound ?
 L0b23               jsr S0a88
                     ldx #$20
                     ldy #$9a

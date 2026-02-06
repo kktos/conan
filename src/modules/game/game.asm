@@ -208,10 +208,10 @@ readUserInput	lda sys::KBD
 		beq onKeyPause ; pause
 
 		cmp globals::keyRestart ; 8D/0D/return
-		beq onKeyRestart ; restart globals::level
+		beq onKeyRestart ; restart level
 
 		cmp #$EE ; n : next
-		beq onKeyNext ; next globals::level
+		beq onKeyNext ; next level
 
 		cmp globals::keyJoystick
 		beq L1142 ; joystick only
@@ -293,7 +293,7 @@ L1178			ldx globals::isPlayerJumping
 			beq L1180
 			jmp L13e5
 
-L1180			ldx globals::L0309
+L1180			ldx globals::isClimbing
 			beq L1188
 			jmp L1553
 
@@ -368,7 +368,7 @@ onKeyRight		jsr S120a
 
 S120a			ldx globals::isPlayerJumping
 			bne L121b
-			ldx globals::L0309
+			ldx globals::isClimbing
 			bne L121b
 			ldx globals::L0314
 			bne L121b
@@ -391,7 +391,7 @@ L1228			inc globals::playerXspeed
 			rts
 
 updatePlayerSprite:
-			ldx globals::L0309
+			ldx globals::isClimbing
 			beq L123f
 
 			ldx globals::L0333
@@ -470,7 +470,7 @@ drawPlayer:
 			lda globals::playerYspeed
 			bne L12d0
 
-			lda globals::L0309
+			lda globals::isClimbing
 			bne L12cf
 
 			lda globals::spriteID
@@ -526,7 +526,7 @@ L1324			lda LAD83
 			ldx #$00
 			stx globals::playerXspeed
 			stx globals::playerYspeed
-			stx globals::L0309
+			stx globals::isClimbing
 			stx globals::isPlayerJumping
 			stx globals::L031E
 			stx globals::L0314
@@ -641,7 +641,7 @@ L1414		jsr S1953
 		jsr S15fe
 		rts
 
-S141e		ldx globals::L0309
+S141e		ldx globals::isClimbing
 		bne L1440
 
 		ldx globals::L0314
@@ -707,14 +707,14 @@ L1485		sec
 		rts
 
 ; 1487
-onKeyUp 	ldx globals::L0309
+onKeyUp 	ldx globals::isClimbing
 		beq L149d
 		ldx #$fe
 		stx globals::playerYspeed
 		rts
 
 ; 1492
-onKeyDown	ldx globals::L0309
+onKeyDown	ldx globals::isClimbing
 		beq L14b3
 		ldx #$02
 		stx globals::playerYspeed
@@ -726,7 +726,7 @@ L149d		jsr isPlayerOnLadder
 		bpl L14b2
 		ldx #$fe
 		stx globals::playerYspeed
-		inc globals::L0309
+		inc globals::isClimbing
 		jmp L1553
 L14b2		rts
 
@@ -737,7 +737,7 @@ L14b3		jsr isPlayerOnLadder
 		beq L14b2
 		ldx #$02
 		stx globals::playerYspeed
-		inc globals::L0309
+		inc globals::isClimbing
 		jmp L1553
 
 isPlayerOnLadder:
@@ -806,7 +806,7 @@ L1535		ldx #$ff
 
 L1543		clc
 		ldx #$00
-		stx globals::L0309
+		stx globals::isClimbing
 		rts
 
 toggleSpriteID:
@@ -828,7 +828,7 @@ L156a		ldx globals::L0317
 		beq L1574
 
 		ldx #$00
-		stx globals::L0309
+		stx globals::isClimbing
 L1574		rts
 
 S1575		ldx globals::keypressed
@@ -851,7 +851,7 @@ S1593		jsr S1441
 		bcc L15aa
 		ldx globals::isPlayerJumping
 		bne L15aa
-		ldx globals::L0309
+		ldx globals::isClimbing
 		bne L15aa
 		ldx globals::playerAxeState ; 00:off / FF: on / 01:back to player
 		bmi L15aa
@@ -1021,7 +1021,7 @@ L16d1		rts
 
 
 ; 16D2
-onKeyAxe	ldx globals::L0309
+onKeyAxe	ldx globals::isClimbing
 		bne L1701
 
 		ldx globals::L0314
@@ -1451,7 +1451,8 @@ fbitmap		.pstr "L0.BMP"
 		.out "loadLevel : ",.hex(loadLevel)
 		.end
 
-loadLevel	stx globals::L0381
+loadLevel:
+		stx globals::L0381
 ; 		lda #$00
 ; L1a3c		dex
 ; 		bmi init2
@@ -1482,8 +1483,12 @@ loadLevel	stx globals::L0381
 
 		read_file fdata
 		read_file fcode
-		read_file fbitmap
 
+		; only level 0 has a bitmap
+		lda globals::L0381
+		bne :+
+		read_file fbitmap
+:
 		rts
 
 		.if 0
@@ -1801,7 +1806,7 @@ readJoystick:
 		ldx globals::inputMode ; 01:kbd ff:joystick
 		bpl L1cbf ; if kdb
 
-		ldx globals::L0309
+		ldx globals::isClimbing
 		beq L1ccf
 		ldx #$00
 		jmp L1d01
@@ -1876,7 +1881,7 @@ resetVars	bit sys::KBDSTRB
 		stz globals::playerAxeState ; 00:off / FF: on / 01:back to player
 		stz globals::L0314
 		stz globals::L0315
-		stz globals::L0309
+		stz globals::isClimbing
 		stz globals::playerXspeed
 		stz globals::playerYspeed
 

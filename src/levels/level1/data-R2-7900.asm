@@ -6,20 +6,30 @@
 		.end
 
 
-L7900		.db $00
-L7901		.db $00
-L7902		.db $00
-L7903		.db $00
-L7904		.db $00
-L7905		.db $01
-L7906		.db $44
-L7907		.db $46
-L7908		.db $45
-L7909		.db $01
-L790A		.db $00
-L790B		.db $06
-L790C		.db $00
+batPathIndex		.db $00
+batTempX		.db $00
+batState		.db $00 ; 00: Active, 01: Exploding, FF: Dead
+effectX			.db $00
+effectY			.db $00
+effectSpriteID		.db $01
 
+; Sprite IDs for explosion animation
+; Sequence: $44 -> $46 -> $45
+animExplosionSeq1	.db $44
+animExplosionSeq2	.db $46
+animExplosionSeq3	.db $45
+
+effectAnimFrameIdx	.db $01
+splashActive		.db $00 ; 00: Falling/Exploding, 08: Splash on ground
+splashTimer		.db $06
+splashRectIdx		.db $00
+
+; Other Sprite IDs identified:
+; $47, $48, $49 : Splash/Dust animation
+
+		.align $100
+
+/*
 		.hex
 			00 00 00
 			00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
@@ -38,3 +48,4 @@ L790C		.db $00
 			00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 			00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 		.end
+*/
