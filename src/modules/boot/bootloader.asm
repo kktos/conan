@@ -16,11 +16,19 @@ Start:
 	lsr a
 	ora #$C0
 	sta tmpPtr+1
+	sta callSP+2
 
 	lda #$FF
 	sta tmpPtr
 	lda (tmpPtr)
 	sta tmpPtr
+	sta callSP+1
+
+	inc smartport::bloklo
+	inc smartport::adrhi
+	inc smartport::adrhi
+callSP:
+	jsr $FFFF
 
         jsr sys::HOME
 
