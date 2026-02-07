@@ -3,18 +3,30 @@
 
 	.namespace tinyDOS scope="lc_bank2"
 
+BUFFER 		= $0A00
+
 namelen 	= $02
 tmplen 		= $03
 blockPage	= $04
-BUFFER 		= $0A00
+blockStart	= $05
+blockCount	= $06
 
 SmartPortEntry:
 	jmp $FFFF
 
+;
+; x/y points to
+;  .pstr filename
+;
 LoadFile:
+	stz blockStart		; read from first file block
+	lda #$FF 		; read the 256 block, i.e all
+	sta blockCount
+
 	stx tmpPtr
 	sty tmpPtr+1
 
+internalLoadFile:
 	; read
 	lda #$01
 	sta smartport::command
@@ -24,11 +36,8 @@ LoadFile:
 	sta smartport::bloklo
 	stz smartport::blokhi
 
-	lda #>BUFFER
-	sta smartport::adrhi
-	stz smartport::adrlo
-
 dirLoop:
+	jsr initBuffer
         jsr SmartPortEntry
 
         jsr FindFile
@@ -37,9 +46,6 @@ dirLoop:
         jmp LoadFileBlocks
 
 :
-	lda #>BUFFER
-	sta smartport::adrhi
-
 	; get next directory block
 	lda BUFFER+2
 	sta smartport::bloklo
@@ -51,6 +57,32 @@ dirLoop:
 	bne dirLoop
 
 	jmp ShowError
+
+;
+; x/y points to
+;  .db block start
+;  .db block count
+;  .pstr filename
+;
+LoadFromFile:
+	stx tmpPtr
+	sty tmpPtr+1
+
+	lda (tmpPtr)
+	sta blockStart
+	inc tmpPtr
+
+	lda (tmpPtr)
+	sta blockCount
+	inc tmpPtr
+	bra internalLoadFile
+
+initBuffer:
+	lda #>BUFFER
+	sta smartport::adrhi
+	stz smartport::adrlo
+	rts
+
 
 FindFile:
 	stz blockPage
@@ -145,49 +177,9 @@ NoMatch:
         rts
 
 LoadFileBlocks:
-	; addMemRegion(filename, addr, len, color)
-	lda tmpPtr
-	sta start
-	lda tmpPtr+1
-	sta start+1
+	jsr dbgAddMemRegion
 
-        ; ; block size
-	; ldy #prodos::blockSize
-        ; lda (srcPtr),y
-        ; sta size
-        ; iny
-        ; lda (srcPtr),y
-        ; sta size+1
-
-        ; block size
-	ldy #prodos::EOF
-        lda (srcPtr),y
-        sta size
-        iny
-        lda (srcPtr),y
-        sta size+1
-
-        ; filename
-        lda srcPtr+1
-        sta name+1
-	clc
-	lda #prodos::filename
-        adc srcPtr
-        sta name
-	bcc :+
-        inc name+1
-:
-
-	BRK
-	.db $03
-start:	.dw $0000
-size:	.dw $0000
-name:	.dw $0000
-	.dw $0000
-
-	lda #>BUFFER
-	sta smartport::adrhi
-	stz smartport::adrlo
+	jsr initBuffer
 
 	; read index block
         jsr SmartPortEntry
@@ -203,13 +195,18 @@ name:	.dw $0000
 	sta tmpPtr+1
 	stz tmpPtr
 
-	ldy #$00
+	; =0 LoadFile
+	; =xx LoadFromFile
+	ldy blockStart
 loop:
 	lda (tmpPtr),y
 	beq loaded
 
         sta smartport::bloklo
         jsr SmartPortEntry
+
+	dec blockCount
+	beq loaded
 
 	inc smartport::adrhi
 	inc smartport::adrhi
@@ -250,6 +247,51 @@ ErrorMsgFile:
         .fill 15, $A0
 	.db 0
 
+dbgAddMemRegion:
+
+	lda tmpPtr
+	sta start
+	lda tmpPtr+1
+	sta start+1
+
+        ; ; block size
+	; ldy #prodos::blockSize
+        ; lda (srcPtr),y
+        ; sta size
+        ; iny
+        ; lda (srcPtr),y
+        ; sta size+1
+
+        ; block size
+	ldy #prodos::EOF
+        lda (srcPtr),y
+        sta size
+        iny
+        lda (srcPtr),y
+        sta size+1
+
+        ; filename
+        lda srcPtr+1
+        sta name+1
+	clc
+	lda #prodos::filename
+        adc srcPtr
+        sta name
+	bcc :+
+        inc name+1
+:
+	; addMemRegion(filename, addr, len, color)
+
+	BRK
+	.db $03
+start:	.dw $0000
+size:	.dw $0000
+name:	.dw $0000
+	.dw $0000
+
+	rts
+	.align $10
+	.text "tiny_dos"
 	.end namespace
 
 	; .org $A00 - 5
