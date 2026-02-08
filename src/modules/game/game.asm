@@ -4,7 +4,6 @@
 
 		.namespace game1
 
-		.export tone
 
 .macro assertGameStruct
 	labels = .array("LAC00","LAC20","LAC40","LAC60","LAC80","LACA0","LACC0","LACF0")
@@ -12,7 +11,7 @@
 .end
 
 ; highscoreses
-startLevel 	=	level0::levelEntrypoint ; $A000
+levelEntrypoint 	=	level0::levelEntrypoint ; $A000
 
 ; collision rects
 ; left
@@ -156,7 +155,8 @@ L1085		dex
 
 L108c		jsr L1a00
 
-restart		ldx #$00
+reloadLevel
+		ldx #$00
 		; sprites 	$7500:78FF
 		; data 		$7900:78FF
 		; data 		$7A00:9BFF
@@ -165,13 +165,21 @@ restart		ldx #$00
 		jsr loadLevel
 
 		; anim conan jump / high score
-		jsr startLevel
+		jsr levelEntrypoint
 
-levelLoop	jsr resetVars
+restartLevel
+		jsr resetVars
 		jsr resetVars2
 		jsr loadInitLevel
 
-:		jsr startLevel
+mainLoop
+		lda $C019
+		bpl mainLoop
+:
+		lda $C019
+		bmi :-
+
+		jsr levelEntrypoint
 		stz globals::L0383
 		jsr readJoyX
 		jsr S179e
@@ -191,15 +199,35 @@ levelLoop	jsr resetVars
 
 		jsr resetIfLastLevel
 
-		jmp :-
+		jmp mainLoop
+
+
 
 onKeyNext
 		bit sys::KBDSTRB
 		inc globals::level
 		jmp L18e6
+onKeyDie
+		bit sys::KBDSTRB
+		;stz globals::playerLifeCount
+		pla
+		pla
+		jmp drawDeathMsg
+
+onKeySpritesDbg
+		jmp spritesDebug
 
 readUserInput	lda sys::KBD
 		sta globals::keypressed
+
+		cmp #$2D ; - : sprites debug
+		beq onKeySpritesDbg
+
+		cmp #$F8 ; x : immediate death
+		beq onKeyDie
+
+		cmp #$EE ; n : next
+		beq onKeyNext ; next level
 
 		cmp globals::keySoundSwitch ; D3/53/S
 		beq L1154
@@ -209,9 +237,6 @@ readUserInput	lda sys::KBD
 
 		cmp globals::keyRestart ; 8D/0D/return
 		beq onKeyRestart ; restart level
-
-		cmp #$EE ; n : next
-		beq onKeyNext ; next level
 
 		cmp globals::keyJoystick
 		beq L1142 ; joystick only
@@ -234,7 +259,7 @@ L1104		jsr readJoystick
 ; 1108
 onKeyRestart	jsr updateHiScore
 		bit sys::KBDSTRB
-		jmp levelLoop
+		jmp restartLevel
 
 resetGame
 		bit sys::KBDSTRB
@@ -242,7 +267,7 @@ resetGame
 		bit sys::MIXEDOFF
 		bit sys::HIRESON
 		bit sys::PAGE2OFF
-		jmp restart
+		jmp reloadLevel
 
 ; 1123
 onKeyPause		bit sys::KBDSTRB
@@ -308,6 +333,61 @@ L1190			jsr readKeyboard
 			jsr movePlayer
 			jsr drawPlayer
 			rts
+
+spritesDebug:
+		bit sys::KBDSTRB
+
+		lda #$4f
+		sta $00
+
+:loop
+		jsr utils::clearScreen
+
+		lda #0
+		sta spritelib::textX
+		lda #0
+		sta spritelib::textY
+
+		ldx #<testString
+		ldy #>testString
+		jsr spritelib::drawText
+
+		lda $00
+		sta :id
+
+		brk
+		.db $01
+		.dw logString
+:id		.db $00
+
+		ldx #10
+		ldy #16
+		lda $00
+		jsr spritelib::drawSpriteM
+		; jsr drawSpriteBis
+
+		; drawSprite $00,#10,#16
+
+:		lda sys::KBD
+		bpl :-
+		bit sys::KBDSTRB
+		and #$7f
+
+		cmp #"-"
+		bne :+
+
+		dec $00
+		bra :loop
+:
+		cmp #"+"
+		bne :+
+
+		inc $00
+		bra :loop
+:
+		rts
+logString	.cstr "id: %h"
+testString	.cstr "THIS IS WORKING"
 
 readKeyboard:
 			ldx globals::L0378
@@ -1259,8 +1339,6 @@ L18b6		dec globals::levelCnt
 		jsr scoreAdd100
 		jmp L18b6
 
-		.echo "HOOK",.hex(*)
-
 :		ldx globals::L037E
 		beq L18d9
 
@@ -1352,7 +1430,8 @@ S1953:
 		stx globals::L031E
 :		rts
 
-drawDigit	lda globals::playerData,x
+drawDigit:
+		lda globals::playerData,x
 		tay
 		lda globals::L033C,x
 		tax
@@ -1404,18 +1483,19 @@ L19c8		jsr updLifeCount
 updLifeCount	ldx #globals::playerLifeCount-globals::playerData ; #$06
 		jsr drawDigit
 		dec globals::playerLifeCount ; cheat
-		bmi :+
+		bmi noMoreLife
 
 		ldx #globals::playerLifeCount-globals::playerData ; #$06
 		jsr drawDigit
 		rts
 
-:		inc globals::playerLifeCount
+noMoreLife
+		inc globals::playerLifeCount
 		ldx #globals::playerLifeCount-globals::playerData
 		jsr drawDigit
 		jsr updateHiScore
-		jsr S1c6b
-		jmp restart
+		jsr drawDeathMsg
+		jmp reloadLevel
 
 L1a00		ldx #globals::playerAxeCountLo-globals::playerData
 		stx globals::L0322
@@ -1472,7 +1552,7 @@ loadLevel:
 		sta fcode+2
 		sta fbitmap+2
 
-		read_file fbkgnd
+		dosLoadFile fbkgnd
 
 		; unpack & display
 		; jsr unpackToHgr
@@ -1481,13 +1561,13 @@ loadLevel:
 		ldy #183
 		jsr unpack::run
 
-		read_file fdata
-		read_file fcode
+		dosLoadFile fdata
+		dosLoadFile fcode
 
 		; only level 0 has a bitmap
 		lda globals::L0381
 		bne :+
-		read_file fbitmap
+		dosLoadFile fbitmap
 :
 		rts
 
@@ -1695,11 +1775,14 @@ L1bdf		ldx #$00
 		jsr drawDigit
 		rts
 
-S1bf7		jsr S1bfe
-		jsr S1c20
+;1bf7
+drawDeadPanel:
+		jsr clearDeadPanel
+		jsr cp75toHGR
 		rts
 
-S1bfe		ldx #$3b
+clearDeadPanel:
+		ldx #$3b
 		stx globals::unknown_yPos
 L1c03		jsr S1c11
 		inc globals::unknown_yPos
@@ -1717,7 +1800,9 @@ L1c18		sta ($1a),y
 		bne L1c18
 		rts
 
-S1c20		ldx #$00
+; copy image @$7500 to HGR line $41 to $79
+cp75toHGR:
+		ldx #$00
 		stx $1c
 		ldx #$75
 		stx $1d
@@ -1753,25 +1838,33 @@ getHGRLineAddr
 		lda utils::hgrHigh,x
 		sta $1b
 		rts
+;$1c6b
+drawDeathMsg:
+		jsr random
+		and #$03		; 0,4,8 or 12
 
-S1c6b		jsr S1e97
-		and #$03
-		asl
-		asl
-		sta rwts_sec
+		; asl
+		; asl
+		; sta rwts_sec
+		; lda globals::level
+		; clc
+		; adc #$1a
+		; sta rwts_trk
+		; ldx #$75
+		; stx rwts_buf+1
+		; ldx #$00
+		; stx rwts_buf
+		; jsr readTrack
+
+		lsr			; /2 coz a block is $200
+		sta fDeadSprites
 		lda globals::level
 		clc
-		adc #$1a
-		sta rwts_trk
-		ldx #$75
-		stx rwts_buf+1
-		ldx #$00
-		stx rwts_buf
-		;jsr readTrack
-		brk
-		brk
-		brk
-		jsr S1bf7
+		adc #$30
+		sta fDeadSprites+4
+		dosLoadFromFile(fDeadSprites)
+
+		jsr drawDeadPanel
 
 		bit sys::KBDSTRB
 		ldy #$60
@@ -1791,9 +1884,14 @@ L1c93		lda #$ff
 L1ca5		bit sys::KBDSTRB
 		cpy #$00
 		beq L1caf
-		jmp levelLoop
+		jmp restartLevel
 
 L1caf		rts
+
+fDeadSprites
+		.db $00
+		.db $02
+		.pstr "L0.DEAD"
 
 S1cb0		inc globals::soundCnt1
 		lda globals::soundCnt1
@@ -2055,7 +2153,8 @@ L1e80		cmp sys::SPKR-$10,x
 		bne L1e78
 		rts
 
-S1e97		rol $4e
+random:
+		rol $4e
 		rol globals::soundCnt1
 		rol globals::sountCnt2
 		lda $4e

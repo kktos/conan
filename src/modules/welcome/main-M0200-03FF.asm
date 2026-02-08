@@ -42,18 +42,19 @@ L0254		jsr S02af
 		; .include "load-part2.asm"
 
 		; read_diskw $0300, $A700, $B700-$A700
-		read_file fspritelib
+		dosLoadFile fspritelib
 
 		; read_diskw $0500, $1000, $1000
-		read_file fgame_code
+		dosLoadFile fgame_code
 
 		; read_diskw $0600, $4000, $4000
 		; is it useful ?
-		read_file fsprites_data
+		dosLoadFile fsprites_data
 
 		; read_diskw $0400, $0300, $1000-$0300
-		read_file fvariables
+		dosLoadFile fvariables
 
+		delRegions("WELC", "INTR")
 
 		; jsr intro.showFlipDisk
 		jmp game1::gameStart
@@ -91,13 +92,13 @@ L02be		sta ($1a),y
 		; read_diskw $0A00, $6000, $1000
 		; read_diskw $0A00, $6000, $0E00
 
-		read_file fwelcome_data
+		dosLoadFile fwelcome_data
 
 		;lda sys::LCBANK2
 		;lda sys::LCBANK2
 
 		; read_diskw $0102, $D000, $0E00
-		read_file futils
+		dosLoadFile futils
 		; MVPw $6E00, $D000, $200
 
 ; unpack to hires
@@ -121,7 +122,7 @@ L02be		sta ($1a),y
 		; load TB to TF in $6000:AFFF and T4S0:$1000 ->L0257
 		;
 		; .include "load-part1.asm"
-		read_file fintro
+		dosLoadFile fintro
 
 		;;; useless now
 		; read_diskw $0400, $1000, $0100

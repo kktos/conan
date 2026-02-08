@@ -20,6 +20,10 @@
 	.include "level1.data-R5-AC00.asm"
 
 
+	.module "L1.DEAD"
+	.segment L1_DEAD
+	.include "death.data.asm"
+
 	assertGameStruct
 
 	.end namespace

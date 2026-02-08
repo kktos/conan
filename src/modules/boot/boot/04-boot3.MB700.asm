@@ -38,7 +38,7 @@ BOOT3:
 		; lda #>rwts_iob
 		; jsr enterwts
 
-		read_file fwelcome
+		dosLoadFile fwelcome
 
 		jmp welcome::main
 

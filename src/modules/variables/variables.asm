@@ -197,18 +197,18 @@ axeSndCnt1	.db $0a
 L0383		.db $00
 
 ; key definitions
-keyLeft		.db $88
-keyRight	.db $95
-keyUp		.db $c1
-keyDown		.db $da
-keyJump		.db $f1
-keyAxe		.db $a0
-keyRestart	.db $8d
+keyLeft		.db $88	; left arrow
+keyRight	.db $95 ; right arrow
+keyUp		.db $8B ; up arrow
+keyDown		.db $8A ; down arrow
+keyJump		.db " " | $80 ; space
+keyAxe		.db "a" | $80
+keyRestart	.db $0D | $80 ; return
 keySoundSwitch	.db "S" | $80
 keyJoystick	.db "J" | $80
 keyKeyboard	.db "K" | $80
 		.db $ce
-keyPause	.db $9b
+keyPause	.db $1B | $80 ; esc
 
 ;L0390
 		.hex { 15 16 17 18 19 1a eb 69 }

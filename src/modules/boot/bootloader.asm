@@ -88,13 +88,9 @@ RelocateLoop:
 	.dw regionname
 	.dw $0000
 
-	ldx #<TargetName
-	ldy #>TargetName
-	jsr tinyDOS::LoadFile
-	jmp (srcPtr)
-
-TargetName:
-        .pstr "WELCOME"
+	ldx #<tinyDOS::ErrorMsgFile
+	ldy #>tinyDOS::ErrorMsgFile
+	jmp tinyDOS::RunFile
 
 regionname:
         .cstr "tiny_dos"

@@ -1,7 +1,7 @@
 ;code-R4-A000
 
 startLevel
-		jsr Sa017
+		jsr updateBat
 		lda #$80
 		jsr utils::wait
 
@@ -14,7 +14,8 @@ startLevel
 		jsr checkForExtraLife
 La016		rts
 
-Sa017		ldx batState
+updateBat:
+		ldx batState
 		bne La05c
 
 		ldx batPathIndex
@@ -48,9 +49,9 @@ drawBat		ldx batPathIndex
 		jsr spritelib::drawSpriteM
 		rts
 
-La05c		bmi La016
+La05c		bmi La016		; bat dead already ?
 
-		ldx splashActive
+		ldx splashActive	; is Exploding
 		bne La079
 
 		jsr Sa13a
@@ -59,7 +60,7 @@ La05c		bmi La016
 		inc effectY
 		jsr Sa14c
 		jsr Sa13a
-		jsr Sa165
+		jsr drawBatExplosion
 		rts
 
 La079		dec splashTimer
@@ -180,8 +181,11 @@ Sa14c		    ldx effectAnimFrameIdx
 		    stx effectAnimFrameIdx
 La164		    rts
 
-Sa165		    ldx #$ff
+; $A165
+drawBatExplosion:
+		    ldx #$ff
 La167		    inx
+		; check top
 		    lda LAC40,x
 		    beq La1af
 		    clc
@@ -194,10 +198,12 @@ La167		    inx
 		    cmp effectY
 		    bcc La167
 
+		; check left
 		    lda LAC00,x
 		    cmp effectX
 		    bcs La167
 
+		; check right
 		    lda LAC20,x
 		    cmp effectX
 		    bcc La167
@@ -237,17 +243,3 @@ checkForExtraLife:
 		    stx checkForExtraLife
 		    jsr soundlib::L0b23
 La1d1		    rts
-
-/*
-drawDigit	    lda globals::playerData,x
-		    tay
-		    lda globals::L033C,x
-		    tax
-		    tya
-		    ldy #$b9
-		    cmp #$00
-		    bne La1e3
-		    lda #$0a
-La1e3		    jsr spritelib::drawSprite
-		    rts
-*/

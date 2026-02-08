@@ -11,7 +11,7 @@
 		stz $047e
 		stz $04fe
 
-		read_file fwelcome
+		dosLoadFile fwelcome
 		jmp welcome::main
 
 fwelcome:

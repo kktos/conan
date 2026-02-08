@@ -11,7 +11,8 @@
 
 ; .segment VARIABLES	{ start: $0300, end: $FFF, pad: $55 }
 .segment VARIABLES	{ start: $0300, size: $100 }
-.segment GAME		{ start: $1000, end: $1FFF, pad: $00 }
+; .segment GAME		{ start: $1000, end: $1FFF, pad: $00 }
+.segment GAME		{ start: $0A00, size: 0 }
 ; .segment SPRITES_DATA	{ start: $4000, end: $7FFF, pad: $00 }
 .segment SPRITES_DATA	{ start: $4000, size: 0 }
 
@@ -23,6 +24,7 @@
 .segment L1_BKGD	{ start: $7500, end: $7CFF, pad: $AA }
 .segment L1_DATA	{ start: $7500, end: $9BFF, pad: $55 }
 .segment L1_CODE	{ start: $A000, end: $ADFF, pad: $D5 }
+.segment L1_DEAD	{ start: $7500, size: $0400 * 4 }
 
 .segment L2_BKGD	{ start: $7500, end: $7EFF, pad: $AA }
 .segment L2_DATA	{ start: $7500, end: $9BFF, pad: $55 }

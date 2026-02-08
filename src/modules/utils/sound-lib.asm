@@ -50,32 +50,32 @@ L0a4f               rts
 
 L0a50               ldx #$08
                     ldy #$70
-                    jsr tone
+                    jsr game1::tone
                     rts
 
 L0a58               ldx #$60
                     ldy #$40
-                    jsr tone
+                    jsr game1::tone
                     ldx #$30
                     ldy #$60
-                    jsr tone
+                    jsr game1::tone
                     ldx #$10
                     ldy #$f0
-                    jsr tone
+                    jsr game1::tone
                     rts
 
 L0a6e               ldx #$90
                     ldy #$10
-                    jsr tone
+                    jsr game1::tone
                     ldx #$30
                     ldy #$a0
-                    jsr tone
+                    jsr game1::tone
                     rts
 
 L0a7d               jsr S0a88
                     ldx #$d0
                     ldy #$40
-                    jsr tone
+                    jsr game1::tone
                     rts
 
 S0a88               lda #$01
@@ -108,27 +108,27 @@ L0aaa               dex
 
 L0ab6               ldx #$05
                     ldy #$50
-                    jsr tone
+                    jsr game1::tone
                     ldx #$20
                     ldy #$30
-                    jsr tone
+                    jsr game1::tone
                     rts
 
 L0ac5               ldx #$08
                     ldy #$e0
-                    jsr tone
+                    jsr game1::tone
                     jsr L0a9f
                     ldx #$80
                     ldy #$70
-                    jsr tone
+                    jsr game1::tone
                     rts
 
 L0ad7               ldx #$18
                     ldy #$50
-                    jsr tone
+                    jsr game1::tone
                     ldx #$28
                     ldy #$68
-                    jsr tone
+                    jsr game1::tone
                     rts
 
 L0ae6               tya
@@ -136,7 +136,7 @@ L0ae7               pha
                     jsr S0b51
                     tax
                     ldy #$02
-                    jsr tone
+                    jsr game1::tone
                     pla
                     sec
                     sbc #$01
@@ -156,38 +156,38 @@ L0af8               jsr L0a9f
 
 L0b06               ldx #$03
                     ldy #$70
-                    jsr tone
+                    jsr game1::tone
                     ldx #$f0
                     ldy #$45
-                    jsr tone
+                    jsr game1::tone
                     ldx #$d0
                     ldy #$20
-                    jsr tone
+                    jsr game1::tone
                     ldx #$80
                     ldy #$18
-                    jsr tone
+                    jsr game1::tone
                     rts
 
 ; extra life sound ?
 L0b23               jsr S0a88
                     ldx #$20
                     ldy #$9a
-                    jsr tone
+                    jsr game1::tone
                     ldx #$10
                     ldy #$b0
-                    jsr tone
+                    jsr game1::tone
                     jsr L0a9f
                     ldx #$80
                     ldy #$50
-                    jsr tone
+                    jsr game1::tone
                     rts
 
 L0b3f               ldx #$10
                     ldy #$d0
-                    jsr tone
+                    jsr game1::tone
                     ldx #$80
                     ldy #$40
-                    jsr tone
+                    jsr game1::tone
                     jsr S0a88
                     rts
 

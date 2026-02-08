@@ -97,53 +97,8 @@ pixels=*+1
 :		rts
 */
 
-logString	.cstr "id: %h"
-
 ; title screen / conan jumping over spring / hi-score
 start:
-		bit sys::KBDSTRB
-
-		lda #$4f
-		sta $00
-
-:loop
-		jsr utils::clearScreen
-
-		lda $00
-		sta :id
-
-		brk
-		.db $01
-		.dw logString
-:id		.db $00
-
-		ldx #10
-		ldy #16
-		lda $00
-		jsr spritelib::drawSpriteM
-		; jsr drawSpriteBis
-
-		; drawSprite $00,#10,#16
-
-:		lda sys::KBD
-		bpl :-
-		bit sys::KBDSTRB
-		and #$7f
-
-		cmp #"-"
-		bne :+
-
-		dec $00
-		bra :loop
-:
-		cmp #"+"
-		bne :+
-
-		inc $00
-		bra :loop
-:
-
-
 		bit sys::KBDSTRB
 		jsr initHighScore
 

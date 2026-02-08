@@ -1,4 +1,4 @@
-
+/*
 	.macro MVPw src, dst, len
 		; WDM MVP.w
 		.db $42, $44
@@ -24,7 +24,7 @@
 		bpl :-
 	.end
 
-; 	.macro read_file(filename) {
+; 	.macro dosLoadFile(filename) {
 ; 		; WDM disk_read_file
 ; 		.db $42, $11
 ; 		.dw filename
@@ -39,11 +39,17 @@
 		.db 1
 		.dw parm1
 	}
-
-	.macro read_file(filename) {
+*/
+	.macro dosLoadFile(filename) {
 		ldx #<filename
 		ldy #>filename
 		jsr tinyDOS::LoadFile
+	}
+
+	.macro dosLoadFromFile(params) {
+		ldx #<params
+		ldy #>params
+		jsr tinyDOS::LoadFromFile
 	}
 
 	.macro addMemRegion(filename, addr, len, bank) {
@@ -53,3 +59,23 @@
 		.dw filename
 		.dw bank
 	}
+
+	.macro delRegions(...list) {
+		brk
+		.db $04
+		.db .len(list)
+
+		.for name of list as idx {
+			.dw .label("region" + .str(idx))
+		}
+
+		bra :+
+
+		.for name of list as idx {
+			.let "region" + .str(idx) = *
+			.cstr name
+		}
+
+:
+	}
+

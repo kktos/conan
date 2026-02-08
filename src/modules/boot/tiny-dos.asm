@@ -3,7 +3,7 @@
 
 	.namespace tinyDOS scope="lc_bank2"
 
-BUFFER 		= $0A00
+BUFFER 		= $0800
 
 namelen 	= $02
 tmplen 		= $03
@@ -14,14 +14,20 @@ blockCount	= $06
 SmartPortEntry:
 	jmp $FFFF
 
+LoadFile:
+	jmp LoadFileEntry
+LoadFromFile:
+	jmp LoadFromFileEntry
+RunFile:
+	jmp RunFileEntry
+
 ;
 ; x/y points to
 ;  .pstr filename
 ;
-LoadFile:
+LoadFileEntry:
 	stz blockStart		; read from first file block
-	lda #$FF 		; read the 256 block, i.e all
-	sta blockCount
+	stz blockCount		; read the 256 block, i.e all
 
 	stx tmpPtr
 	sty tmpPtr+1
@@ -64,7 +70,7 @@ dirLoop:
 ;  .db block count
 ;  .pstr filename
 ;
-LoadFromFile:
+LoadFromFileEntry:
 	stx tmpPtr
 	sty tmpPtr+1
 
@@ -82,6 +88,14 @@ initBuffer:
 	sta smartport::adrhi
 	stz smartport::adrlo
 	rts
+
+;
+; x/y points to
+;  .pstr filename
+;
+RunFileEntry:
+	jsr LoadFileEntry
+	jmp (srcPtr)
 
 
 FindFile:
@@ -199,13 +213,15 @@ LoadFileBlocks:
 	; =xx LoadFromFile
 	ldy blockStart
 loop:
+	dec blockCount
+
 	lda (tmpPtr),y
 	beq loaded
 
         sta smartport::bloklo
         jsr SmartPortEntry
 
-	dec blockCount
+	lda blockCount
 	beq loaded
 
 	inc smartport::adrhi
@@ -213,6 +229,7 @@ loop:
 	iny
 	bne loop
 loaded:
+
 	rts
 
 ShowError:
@@ -222,6 +239,8 @@ ShowError:
         ldy #$00
         lda (tmpPtr),y
 	tay
+	lda #$00
+	sta ErrorMsgFile+1,y
 :
         lda (tmpPtr),y
 	sta ErrorMsgFile,y
@@ -244,7 +263,8 @@ Hang:
 ErrorMsg:
         .text "UNABLE TO FIND "
 ErrorMsgFile:
-        .fill 15, $A0
+        .pstr "WELCOME"
+        .align 15, $A0
 	.db 0
 
 dbgAddMemRegion:
@@ -254,6 +274,13 @@ dbgAddMemRegion:
 	lda tmpPtr+1
 	sta start+1
 
+	lda blockCount 		; =0 LoadFile => size = EOF
+	beq setSizeEOF
+
+	asl
+	sta size+1
+	bra setFilename
+
         ; ; block size
 	; ldy #prodos::blockSize
         ; lda (srcPtr),y
@@ -262,6 +289,7 @@ dbgAddMemRegion:
         ; lda (srcPtr),y
         ; sta size+1
 
+setSizeEOF:
         ; block size
 	ldy #prodos::EOF
         lda (srcPtr),y
@@ -270,6 +298,7 @@ dbgAddMemRegion:
         lda (srcPtr),y
         sta size+1
 
+setFilename:
         ; filename
         lda srcPtr+1
         sta name+1
