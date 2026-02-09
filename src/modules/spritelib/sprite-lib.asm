@@ -21,7 +21,7 @@
 		jsr spritelib::drawSprite
 }
 
-.function drawSprite {
+.proc drawSprite {
 		sty yPos
 		tay
 		lda spriteLo-1,y
@@ -114,7 +114,7 @@ Laeb3               rts
 }
 
 ; $B300
-.function drawSpriteM {
+.proc drawSpriteM {
 		sty yPos
 		tay
 		lda spriteLo-1,y
@@ -213,4 +213,22 @@ mask2=*+1
 		beq loop
 		inc isCollision
 		jmp loop
+}
+
+; Acc : sprite ID
+.proc getSpriteDimensions {
+		tay
+		lda spriteLo-1,y
+		sta $1c
+		lda spriteHi-1,y
+		sta $1d
+
+		ldy #$00
+		lda ($1c),y
+		sta dsWidth
+		iny
+		lda ($1c),y
+		and #$7F
+		sta dsHeight
+		rts
 }
