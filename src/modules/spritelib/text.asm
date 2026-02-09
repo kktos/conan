@@ -1,8 +1,6 @@
 ; text.asm
 ; Renders text using tools/font.asm and spritelib tables
 
-        .include "font.asm"
-
 fontPtr 	.equ $00
 textPtr 	.equ $02
 temp 		.equ $04
@@ -17,23 +15,18 @@ temp 		.equ $04
         ; This means (X % 7) is constant for the whole string!
         ; We only need to increment the byte offset by 1 for each character.
 
-        ; Calculate Byte Offset = LB000[X]
-        ldy textX
-        lda LB000,y
-        sta currentByteOffset
-
-        ; Calculate Shift = X % 7
-        ; We compute X - (ByteOffset * 7)
-        asl         ; * 2
-        asl         ; * 4
-        asl         ; * 8
-        sec
-        sbc currentByteOffset ; * 7
-        sta temp
-
+        ; Calculate Byte Offset and Shift
         lda textX
-        sec
-        sbc temp
+        ldy #0
+        cmp #7
+        bcc @doneDiv
+@divLoop:
+        sbc #7
+        iny
+        cmp #7
+        bcs @divLoop
+@doneDiv:
+        sty currentByteOffset
         sta currentShift
 
 charLoop:
@@ -47,8 +40,16 @@ charLoop:
 
         jsr drawChar
 
-        ; Advance to next character position (7 pixels = 1 byte)
+        ; Advance to next character position (8 pixels = 1 byte + 1 pixel)
         inc currentByteOffset
+        inc currentShift
+        lda currentShift
+        cmp #7
+        bcc :+
+        sbc #7
+        sta currentShift
+        inc currentByteOffset
+:
 
         bra charLoop
 
@@ -139,33 +140,41 @@ rowLoop:
         ldy #0
         lda (fontPtr),y
 
-        ; Reverse bits (Font is MSB-left, Screen is LSB-left)
-        ; Font: 765432xx -> Screen: 012345xx
-        jsr reverse6Bits
+        sta temp
+        stz temp+1
 
         ; Shift to position
         ldy currentShift
         beq noShift
-:       asl
-        dey
-        bne :-
-noShift:
-        ; A now contains the bits shifted into position.
-        ; Note: If shift > 1, bits might spill into the next byte.
-        ; However, for simplicity and speed, and since width=6,
-        ; we write to currentByte and currentByte+1.
+shiftLoop:
+        asl temp
+        bpl :+
 
+        lda temp
+        and #$7f
+        sta temp
+        sec
+        bra :++
+
+:       clc
+
+:
+        rol temp+1
+        dey
+        bne shiftLoop
+noShift:
         ldy currentByteOffset
-        ora ($1c),y     ; OR with screen contents
+        lda temp
+        ora ($1c),y
         sta ($1c),y
 
-        ; Handle spillover if any (simple approach: write same byte shifted right by 7?)
-        ; Actually, with ASL, bits moved to high part.
-        ; We need 16-bit shift logic if we want to be precise,
-        ; but since we process byte-by-byte and stride is 7,
-        ; the "spillover" is effectively handled by the next char's drawing
-        ; OR we need to write the high bits to offset+1.
-        ; Given the constraints and simplicity, we assume chars don't overlap destructively.
+        lda temp+1
+        beq :+
+        and #$7f
+        iny
+        ora ($1c),y
+        sta ($1c),y
+:
 
         ; Increment font ptr
         inc fontPtr
@@ -179,25 +188,15 @@ noShift:
 return:
         rts
 
-; Helper: Reverse top 6 bits of A (765432..) to bottom 6 bits (..234567)
-reverse6Bits:
-	sta temp
-	lda #0
-	ldy #6
-:
-	asl temp    ; Shift bit 7 into carry
-	ror         ; Rotate carry into bit 7
-	dey
-	bne :-
-	lsr         ; Shift right to align
-	lsr
-	rts
-
 .end
 
 rowIndices: .byte 0, 1, 2, 3, 4
 
-	.align $100
+	.align $10
+
+        .include "font.asm"
+
+	.align $10
 
 ; Lookup Tables
 FontTable_Alpha_Lo:

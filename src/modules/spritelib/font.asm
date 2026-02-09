@@ -1,157 +1,42 @@
-; prefix = 	letter_
-; width = 	6
-; height = 	5
-; gapX = 	1
-letter_A:
-.hex
-    FC CC FC CC CC
-.end
-letter_B:
-.hex
-    F0 CC F0 CC F0
-.end
-letter_C:
-.hex
-    FC C0 C0 C0 FC
-.end
-letter_D:
-.hex
-    F0 CC CC CC F0
-.end
-letter_E:
-.hex
-    FC C0 F0 C0 FC
-.end
-letter_F:
-.hex
-    FC C0 F0 C0 C0
-.end
-letter_G:
-.hex
-    FC C0 CC CC FC
-.end
-letter_H:
-.hex
-    CC CC FC CC CC
-.end
-letter_I:
-.hex
-    FC 30 30 30 FC
-.end
-letter_J:
-.hex
-    0C 0C 0C CC FC
-.end
-letter_K:
-.hex
-    CC CC F0 CC CC
-.end
-letter_L:
-.hex
-    C0 C0 C0 C0 FC
-.end
-letter_M:
-.hex
-    FC FC FC CC CC
-.end
-letter_N:
-.hex
-    FC CC CC CC CC
-.end
-letter_O:
-.hex
-    FC CC CC CC FC
-.end
-letter_P:
-.hex
-    FC CC FC C0 C0
-.end
-letter_Q:
-.hex
-    FC CC CC CC F4
-.end
-letter_R:
-.hex
-    FC CC FC F0 CC
-.end
-letter_S:
-.hex
-    FC C0 FC 0C FC
-.end
-letter_T:
-.hex
-    FC 30 30 30 30
-.end
-letter_U:
-.hex
-    CC CC CC CC FC
-.end
-letter_V:
-.hex
-    CC CC CC CC 30
-.end
-letter_W:
-.hex
-    CC CC FC FC FC
-.end
-letter_X:
-.hex
-    CC CC 30 CC CC
-.end
-letter_Y:
-.hex
-    CC CC 30 30 30
-.end
-letter_Z:
-.hex
-    FC 0C 30 C0 FC
-.end
-letter_Char_3A:
-.hex
-    00 30 00 30 00
-.end
-letter_Char_2E:
-.hex
-    00 00 00 00 60
-.end
-letter_Char_30:
-.hex
-    FC CC CC CC FC
-.end
-letter_Char_31:
-.hex
-    F0 30 30 30 FC
-.end
-letter_Char_32:
-.hex
-    FC 0C FC C0 FC
-.end
-letter_Char_33:
-.hex
-    FC 0C 3C 0C FC
-.end
-letter_Char_34:
-.hex
-    C0 C0 D8 FC 18
-.end
-letter_Char_35:
-.hex
-    FC C0 FC 0C FC
-.end
-letter_Char_36:
-.hex
-    FC C0 FC CC FC
-.end
-letter_Char_37:
-.hex
-    F8 18 18 18 18
-.end
-letter_Char_38:
-.hex
-    FC CC 30 CC FC
-.end
-letter_Char_39:
-.hex
-    FC CC FC 0C FC
-.end
-
+prefix =		"letter_"
+width =			6
+height =		5
+gapX =			1
+letter_A:		.hex 3F 33 3F 33 33
+letter_B:		.hex 0F 33 0F 33 0F
+letter_C:		.hex 3F 03 03 03 3F
+letter_D:		.hex 0F 33 33 33 0F
+letter_E:		.hex 3F 03 0F 03 3F
+letter_F:		.hex 3F 03 0F 03 03
+letter_G:		.hex 3F 03 33 33 3F
+letter_H:		.hex 33 33 3F 33 33
+letter_I:		.hex 3F 0C 0C 0C 3F
+letter_J:		.hex 30 30 30 33 3F
+letter_K:		.hex 33 33 0F 33 33
+letter_L:		.hex 03 03 03 03 3F
+letter_M:		.hex 3F 3F 3F 33 33
+letter_N:		.hex 3F 33 33 33 33
+letter_O:		.hex 3F 33 33 33 3F
+letter_P:		.hex 3F 33 3F 03 03
+letter_Q:		.hex 3F 33 33 33 2F
+letter_R:		.hex 3F 33 3F 0F 33
+letter_S:		.hex 3F 03 3F 30 3F
+letter_T:		.hex 3F 0C 0C 0C 0C
+letter_U:		.hex 33 33 33 33 3F
+letter_V:		.hex 33 33 33 33 0C
+letter_W:		.hex 33 33 3F 3F 3F
+letter_X:		.hex 33 33 0C 33 33
+letter_Y:		.hex 33 33 0C 0C 0C
+letter_Z:		.hex 3F 30 0C 03 3F
+letter_Char_3A:		.hex 00 0C 00 0C 00
+letter_Char_2E:		.hex 00 00 00 00 06
+letter_Char_30:		.hex 3F 33 33 33 3F
+letter_Char_31:		.hex 0F 0C 0C 0C 3F
+letter_Char_32:		.hex 3F 30 3F 03 3F
+letter_Char_33:		.hex 3F 30 3C 30 3F
+letter_Char_34:		.hex 03 03 1B 3F 18
+letter_Char_35:		.hex 3F 03 3F 30 3F
+letter_Char_36:		.hex 3F 03 3F 33 3F
+letter_Char_37:		.hex 1F 18 18 18 18
+letter_Char_38:		.hex 3F 33 0C 33 3F
+letter_Char_39:		.hex 3F 33 3F 30 3F
