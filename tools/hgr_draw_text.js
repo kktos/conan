@@ -87,64 +87,62 @@ let gapX = 0;
 let gapY = 0;
 let letterPrefix= "";
 
+const parseHex= (hexline) => {
+	const hexbytes= hexline.replace(".hex ", "");
+	currentHex.push(hexbytes)
+
+	// Parse accumulated hex strings
+	let bytes = [];
+	currentHex.forEach(hStr => {
+		hStr.split(/\s+/).forEach(b => {
+			if (b) bytes.push(parseInt(b, 16));
+		});
+	});
+	fontMap[currentLabel].push(...bytes);
+};
+
 for (let line of lines) {
     line = line.trim();
     if (!line) continue;
 
-    if(line.startsWith("prefix") ) {
-	const [_, value] = line.split(/\s+=\s+/);
-	letterPrefix = value;
-        continue;
+    const [param, value] = line.split(/\s*=\s*/);
+    switch (param) {
+	case "width":
+	    charWidth = parseInt(value);
+	    break;
+	case "height":
+	    charHeight = parseInt(value);
+	    break;
+	case "gapX":
+	    gapX = parseInt(value);
+	    break;
+	case "gapY":
+	    gapY = parseInt(value);
+	    break;
+	case "prefix":
+	    letterPrefix = value.replace(/"/g, "");
+	    break;
     }
-    if(line.startsWith("width") ) {
-	const [_, value] = line.split(/\s+=\s+/);
-	charWidth = parseInt(value);
-        continue;
-    }
-    if(line.startsWith("height") ) {
-	const [_, value] = line.split(/\s+=\s+/);
-	charHeight = parseInt(value);
-        continue;
-    }
-    if(line.startsWith("gapX") ) {
-	const [_, value] = line.split(/\s+=\s+/);
-	gapX = parseInt(value);
-        continue;
-    }
-    if(line.startsWith("gapY") ) {
-	const [_, value] = line.split(/\s+=\s+/);
-	gapY = parseInt(value);
-        continue;
-    }
+	if(value !== undefined) continue;
 
-    if (line.endsWith(':')) {
-        currentLabel = line.slice(0, -1).replace(letterPrefix, "");
-        currentHex = [];
-    } else if (line === '.hex') {
-        // Start of hex block
-    } else if (line === '.end') {
-        if (currentLabel) {
-            // Parse accumulated hex strings
-            let bytes = [];
-            currentHex.forEach(hStr => {
-                hStr.split(/\s+/).forEach(b => {
-                    if (b) bytes.push(parseInt(b, 16));
-                });
-            });
-            fontMap[currentLabel] = bytes;
-            if (currentLabel.startsWith("Char_")) {
-                const hex = currentLabel.substring(5);
-                const code = parseInt(hex, 16);
-                if (!isNaN(code)) {
-                    fontMap[String.fromCharCode(code)] = bytes;
-                }
-            }
-        }
-        currentLabel = null;
-    } else if (currentLabel) {
-        // Accumulate hex data lines
-        currentHex.push(line);
-    }
+	const parts = line.split(/\s*:\s*/);
+	let hexline;
+	if (parts.length === 2) {
+		currentLabel = parts[0].replace(letterPrefix, "");
+
+		if (currentLabel.startsWith("Char_")) {
+			const hex = currentLabel.substring(5);
+			const code = parseInt(hex, 16);
+			if (!Number.isNaN(code)) currentLabel= String.fromCharCode(code);
+		}
+
+		fontMap[currentLabel] = [];
+
+		currentHex = [];
+		hexline= parts[1];
+	} else hexline= parts[0];
+
+	parseHex(hexline);
 }
 
 // --- Drawing ---
@@ -184,8 +182,8 @@ for (let i = 0; i < text.length; i++) {
                     const px = b * 8 + bit;
                     if (px >= charWidth) break;
 
-                    // Font format: MSB is left-most pixel
-                    const isSet = (val >> (7 - bit)) & 1;
+                    // Font format: LSB is left-most pixel
+                    const isSet = (val >> bit) & 1;
 
                     if (isSet) {
                         setPixel(cursorX + px, cursorY + y);

@@ -25,10 +25,29 @@ if (!args.file || !args.width || !args.height || !args.chars) {
     process.exit(1);
 }
 
+function expandCharRanges(str) {
+    let result = "";
+    for (let i = 0; i < str.length; i++) {
+        if (i + 2 < str.length && str[i+1] === '-') {
+            const start = str.charCodeAt(i);
+            const end = str.charCodeAt(i+2);
+            if (start <= end) {
+                for (let c = start; c <= end; c++) {
+                    result += String.fromCharCode(c);
+                }
+                i += 2;
+                continue;
+            }
+        }
+        result += str[i];
+    }
+    return result;
+}
+
 const filename = args.file;
 const charWidth = parseInt(args.width);
 const charHeight = parseInt(args.height);
-const expectedChars = args.chars;
+const expectedChars = expandCharRanges(args.chars);
 const charsPerLine = parseInt(args.perline|| expectedChars.length);
 const offsetX = parseInt(args.x || 0);
 const offsetY = parseInt(args.y || 0);
@@ -67,11 +86,12 @@ function getPixelHGR(x, y) {
 }
 
 // --- Extraction ---
-
+const prefix = "letter_";
 let output= "";
-output+= `width = 	${charWidth}\n`;
-output+= `height = 	${charHeight}\n`;
-output+= `gapX = 	${gapX}\n`;
+output+= `prefix =\t\t"${prefix}"\n`;
+output+= `width =\t\t\t${charWidth}\n`;
+output+= `height =\t\t${charHeight}\n`;
+output+= `gapX =\t\t\t${gapX}\n`;
 
 for (let i = 0; i < expectedChars.length; i++) {
     const char = expectedChars[i];
@@ -94,8 +114,8 @@ for (let i = 0; i < expectedChars.length; i++) {
                 if (px < charWidth) {
                     const pixelOn = getPixelHGR(startX + px, startY + y);
                     if (pixelOn) {
-                        // Pack into output byte (MSB first = standard bitmap format)
-                        byteVal |= (1 << (7 - bit));
+                        // Pack into output byte (LSB first for Apple II)
+                        byteVal |= (1 << bit);
                     }
                 }
             }
@@ -108,13 +128,12 @@ for (let i = 0; i < expectedChars.length; i++) {
     // Generate Label: Use character if it's a valid letter, otherwise Char_HEX
     let label = /^[a-zA-Z]$/.test(char) ? char : "Char_" + char.charCodeAt(0).toString(16).toUpperCase();
 
-    output+= `letter_${label}:\n`;
-    output+= ".hex\n";
-    while (hexBytes.length) {
-        output+= "    "+hexBytes.splice(0,16).join(" ") + "\n";
-    }
-    output+=".end\n";
-
+    output+= `${prefix}${label}:`;
+    let bytes= "";
+    while (hexBytes.length) bytes+= "\t\t.hex "+hexBytes.splice(0,16).join(" ") + "\n";
+    const isMultilines = hexBytes.length > 16;
+    output+= isMultilines ? "\n":"";
+    output+= bytes;
 }
 
 console.log(output);
