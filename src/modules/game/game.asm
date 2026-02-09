@@ -2,9 +2,6 @@
 ; disk 5000-5FFF into $1000:1FFF
 ;
 
-		.namespace game1
-
-
 .macro assertGameStruct
 	labels = .array("LAC00","LAC20","LAC40","LAC60","LAC80","LACA0","LACC0","LACF0")
 	assertDefinedLabels labels, "Missing game interface fields"
@@ -215,7 +212,8 @@ onKeyDie
 		jmp drawDeathMsg
 
 onKeySpritesDbg
-		jmp spritesDebug
+		jsr spritesDebug
+		jmp restartLevel
 
 readUserInput	lda sys::KBD
 		sta globals::keypressed
@@ -333,61 +331,6 @@ L1190			jsr readKeyboard
 			jsr movePlayer
 			jsr drawPlayer
 			rts
-
-spritesDebug:
-		bit sys::KBDSTRB
-
-		lda #$4f
-		sta $00
-
-:loop
-		jsr utils::clearScreen
-
-		lda #0
-		sta spritelib::textX
-		lda #0
-		sta spritelib::textY
-
-		ldx #<testString
-		ldy #>testString
-		jsr spritelib::drawText
-
-		lda $00
-		sta :id
-
-		brk
-		.db $01
-		.dw logString
-:id		.db $00
-
-		ldx #10
-		ldy #16
-		lda $00
-		jsr spritelib::drawSpriteM
-		; jsr drawSpriteBis
-
-		; drawSprite $00,#10,#16
-
-:		lda sys::KBD
-		bpl :-
-		bit sys::KBDSTRB
-		and #$7f
-
-		cmp #"-"
-		bne :+
-
-		dec $00
-		bra :loop
-:
-		cmp #"+"
-		bne :+
-
-		inc $00
-		bra :loop
-:
-		rts
-logString	.cstr "id: %h"
-testString	.cstr "THIS IS WORKING"
 
 readKeyboard:
 			ldx globals::L0378
@@ -2268,7 +2211,7 @@ testIncAxeCount:
 		pla
 		rts
 ;L1f64
-		.align $100
+		; .align $100
 
 	; .hex
 	; c2 ce c5 a0 ce cf d7 c9 ce 8d a0 cc
@@ -2282,5 +2225,3 @@ testIncAxeCount:
 	; ce d5 d3 8d a0 cc c4 d8 a0 a4 b3 b4 c3 8d a0 d3
 	; d4 d8 a0 a4 b3 b7 c6 8d c2 cf ce d5 d3 cc cf a0
 	; .end
-
-		.end namespace
