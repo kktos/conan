@@ -3,8 +3,8 @@
 */
 
 .macro writeVolumeEntry name, fileCount
-	.WORD 0 	; previous dir block
-	.WORD 3 	; next dir block
+	.WORD 0 	# previous dir block
+	.WORD 3 	# next dir block
 
 	.BYTE $F0 + .len(name)
 	.STRING name
