@@ -1,6 +1,6 @@
 ; data-R1-7500
 
-	.include "../../includes/defsprite.macro.asm"
+//	.include "../../includes/defsprite.macro.asm"
 
 ; sprite width, height
 L7500
