@@ -30,7 +30,7 @@ entryCount = entryCount + 1
 freeBlock= $07
 files= []
 
-.log "#","  Block", "Offset", "Size", "BlkLen", "Name"
+.log "#","    Block", "Offset", "Size", "BlkLen", "Name"
 .FOR module OF .UNWRITTEN_MODULES as idx
 	entryCount = entryCount + 1
 
