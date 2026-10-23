@@ -19,13 +19,13 @@ temp 		.equ $04
         lda textX
         ldy #0
         cmp #7
-        bcc @doneDiv
-@divLoop:
+        bcc doneDiv
+divLoop:
         sbc #7
         iny
         cmp #7
-        bcs @divLoop
-@doneDiv:
+        bcs divLoop
+doneDiv:
         sty currentByteOffset
         sta currentShift
 

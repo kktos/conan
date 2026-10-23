@@ -150,13 +150,13 @@ strPtr 		.equ $03
 ; Convert nibble (0-15) in A to ASCII hex digit ('0'-'9', 'A'-'F')
 nibbleToHex:
 		cmp #10
-		bcc @digit      ; Branch if 0-9
+		bcc digit      ; Branch if 0-9
 
 		; A-F
 		adc #$41 - 11     ; Carry is set, so adds 'A'-10
 		rts
 
-@digit:
+digit:
 		adc #"0"        ; Carry is clear
 		rts
 
