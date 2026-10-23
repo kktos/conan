@@ -264,7 +264,7 @@ ErrorMsg:
         .text "UNABLE TO FIND "
 ErrorMsgFile:
         .pstr "WELCOME"
-        .align 15, $A0
+        .align 16, $A0
 	.db 0
 
 dbgAddMemRegion:
