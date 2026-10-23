@@ -14,6 +14,7 @@ output:
 
   listing:
     enabled: true
+    linker: true
     path: dist/new_conan.lst
     passes:
       pass1: false
