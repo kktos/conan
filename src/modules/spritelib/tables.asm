@@ -90,10 +90,21 @@ LB200:		.hex {
 
 ; sprites addr lo - $B600
 spriteLo:
-
-		.repeat 128 as idx {
-			.db  ((idx-1) % 16) * 16
+		.list off
+		row = .array()
+		.repeat 16 AS col FROM 0 {
+			row = .push(row, col * 16)
 		}
+		.list on
+
+		.repeat 8 {
+			.db ...row
+		}	
+		/*	
+		.repeat 128 as idx from 0 {
+			.db  (idx % 16) * 16
+		}
+		*/
 
 	; .hex {
 	; 		00 10 20 30 40 50 60 70 80 90 A0 B0 C0 D0 E0 F0
@@ -108,10 +119,14 @@ spriteLo:
 
 ; sprites addr hi - $B680
 spriteHi:
+		.repeat 4 AS r FROM 0 {
+			.fill 16, >global_sprites + r
+		}
+		/*
 		.repeat 16*4 as idx {
 			.db  >global_sprites + .floor((idx-1)/16)
 		}
-
+		*/
 		.hex {
 			; 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C
 			; 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D

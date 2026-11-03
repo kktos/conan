@@ -5,7 +5,7 @@ fontPtr 	.equ $00
 textPtr 	.equ $02
 temp 		.equ $04
 
-.function drawText
+.procedure drawText
 
         stx textPtr
         sty textPtr+1
@@ -63,7 +63,7 @@ done:
 ; Inputs: A = ASCII char
 ; Context: currentByteOffset, textY, currentShift
 ; -----------------------------------------------------------------------------
-.function drawChar
+.procedure drawChar
         ; 1. Map ASCII to Font Address
         cmp #"a"
         bcc :+

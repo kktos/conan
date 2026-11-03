@@ -208,11 +208,11 @@ displayHelp         jsr utils::clearScreen
 
 ;a1f1
 drawTitleGraphic
-		    drawSprite #$4f,#25,#16
+		    drawSprite {#$4f},{#25},{#16}
                     rts
 
 drawTitleGraphic2
-		    drawSprite #$50,#48,#16
+		    drawSprite {#$50},{#48},{#16}
                     rts
 
 Sa205               ldx #$0c
@@ -240,7 +240,7 @@ Sa230               ldx L7901
                     rts
 
 drawHelpIcon1
-                    drawSprite #$51, #20, #42
+                    drawSprite {#$51}, {#20}, {#42}
                     rts
 
 runAnimVolta
@@ -260,11 +260,11 @@ La24e
 
 animVolta
 		ldx L7903
-		drawSprite <animVoltaSpriteIDs,x> , $62 , $31
+		drawSprite {animVoltaSpriteIDs,x} , $62 , $31
 		rts
 
 drawHelpIcon2
-		drawSprite #$52 , #$5A , #29
+		drawSprite {#$52} , {#$5A} , {#29}
 		rts
 
 Sa27c               ldx #$f0
@@ -289,19 +289,19 @@ La2a1      	jsr Sa2ad
 		rts
 
 Sa2ad
-		drawSprite L7905,L7904,#60
+		drawSprite L7905,L7904,{#60}
 		rts
 
 drawHelpIcon3
-		drawSprite #$53,#$3a,#$54
+		drawSprite {#$53},{#$3a},{#$54}
 		rts
 
 drawHelpIcon4
-		drawSprite #$54,#$2e,#$10
+		drawSprite {#$54},{#$2e},{#$10}
 		rts
 
 ; $A2CD
-.function displayHelpObj {
+.procedure displayHelpObj {
 
 		.define spriteList from "spritelist.yaml"
 
@@ -313,7 +313,7 @@ drawHelpIcon4
 
 		.for sprite of spriteList
 			; .echo .hex(sprite.id),sprite.x,sprite.y,sprite.name
-			drawSprite #sprite.id , #sprite.x , #sprite.y
+			drawSprite {#sprite.id} , {#sprite.x} , {#sprite.y}
 			jsr waitAndExitOnEvent
 		.end
 
@@ -362,8 +362,8 @@ La38d           lda globals::playerScore,x
 
 ; draw highscore
 drawHiScore:
-		    drawSprite #$4c , #$28 , #$8c ; hi-sc
-		    drawSprite #$4d , #$3b , #$8c ; ore :
+		    drawSprite {#$4c} , {#$28} , {#$8c} ; hi-sc
+		    drawSprite {#$4d} , {#$3b} , {#$8c} ; ore :
                     jsr drawHSvalue
                     rts
 

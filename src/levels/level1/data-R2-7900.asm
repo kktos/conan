@@ -1,10 +1,12 @@
+/*
 		.if * < $7900
 			.org $7900
 		.end
 		.if * > $7900
 			.error "this needs to be at $7900 !","PC=",.hex(.pc)
 		.end
-
+*/
+		placeAt $7900
 
 batPathIndex		.db $00
 batTempX		.db $00

@@ -106,22 +106,22 @@ La0c1               jsr Sa0d9
 Sa0d9               ldx L7900
                     bne La110
 
-		ifx globals::spriteX, "<", #130, La110
+		ifx globals::spriteX, "<", {#130}, La110
                 ;ldx globals::spriteX
                 ;cpx #130
                 ;bcc La110
 
-		ifx ">=", #208, La110
+		ifx ">=", {#208}, La110
                 ;cpx #208
                 ;bcs La110
 
-		ifx globals::spriteY, "<", #152, La110
+		ifx globals::spriteY, "<", {#152}, La110
 		;ldx globals::spriteY
 		;cpx #152
 		;bcc La110
 
 		; ifx ">= #192", La110
-		ifx ">=", #192, La110
+		ifx ">=", {#192}, La110
 		;cpx #192
 		;bcs La110
 
@@ -131,7 +131,7 @@ Sa0d9               ldx L7900
                     ldx #$01
                     jsr Sa145
 
-		    drawSprite #$27, #$85, #$9F
+		    drawSprite {#$27}, {#$85}, {#$9F}
                     ;ldx #$85
                     ;ldy #$9f
                     ;lda #$27
@@ -158,7 +158,7 @@ Sa111               ldx globals::assetKeyCnt
                     ldx #$00
                     stx globals::assetKeyCnt
 
-		    drawSprite #$2A, #$27, #$7B
+		    drawSprite {#$2A}, {#$27}, {#$7B}
                     ;ldx #$27
                     ;ldy #$7b
                     ;lda #$2a

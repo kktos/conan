@@ -1,6 +1,10 @@
 
 input:
   source: src/main.asm
+  options:
+    listing.case: source
+    listing.data: fold
+
 #   segments:
 #     - { name: main, start: 4096, size: 8192, padValue: 255 }
 #     - { name: data, start: 20480, size: 4096, resizable: true }

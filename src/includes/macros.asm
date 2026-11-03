@@ -122,3 +122,11 @@
 		.error errmsg, " ", missingLabels
 	.end
 .end
+
+// Set Org at addr if current org is below; error if not
+.macro placeAt addr {
+	.if * > addr
+		.error "needs to be at ", .hex(addr), ", PC=", .hex(*)
+	.end
+	.org addr          ; pads in a segment; no-op if already there
+}

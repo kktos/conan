@@ -1,6 +1,6 @@
 		; .list file=.filename+".lst"
 
-.function animConanJump {
+.procedure animConanJump {
 
 		; ldx #$6b
 		; ldy #$9c
