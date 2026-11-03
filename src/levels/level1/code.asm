@@ -184,29 +184,14 @@ La164		    rts
 ; $A165
 drawBatExplosion:
 		    ldx #$ff
-La167		    inx
-		; check top
-		    lda LAC40,x
-		    beq La1af
-		    clc
-		    adc #$08
-		    cmp effectY
-		    bcs La167
+La167		    scanNextX LAC40, La1af		; platforms
 
-		    clc
-		    adc #$08
-		    cmp effectY
-		    bcc La167
+		; top + 9 <= y <= top + 16
+		    requireWindowA 9, 16, effectY, La167
 
-		; check left
-		    lda LAC00,x
-		    cmp effectX
-		    bcs La167
-
-		; check right
-		    lda LAC20,x
-		    cmp effectX
-		    bcc La167
+		; left < x <= right
+		    require {LAC00,x}, "<", effectX, La167
+		    require {LAC20,x}, ">=", effectX, La167
 
 		    stx splashRectIdx
 		    jsr Sa13a

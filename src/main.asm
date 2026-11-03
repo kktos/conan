@@ -9,6 +9,7 @@
 
 	.include "includes/macros.asm"
 	.include "modules/game/level-geometry.macros.asm"
+	.include "modules/game/table-scan.macros.asm"
 	.include "includes/extended-cmds.asm"
 	.include "includes/disk-io.asm"
         .include "includes/a2-firmware.asm"

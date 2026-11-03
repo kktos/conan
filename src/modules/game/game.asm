@@ -590,7 +590,7 @@ S1381		jsr movePlayer
 		ldx globals::L0314
 		beq L13a3
 
-		jsr isSpriteInRect ; c=1 if true
+		jsr isSpriteInRect ; c=0 if inside a platform rect
 		bcs L13a3
 
 		ldx globals::currentXspeed
@@ -690,34 +690,23 @@ S1441:
 		ldx globals::playerYspeed
 		bmi L1485
 
-		ldx #$ff
-		stx globals::L0322
+		scanStart
+L144b		scanNext LAC40, L1485			; platforms
 
-L144b		inc globals::L0322
-		ldx globals::L0322
+		; left <= x <= right
+		require globals::spriteXnew, ">=", {LAC00,x}, L144b
+		requireA "<=", {LAC20,x}, L144b
+
+		; top - speed < y <= top + 3
 		lda LAC40,x
-		beq L1485
-
-		lda globals::spriteXnew
-		cmp LAC00,x
-		bcc L144b
-
-		cmp LAC20,x
-		beq L1465
-
-		bcs L144b
-
-L1465		lda LAC40,x
-		clc
-		adc #$03
-		cmp globals::spriteYNew
-		bcc L144b
+		addA 3
+		requireA ">=", globals::spriteYNew, L144b
 
 		sec
 		sbc globals::playerYspeed
 		sec
 		sbc #$03
-		cmp #$f8
+		cmp #$f8				; top - speed below 0: any y is in
 		bcs L1480
 
 		cmp globals::spriteYNew
@@ -764,13 +753,10 @@ L14b3		jsr isPlayerOnLadder
 		jmp L1553
 
 isPlayerOnLadder:
-		ldx #$ff
-		stx globals::L0322
-L14cf		inc globals::L0322
-		ldx globals::L0322
-		lda LAC60,x
-		beq L1543
+		scanStart
+L14cf		scanNext LAC60, L1543			; ladders
 
+		; ladder x - 2 <= x <= ladder x
 		lda LACA0,x
 		tay
 		dey
@@ -898,30 +884,15 @@ L15ab:
 :		rts
 
 isSpriteInRect:
-		ldx #$ff
-		stx globals::L0322
-L15cf		inc globals::L0322
-		ldx globals::L0322
-		lda LAC40,x
-		beq L15fc
+		scanStart
+L15cf		scanNext LAC40, L15fc			; platforms
 
-		lda globals::spriteXnew
-		cmp LAC00,x
-		bcc L15cf
+		; left <= x < right
+		require globals::spriteXnew, ">=", {LAC00,x}, L15cf
+		requireA "<", {LAC20,x}, L15cf
 
-		cmp LAC20,x
-		bcs L15cf
-
-		lda LAC40,x
-		clc
-		adc #$06
-		cmp globals::spriteYNew
-		bcc L15cf
-
-		sec
-		sbc #$10
-		cmp globals::spriteYNew
-		bcs L15cf
+		; top - 9 <= y <= top + 6
+		requireWindowHiFirst {LAC40,x}, -9, 6, globals::spriteYNew, L15cf
 
 		clc
 		rts
@@ -969,30 +940,15 @@ S1638		lda globals::spriteX
 		rts
 
 S164d:
-		ldx #$ff
-		stx globals::L0322
-L1652		inc globals::L0322
-		ldx globals::L0322
-		lda LAC60,x
-		beq L167f
+		scanStart
+L1652		scanNext LAC60, L167f			; ladders
 
-		cmp globals::spriteY
-		bcs L1652
+		; top < y <= bottom
+		requireA "<", globals::spriteY, L1652
+		require {LAC80,x}, ">=", globals::spriteY, L1652
 
-		lda LAC80,x
-		cmp globals::spriteY
-		bcc L1652
-
-		lda LACA0,x
-		sec
-		sbc #$08
-		cmp globals::spriteX
-		bcs L1652
-
-		clc
-		adc #$0b
-		cmp globals::spriteX
-		bcc L1652
+		; ladder x - 7 <= x <= ladder x + 3
+		requireWindow {LACA0,x}, -7, 3, globals::spriteX, L1652
 
 		sec
 		rts
@@ -1001,14 +957,11 @@ L167f		clc
 		rts
 
 checkBoundsDrawPlayer:
-		ldx #$ff
-		stx globals::L0322
+		scanStart
 
-L1686		inc globals::L0322
-		ldx globals::L0322
-		lda LACF0,x
-		beq L16d1
+L1686		scanNext LACF0, L16d1			; walls
 
+		; y = wall y, and x = wall x or x + 1 = wall x
 		lda globals::spriteXnew
 		cmp LACC0,x
 		beq L16a1
@@ -1018,9 +971,8 @@ L1686		inc globals::L0322
 		cmp LACC0,x
 		bne L1686
 
-L16a1		lda LACF0,x
-		cmp globals::spriteYNew
-		bne L1686
+L16a1		require {LACF0,x}, "==", globals::spriteYNew, L1686
+
 
 		lda LACC0,x
 		sta globals::spriteXnew
@@ -1230,28 +1182,17 @@ eraseAxe
 		lda globals::axeSpriteID
 		jmp spritelib::drawSpriteM
 
-S185a		ldx #$ff
-		stx globals::L0322
-L185f		inc globals::L0322
-		ldx globals::L0322
-		lda LAC60,x
-		beq L188f
-		lda globals::axeYpos
-		cmp LAC60,x
-		bcc L185f
-		sec
-		sbc #$10
-		cmp LAC80,x
-		bcs L185f
-		lda LACA0,x
-		sec
-		sbc #$08
-		cmp globals::axeXpos
-		bcs L185f
-		clc
-		adc #$13
-		cmp globals::axeXpos
-		bcc L185f
+S185a		scanStart
+L185f		scanNext LAC60, L188f			; ladders
+
+		; top <= axe y < bottom + 16
+		require globals::axeYpos, ">=", {LAC60,x}, L185f
+		addA -$10
+		requireA "<", {LAC80,x}, L185f
+
+		; ladder x - 7 <= axe x <= ladder x + 11
+		requireWindow {LACA0,x}, -7, 11, globals::axeXpos, L185f
+
 		sec
 		rts
 
