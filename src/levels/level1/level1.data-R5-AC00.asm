@@ -1,36 +1,8 @@
-		.if * < $AC00
-			.org $AC00
-		.end
-		.if * > $AC00
-			.error "this needs to be at $AC00 !"
-		.end
+		.define geometry from "geometry.yaml"
 
-LAC00
-	.hex { 00 00 1A 00 00 58 59 0A 00 7E 77 7A 00 00 00 00 }
-	.hex { 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 }
-LAC20
-	.hex { 8B 66 37 3F 4C 77 75 60 0D 8C 84 88 FF 00 00 00 }
-	.hex { 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 }
-LAC40
-	.hex { A4 80 7A 56 30 30 04 0D 03 47 80 4D 00 00 00 00 }
-	.hex { 00 00 00 00 00 00 00 00 00 00 00 AD 59 31 D1 30 }
+		levelGeometry geometry		; $AC00-$ACFF
 
-LAC60
-	.hex { 81 57 31 05 4E 00 }
-	.align $20
-LAC80
-	.hex { A5 7B 57 31 74 00 }
-	.align $20
-LACA0
-	.hex { 54 2A 0A 63 80 00 }
-	.align $20
-LACC0
-	.hex { 01 84 01 19 38 65 01 01 6E 59 0B 8A 82 81 D3 28 }
-	.hex { 28 58 33 C8 2E 35 29 CB 32 29 00 F6 0A 04 01 97 }
-	.hex { 3A 84 22 4C 41 44 44 45 52 20 4E 55 4D 42 45 52 }
-LACF0
-	.hex { A5 A5 81 81 81 81 57 31 31 0E 0E 4A 81 4E 00 30 }
-
+		placeAt $AD00
 ;LAD00
 	.hex { C4 B1 00 13 0B 09 01 B9 32 37 32 30 C8 4C 4E 2C }
 	.hex { 58 33 00 23 0B 0C 01 B9 32 36 35 36 C8 4C 4E 2C }
@@ -45,18 +17,7 @@ LAD40
 	.hex { 58 4C 3A 20 20 4C 20 4C 4F 57 20 4C 45 44 47 45 }
 	.hex { 22 00 89 0B 32 01 BA 22 59 31 3A 20 20 59 20 4F }
 
-LAD80	.db $70
-LAD81	.db $A5
-
-LAD82	.db $0B
-LAD83	.db $FF
-
-LAD84	.db $05
-LAD85	.db $03
-LAD86	.db $24
-
-LAD87	.db $00
-LAD88	.db $04
+		levelStartExit geometry		; $AD80-$AD88
 
 	.align $100
 
