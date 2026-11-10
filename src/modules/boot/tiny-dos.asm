@@ -23,7 +23,7 @@ RunFile:
 
 ;
 ; x/y points to
-;  .pstr filename
+;  .pstr path: a file name, or directory names and a file name separated by '/', "L0/BKGD"
 ;
 LoadFileEntry:
 	stz blockStart		; read from first file block
@@ -33,8 +33,11 @@ LoadFileEntry:
 	sty tmpPtr+1
 
 internalLoadFile:
-	; read
+	; the path's first name, after its length byte
 	lda #$01
+	sta pathIdx
+
+	; read
 	sta smartport::command
 
 	; directory block $0002
@@ -47,11 +50,20 @@ dirLoop:
         jsr SmartPortEntry
 
         jsr FindFile
-        bcc :+		          ; C=1 if found
+        bcc nextDirBlock          ; C=1 if found
 
+	; the path goes on after this name: it's a directory, search it from its key block
+	lda (tmpPtr)
+	cmp nameEnd
+	bcc isFile		  ; length < nameEnd: the path's last name, the file
+	ldy nameEnd
+	iny			  ; past the '/'
+	sty pathIdx
+	bra dirLoop
+isFile:
         jmp LoadFileBlocks
 
-:
+nextDirBlock:
 	; get next directory block
 	lda BUFFER+2
 	sta smartport::bloklo
@@ -106,6 +118,9 @@ NextEntry:
         lda (smartport::adrlo),y
         beq NotFound                ; unused entry
 
+	cmp #$E0		    ; a volume or subdirectory header ($Fx, $Ex), not a file:
+	bcs Next		    ; its name can be a file's or the directory's
+
         jsr MatchName
         bcc Next                    ; C=0 → no match
 
@@ -119,21 +134,13 @@ NextEntry:
 	bcc :+
 	inc srcPtr+1
 :
-        ; Starting block
+        ; Starting block: a file's index block, a directory's key block
 	ldy #prodos::keyPtr
         lda (srcPtr),y
         sta smartport::bloklo
         iny
         lda (srcPtr),y
         sta smartport::blokhi
-
-        ; Load address
-	ldy #prodos::auxType
-        lda (srcPtr),y
-        sta tmpPtr
-        iny
-        lda (srcPtr),y
-        sta tmpPtr+1
 
         sec
         rts
@@ -156,18 +163,25 @@ NotFound:
         clc
         rts
 
+;
+; A = the entry's storage type and name length, Y = the entry's offset
+; does the entry's name match the path's name from pathIdx, up to its end or a '/' ?
+; C=1 if it does, with nameEnd the path index after the name
+;
 MatchName:
         and #$0F
-        cmp (tmpPtr)
-        bne NotFound
+	sta namelen
 
         phy
-	sta namelen
-        iny
-	lda #$01
+	lda pathIdx
 	sta tmplen
 
 NameLoop:
+	lda (tmpPtr)		; past the path's end
+	cmp tmplen
+	bcc NoMatch
+
+        iny
         phy
         ldy tmplen
         lda (tmpPtr),y
@@ -175,14 +189,24 @@ NameLoop:
         cmp (smartport::adrlo),y
         bne NoMatch
 
-        iny
         inc tmplen
-        lda tmplen
-	cmp namelen	; <= namelen
-        bcc NameLoop
-        beq NameLoop
+	dec namelen
+	bne NameLoop
 
+	; the path's name must end with the entry's: at the path's end, or on a '/'
+	ldy tmplen
+	sty nameEnd
+	lda (tmpPtr)
+	cmp tmplen
+	bcc Matched		; length < nameEnd: the path's end
+
+	lda (tmpPtr),y
+	cmp #'/'
+	bne NoMatch
+
+Matched:
         ply
+        sec
         rts
 
 NoMatch:
@@ -191,6 +215,14 @@ NoMatch:
         rts
 
 LoadFileBlocks:
+        ; Load address
+	ldy #prodos::auxType
+        lda (srcPtr),y
+        sta tmpPtr
+        iny
+        lda (srcPtr),y
+        sta tmpPtr+1
+
 	jsr dbgAddMemRegion
 
 	jsr initBuffer
@@ -246,6 +278,8 @@ ShowError:
 	sta ErrorMsgFile,y
 	dey
 	bne :-
+	lda #' '		; over the length byte
+	sta ErrorMsgFile
 
         ldx #0
         ldy #5
@@ -261,11 +295,16 @@ Hang:
         bra Hang
 
 ErrorMsg:
-        .text "UNABLE TO FIND "
+        .text "UNABLE TO FIND"
 ErrorMsgFile:
         .pstr "WELCOME"
         .align 16, $A0
 	.db 0
+
+; the path's index of the name searched for
+pathIdx:	.db 0
+; the path's index after the name found
+nameEnd:	.db 0
 
 dbgAddMemRegion:
 
