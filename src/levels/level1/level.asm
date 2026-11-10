@@ -1,18 +1,18 @@
 	.namespace level1
 
-	.module "L1.BKGD"
+	.module "L1/BKGD"
 
 	.segment L1_BKGD
 	.include "bkgnd.data.asm"
 
-	.module "L1.DATA"
+	.module "L1/DATA"
 
 	.segment L1_DATA
 	.include "sprites-dir.data.asm"
 	.include "data-R2-7900.asm"
 	.include "sprites.data.asm"
 
-	.module "L1.CODE"
+	.module "L1/CODE"
 
 	.segment L1_CODE
 	.include "code.asm"
@@ -20,7 +20,7 @@
 	.include "level1.data-R5-AC00.asm"
 
 
-	.module "L1.DEAD"
+	.module "L1/DEAD"
 	.segment L1_DEAD
 	.include "death.data.asm"
 

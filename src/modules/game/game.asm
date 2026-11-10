@@ -1406,10 +1406,10 @@ resetVars2
 		jsr L1a00
 		rts
 
-fbkgnd		.pstr "L0.BKGD"
-fdata		.pstr "L0.DATA"
-fcode		.pstr "L0.CODE"
-fbitmap		.pstr "L0.BMP"
+fbkgnd		.pstr "L0/BKGD"
+fdata		.pstr "L0/DATA"
+fcode		.pstr "L0/CODE"
+fbitmap		.pstr "L0/BMP"
 
 		.if loadLevel
 		.out "loadLevel : ",.hex(loadLevel)
@@ -1775,7 +1775,7 @@ L1caf		rts
 fDeadSprites
 		.db $00
 		.db $02
-		.pstr "L0.DEAD"
+		.pstr "L0/DEAD"
 
 S1cb0		inc globals::soundCnt1
 		lda globals::soundCnt1
