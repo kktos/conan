@@ -12,10 +12,10 @@
 	.include "modules/game/table-scan.macros.asm"
 	.include "includes/extended-cmds.asm"
 	.include "includes/disk-io.asm"
-        .include "includes/a2-firmware.asm"
-        .include "includes/smartport.asm"
+	.include "includes/a2-firmware.asm"
+	.include "includes/smartport.asm"
 
-        .include "modules/spritelib/spritelib.macros.asm"
+	.include "modules/spritelib/spritelib.macros.asm"
 
 
 	.include "modules/boot/boot.module.asm"
