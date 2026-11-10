@@ -20,12 +20,21 @@
 	.include "level1.data-R5-AC00.asm"
 
 
-	.module "L1/DEAD"
-	.segment L1_DEAD
-	//.include "death.data.asm"
+	; game over: 4 pictures of 56 lines x 15 bytes, one per file, drawDeathMsg loads one at random
+	.module "L1/DEAD0"
+	.segment L1_DEAD0
 	.incbin "../../../assets/gameover/L1_pic0_T1BS0.bin"
+
+	.module "L1/DEAD1"
+	.segment L1_DEAD1
 	.incbin "../../../assets/gameover/L1_pic1_T1BS4.bin"
+
+	.module "L1/DEAD2"
+	.segment L1_DEAD2
 	.incbin "../../../assets/gameover/L1_pic2_T1BS8.bin"
+
+	.module "L1/DEAD3"
+	.segment L1_DEAD3
 	.incbin "../../../assets/gameover/L1_pic3_T1BSC.bin"
 
 	assertGameStruct
