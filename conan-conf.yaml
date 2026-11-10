@@ -17,12 +17,10 @@ output:
     script: link/conan.linker.asm
 
   listing:
-    enabled: true
     linker: true
     path: dist/new_conan.lst
-    passes:
-      pass1: false
-      pass2: true
+    pass1: false
+    pass2: true
 
   symbols:
     enabled: true

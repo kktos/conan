@@ -12,10 +12,10 @@
 	.include "modules/game/table-scan.macros.asm"
 	.include "includes/extended-cmds.asm"
 	.include "includes/disk-io.asm"
-        .include "includes/a2-firmware.asm"
-        .include "includes/smartport.asm"
+	.include "includes/a2-firmware.asm"
+	.include "includes/smartport.asm"
 
-        .include "modules/spritelib/spritelib.macros.asm"
+	.include "modules/spritelib/spritelib.macros.asm"
 
 
 	.include "modules/boot/boot.module.asm"
@@ -87,6 +87,14 @@
 	.include "levels/level0/level.asm"
 	.include "levels/level1/level.asm"
 	.include "levels/level2/level.asm"
+	.include "levels/level3/level.asm"
+	/*
+	.include "levels/level4/level.asm"
+	.include "levels/level5/level.asm"
+	.include "levels/level6/level.asm"
+	.include "levels/level7/level.asm"
+	.include "levels/level8/level.asm"
+	*/
 
 	.if .pass>1 {
 		.out ""
