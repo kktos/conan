@@ -29,3 +29,9 @@
 .segment L2_BKGD	{ start: $7500, end: $7EFF, pad: $AA }
 .segment L2_DATA	{ start: $7500, end: $9BFF, pad: $55 }
 .segment L2_CODE	{ start: $A000, end: $ADFF, pad: $D5 }
+.segment L2_DEAD	{ start: $7500, size: $0400 * 4 }
+
+.segment L3_BKGD	{ start: $7500, end: $7EFF, pad: $AA }
+.segment L3_DATA	{ start: $7500, end: $9BFF, pad: $55 }
+.segment L3_CODE	{ start: $A000, end: $ADFF, pad: $D5 }
+.segment L3_DEAD	{ start: $7500, size: $0400 * 4 }

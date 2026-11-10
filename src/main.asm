@@ -87,6 +87,14 @@
 	.include "levels/level0/level.asm"
 	.include "levels/level1/level.asm"
 	.include "levels/level2/level.asm"
+	.include "levels/level3/level.asm"
+	/*
+	.include "levels/level4/level.asm"
+	.include "levels/level5/level.asm"
+	.include "levels/level6/level.asm"
+	.include "levels/level7/level.asm"
+	.include "levels/level8/level.asm"
+	*/
 
 	.if .pass>1 {
 		.out ""

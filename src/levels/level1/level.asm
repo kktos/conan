@@ -22,7 +22,11 @@
 
 	.module "L1/DEAD"
 	.segment L1_DEAD
-	.include "death.data.asm"
+	//.include "death.data.asm"
+	.incbin "../../../assets/gameover/L1_pic0_T1BS0.bin"
+	.incbin "../../../assets/gameover/L1_pic1_T1BS4.bin"
+	.incbin "../../../assets/gameover/L1_pic2_T1BS8.bin"
+	.incbin "../../../assets/gameover/L1_pic3_T1BSC.bin"
 
 	assertGameStruct
 
