@@ -1582,7 +1582,7 @@ getHGRLineAddr
 ; sectors (RND&3)*4.. -> $7500, shown in a black square; wait key/button/timeout
 drawDeathMsg:
 		jsr	random
-		and	#$03			; 0,4,8 or 12
+		and	#$03			; picture 0..3
 
 		; asl
 		; asl
@@ -1597,13 +1597,13 @@ drawDeathMsg:
 		; stx rwts_buf
 		; jsr readTrack
 
-		lsr				; /2 coz a block is $200
-		sta	fDeadSprites
+		; file Ln/DEADp: level n, picture p
+		ora	#$30
+		sta	fDeadPic+8
 		lda	globals::level
-		clc
-		adc	#$30
-		sta	fDeadSprites+4
-		dosLoadFromFile(fDeadSprites)
+		ora	#$30
+		sta	fDeadPic+2
+		dosLoadFile	fDeadPic
 
 		jsr	drawDeadPanel
 
@@ -1629,10 +1629,7 @@ L1ca5		bit	sys::KBDSTRB
 
 L1caf		rts
 
-fDeadSprites
-		.db	$00
-		.db	$02
-		.pstr	"L0/DEAD"
+fDeadPic	.pstr	"L0/DEAD0"
 
 S1cb0		inc	globals::soundCnt1
 		lda	globals::soundCnt1
