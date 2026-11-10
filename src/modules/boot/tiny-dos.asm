@@ -237,20 +237,20 @@ LoadFileBlocks:
 	sta smartport::adrhi
 	sta srcPtr+1
 
-	lda #>BUFFER
-	sta tmpPtr+1
-	stz tmpPtr
-
 	; =0 LoadFile
 	; =xx LoadFromFile
 	ldy blockStart
 loop:
 	dec blockCount
 
-	lda (tmpPtr),y
+	; the index block: the blocks' low bytes, then their high bytes; block 0 ends the file
+	lda BUFFER+$100,y
+	sta smartport::blokhi
+	lda BUFFER,y
+	sta smartport::bloklo
+	ora smartport::blokhi
 	beq loaded
 
-        sta smartport::bloklo
         jsr SmartPortEntry
 
 	lda blockCount
