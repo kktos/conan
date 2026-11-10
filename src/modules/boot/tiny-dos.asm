@@ -3,13 +3,13 @@
 
 	.namespace tinyDOS scope="lc_bank2"
 
-BUFFER 		= $0800
+BUFFER 		.equ $0800
 
-namelen 	= $02
-tmplen 		= $03
-blockPage	= $04
-blockStart	= $05
-blockCount	= $06
+namelen 	.equ $02
+tmplen 		.equ $03
+blockPage	.equ $04
+blockStart	.equ $05
+blockCount	.equ $06
 
 SmartPortEntry:
 	jmp $FFFF

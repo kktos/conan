@@ -31,9 +31,9 @@ LACC0 		=	$ACC0
 ; player Y pos
 LACF0 		=	$ACF0
 
-LAD20		=	$AD20
-LAD30		=	$AD30
-LAD40		=	$AD40
+TANIM_X		=	$AD20
+TANIM_Y		=	$AD30
+TANIM_SHAPE		=	$AD40
 
 ; initial player pos, sprite, globals::currentXspeed
 ; x
@@ -47,11 +47,11 @@ LAD83 		=	$AD83
 
 ; Level Exit Arrow
 ; sprite X
-LAD84 		=	$AD84
+BLINK_X 		=	$AD84
 ; sprite Y
-LAD85 		=	$AD85
+BLINK_Y 		=	$AD85
 ; sprite ID
-LAD86 		=	$AD86
+BLINK_SHAPE 		=	$AD86
 
 ; player pos to win
 ; x
@@ -138,7 +138,9 @@ scoreAdd250	jsr scoreAdd100
 		rts
 
 ;107B
-tone		txa
+; speaker tone: X = half period, Y = length (via SND_DEV)
+tone:
+		txa
 L107c		ldx globals::soundSwitch
 		pha
 		lda sys::SPKR-$10,x
@@ -180,7 +182,7 @@ mainLoop
 		stz globals::L0383
 		jsr readJoyX
 		jsr S179e
-		jsr S1891
+		jsr CHECK_EXIT
 
 		jsr readUserInput
 
@@ -188,8 +190,8 @@ mainLoop
 		jsr S141e
 		jsr S1593
 		jsr S1e5c
-		jsr S18fa
-		jsr drawExitArrow
+		jsr ANIMATE_DECOR
+		jsr BLINK_OBJ
 		jsr S1b63
 		jsr S1cb0
 		jsr readJoyY
@@ -686,7 +688,8 @@ L1433		inc globals::playerYspeed
 		dec globals::playerYspeed
 L1440		rts
 
-S1441:
+; C=1 if ($0303,$0304) stands on a ledge (X = ledge index)
+ON_LEDGE:
 		ldx globals::playerYspeed
 		bmi L1485
 
@@ -856,7 +859,7 @@ L158a		ldx #$00
 		stx globals::playerYspeed
 L1592		rts
 
-S1593		jsr S1441
+S1593		jsr ON_LEDGE
 		bcc L15aa
 		ldx globals::isPlayerJumping
 		bne L15aa
@@ -873,7 +876,7 @@ L15ab:
 
 		inc globals::L0315
 :		jsr S1381
-		jsr S1441
+		jsr ON_LEDGE
 		bcs :+
 
 		ldx #$00
@@ -1199,7 +1202,7 @@ L185f		scanNext LAC60, L188f			; ladders
 L188f		clc
 		rts
 
-S1891		ldx globals::spriteY
+CHECK_EXIT		ldx globals::spriteY
 		cpx LAD88
 		bne L18a7
 		ldx globals::spriteX
@@ -1250,39 +1253,43 @@ L18e6		ldx globals::level
 		jmp S12f7
 
 ;
-S18fa		ldx #$ff
+ANIMATE_DECOR:
+		ldx #$ff
 		stx globals::L0322
-L18ff		inc globals::L0322
+L18ff
+		inc globals::L0322
 		ldx globals::L0322
-		lda LAD30,x
+		lda TANIM_Y,x
 		beq L1925
 
-		jsr S1926
+		jsr DRAW_DECOR
 
 		ldx globals::L0322
-		inc LAD40,x
-		lda LAD40,x
+		inc TANIM_SHAPE,x
+		lda TANIM_SHAPE,x
 		cmp #$24
 		bne L191f
 		lda #$21
-		sta LAD40,x
-L191f		jsr S1926
+		sta TANIM_SHAPE,x
+L191f
+		jsr DRAW_DECOR
 
 		jmp L18ff
 
 L1925		rts
 
-S1926		lda LAD30,x
+DRAW_DECOR:
+		lda TANIM_Y,x
 		tay
-		lda LAD20,x
+		lda TANIM_X,x
 		sta globals::L033B
-		lda LAD40,x
+		lda TANIM_SHAPE,x
 		ldx globals::L033B
 		jsr spritelib::drawSprite
 		rts
 
 ;
-drawExitArrow:
+BLINK_OBJ:
 		inc globals::L033C
 		lda globals::L033C
 		ror
@@ -1291,14 +1298,14 @@ drawExitArrow:
 		ror
 		bcs L1952
 
-		ldx LAD84
-		ldy LAD85
-		lda LAD86
+		ldx BLINK_X
+		ldy BLINK_Y
+		lda BLINK_SHAPE
 		jsr spritelib::drawSprite
 L1952		rts
 
 S1953:
-		jsr S1441
+		jsr ON_LEDGE
 		bcs :+
 		lda LAC40,x
 		sta globals::spriteYNew
@@ -1364,16 +1371,20 @@ L19c8		jsr updLifeCount
 :		bit sys::KBDSTRB
 		rts
 
-updLifeCount	ldx #globals::playerLifeCount-globals::playerData ; #$06
+; erase the lives digit, (DEC LIVES patched to NOP NOP NOP by this crack; 4am: CE 4B 03),
+; game over when LIVES < 0, else redraw the digit
+updLifeCount
+		ldx #globals::playerLifeCount-globals::playerData ; #$06
 		jsr drawDigit
 		dec globals::playerLifeCount ; cheat
-		bmi noMoreLife
+		bmi GAME_OVER
 
 		ldx #globals::playerLifeCount-globals::playerData ; #$06
 		jsr drawDigit
 		rts
 
-noMoreLife
+GAME_OVER:
+; LIVES back to 0 for the display, then the game-over picture and the title | <- $19E7
 		inc globals::playerLifeCount
 		ldx #globals::playerLifeCount-globals::playerData
 		jsr drawDigit
@@ -1454,7 +1465,7 @@ loadLevel:
 		dosLoadFile fbitmap
 :
 		rts
-
+/*
 		.if 0
 		sta globals::rangeIdx
 		tay
@@ -1563,7 +1574,7 @@ readSector	ldx globals::track
 		rts
 
 		.end
-
+*/
 updAxeCount	ldx #globals::playerAxeCountLo-globals::playerData
 		jsr drawDigit
 		dec globals::playerAxeCountLo ; cheat
@@ -1587,7 +1598,7 @@ L1b48		ldx #globals::playerAxeCountLo-globals::playerData
 		jsr drawDigit
 L1b62		rts
 
-S1b63		jsr S1441
+S1b63		jsr ON_LEDGE
 		bcs L1b69
 		rts
 
@@ -1723,6 +1734,8 @@ getHGRLineAddr
 		sta $1b
 		rts
 ;$1c6b
+; game over (no life left): one of 4 pictures of track $1A+LEVEL (disk 2 T1B-T21),
+; sectors (RND&3)*4.. -> $7500, shown in a black square; wait key/button/timeout
 drawDeathMsg:
 		jsr random
 		and #$03		; 0,4,8 or 12
@@ -2061,7 +2074,7 @@ random:
 		adc globals::soundCnt1
 		sta globals::soundCnt3
 		rts
-
+/*
 		.if 0
 ;
 ; LOADRANGE Y:range idx
@@ -2116,7 +2129,7 @@ S1f1e		ldx #$00
 		jsr rwts
 
 		.end
-
+*/
 L1f2c		rts
 
 testIncAxeCount:
@@ -2151,18 +2164,3 @@ testIncAxeCount:
 		pla
 		pla
 		rts
-;L1f64
-		; .align $100
-
-	; .hex
-	; c2 ce c5 a0 ce cf d7 c9 ce 8d a0 cc
-	; c4 d8 a0 a4 b3 b0 b0 8d a0 c3 d0 d8 a0 a4 c1 c4
-	; b8 b7 8d a0 c2 c5 d1 a0 d7 c9 ce cc c5 d6 8d a0
-	; c4 c5 d8 8d a0 c3 d0 d8 a0 a4 c1 c4 b8 b7 8d a0
-	; c2 c5 d1 a0 d7 c9 ce cc c5 d6 8d ce cf d7 c9 ce
-	; a0 d2 d4 d3 8d d7 c9 ce cc c5 d6 a0 ca d3 d2 a0
-	; d7 c9 ce d3 cf d5 8d cc c5 d6 c5 cc a0 cc c4 d8
-	; a0 a4 b3 b7 c5 8d a0 c2 ce c5 a0 c5 ce c4 c2 cf
-	; ce d5 d3 8d a0 cc c4 d8 a0 a4 b3 b4 c3 8d a0 d3
-	; d4 d8 a0 a4 b3 b7 c6 8d c2 cf ce d5 d3 cc cf a0
-	; .end
