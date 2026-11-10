@@ -1,6 +1,11 @@
 .include "direntry.macro.asm"
 
-VOLUME_BLOCKS		= 280		# 140K
+# the size, a build setting: DISK_KB in src/build.asm
+DISK_KB			= .symbol("DISK_KB")
+.IF DISK_KB != 140 && DISK_KB != 800
+	.ERROR "DISK_KB is " + .str(DISK_KB) + ": 140 (5.25\") or 800 (3.5\")."
+.END
+VOLUME_BLOCKS		= DISK_KB * 2
 DIR_FIRST_BLOCK		= 2		# the volume directory is blocks 2 to 5
 DIR_LAST_BLOCK		= 5
 ENTRIES_PER_BLOCK	= 13
@@ -8,8 +13,6 @@ BITMAP_BLOCK		= 6
 FIRST_FREE_BLOCK	= 7		# the subdirectories, then the files
 # the volume header takes the key block's first entry
 MAX_FILES		= (DIR_LAST_BLOCK - DIR_FIRST_BLOCK + 1) * ENTRIES_PER_BLOCK - 1
-# tiny-dos only reads the low byte of an index block's entries
-MAX_FILE_BLOCK		= 255
 
 .OUTPUT "dist/new_conan.po" FIXED VOLUME_BLOCKS * 512
 
@@ -108,9 +111,10 @@ files = []
 	nextBlock = nextBlock + 1 + file[2]
 .END
 
-.IF nextBlock - 1 > MAX_FILE_BLOCK
-	.ERROR "The files end at block " + .hex(nextBlock - 1) + ": tiny-dos only reads blocks up to " + .hex(MAX_FILE_BLOCK) + "."
+.IF nextBlock > VOLUME_BLOCKS
+	.ERROR "The files end at block " + .hex(nextBlock - 1) + ": the " + .str(DISK_KB) + "K volume has " + .str(VOLUME_BLOCKS) + " blocks."
 .END
+.log "DISK: " + .str(DISK_KB) + "K, " + .str(nextBlock) + " blocks used of " + .str(VOLUME_BLOCKS)
 
 ##
 ## DIRECTORY
@@ -124,12 +128,25 @@ writeDirEntries rootEntries, DIR_FIRST_BLOCK, DIR_LAST_BLOCK - DIR_FIRST_BLOCK +
 
 ##
 ## BITMAP
+## a bit per block, bit 7 of the first byte for block 0: 1 free, 0 used (or past the volume)
 ##
 
 .IF .PC != BITMAP_BLOCK * 512
 	.ERROR "The bitmap is at " + .hex(.PC) + ", not at block " + .str(BITMAP_BLOCK) + "."
 .END
-.FILL 512
+.IF VOLUME_BLOCKS > 512 * 8
+	.ERROR "A " + .str(VOLUME_BLOCKS) + " blocks volume needs more than one bitmap block."
+.END
+.REPEAT 512 AS bmIdx FROM 0
+	bmByte = 0
+	.REPEAT 8 AS bmBit FROM 0
+		bmBlock = bmIdx * 8 + bmBit
+		.IF bmBlock >= nextBlock && bmBlock < VOLUME_BLOCKS
+			bmByte = bmByte | ($80 >> bmBit)
+		.END
+	.END
+	.BYTE bmByte
+.END
 
 ##
 ## SUBDIRECTORIES
@@ -159,9 +176,16 @@ writeDirEntries rootEntries, DIR_FIRST_BLOCK, DIR_LAST_BLOCK - DIR_FIRST_BLOCK +
 		.ERROR "File '" + name + "' is at " + .hex(.PC) + ", its directory entry says block " + .hex(block) + "."
 	.END
 
-	# index block: its data blocks follow it
+	# index block: its data blocks follow it, their low bytes then their high bytes
+	.IF dataBlocks > 256
+		.ERROR "File '" + name + "' is " + .str(dataBlocks) + " blocks: a sapling file has 256 at most."
+	.END
 	.REPEAT dataBlocks AS idx
-		.BYTE block + idx
+		.BYTE (block + idx) & $FF
+	.END
+	.FILL 256 - dataBlocks
+	.REPEAT dataBlocks AS idx
+		.BYTE (block + idx) >> 8
 	.END
 	.ALIGN 512
 

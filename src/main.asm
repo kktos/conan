@@ -4,6 +4,8 @@
 	;.option local_label_char "!"
 	.cpu "65C02"
 
+	.include "build.asm"
+
 
 	.include "segments.asm"
 
