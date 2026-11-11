@@ -1,0 +1,44 @@
+# Level 3 geometry, built into $AC00-$ACFF and $AD80-$AD88
+# by levelGeometry / levelStartExit (modules/game/level-geometry.macros.asm).
+# YAML numbers: write 0xAA, not $AA.
+#
+# The original also had a 9th ledge { left: 0x28, right: 0x35 } after the
+# end of the list, its top set by the level code while the player rides the
+# lift (LAC40+8): the engine stops at the 8th (top 0) and never sees it,
+# so it's left out.
+
+start:
+  x: 0x80
+  y: 0x6C
+  sprite: 0x0B
+  facing: left
+
+exit:
+  arrow: { x: 0x09, y: 0xA8, sprite: 0x26 }  # down arrow, bottom left
+  win: { x: 0x00, y: 0xC0 }                   # below the screen: falling through the floor
+
+# the player stands on 'top', from left to right (max 31)
+platforms:
+  - { left: 0x4F, right: 0x88, top: 0xA1 }
+  - { left: 0x0D, right: 0x14, top: 0x7B }
+  - { left: 0x71, right: 0x89, top: 0x6B }
+  - { left: 0x36, right: 0x48, top: 0x68 }
+  - { left: 0x46, right: 0x70, top: 0x62 }
+  - { left: 0x6D, right: 0x86, top: 0x2B }
+  - { left: 0x50, right: 0x6D, top: 0x20 }
+
+# climbable at x, from top to bottom (max 31)
+ladders:
+  - { x: 0x79, top: 0x6C, bottom: 0xA2 }
+
+# block left/right moves at x, for the player's feet at y (max 15)
+walls:
+  - { x: 0x4F, y: 0xA2 }
+  - { x: 0x83, y: 0xA2 }
+  - { x: 0x71, y: 0x6C }
+  - { x: 0x89, y: 0x6C }
+  - { x: 0x46, y: 0x69 }
+  - { x: 0x6D, y: 0x2C }
+  - { x: 0x7D, y: 0x2C }
+  - { x: 0x4F, y: 0x21 }
+  - { x: 0x4C, y: 0x30 }

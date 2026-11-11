@@ -113,8 +113,8 @@
 
 	missingLabels = .array()
 	.for label of neededLabels
-		.if .undef(label)
-			t= .push(missingLabels, label)
+		.if .undef((label))
+			missingLabels = .push(missingLabels, label)
 		.end
 	.end
 

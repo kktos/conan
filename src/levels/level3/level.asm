@@ -6,14 +6,14 @@
 
 	.module "L3/DATA"
 	.segment L3_DATA
-	; .include "data-R1-7500.asm"
-	; .include "data-R2-7900.asm"
-	; .include "data-R3-7A00.asm"
+	.include "data-R1-7500.asm"
+	.include "data-R2-7900.asm"
+	.include "data-R3-7A00.asm"
 
 	.module "L3/CODE"
 	.segment L3_CODE
-	; .include "code.asm"
-	; .include "data-R5-AC00.asm"
+	.include "code.asm"
+	.include "data-R5-AC00.asm"
 
 	; game over: 4 pictures of 56 lines x 15 bytes, one per file, drawDeathMsg loads one at random
 	.module "L3/DEAD0"
