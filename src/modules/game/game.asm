@@ -12,52 +12,52 @@ levelEntrypoint	=	level0::levelEntrypoint	; $A000
 
 ; collision rects
 ; left
-LAC00		=	$AC00
+LAC00		.equ	$AC00
 ; right
-LAC20		=	$AC20
+LAC20		.equ	$AC20
 ; top
-LAC40		=	$AC40
+LAC40		.equ	$AC40
 
 ; ladder y top
-LAC60		=	$AC60
+LAC60		.equ	$AC60
 ; ladder y bottom
-LAC80		=	$AC80
+LAC80		.equ	$AC80
 ; ladder X pos
-LACA0		=	$ACA0
+LACA0		.equ	$ACA0
 
 ; player boundaries
 ; player X pos
-LACC0		=	$ACC0
+LACC0		.equ	$ACC0
 ; player Y pos
-LACF0		=	$ACF0
+LACF0		.equ	$ACF0
 
-TANIM_X		=	$AD20
-TANIM_Y		=	$AD30
-TANIM_SHAPE	=	$AD40
+TANIM_X		.equ	$AD20
+TANIM_Y		.equ	$AD30
+TANIM_SHAPE	.equ	$AD40
 
 ; initial player pos, sprite, globals::currentXspeed
 ; x
-LAD80		=	$AD80
+LAD80		.equ	$AD80
 ; y
-LAD81		=	$AD81
+LAD81		.equ	$AD81
 ; globals::spriteID
-LAD82		=	$AD82
+LAD82		.equ	$AD82
 ; currentXSpeed
-LAD83		=	$AD83
+LAD83		.equ	$AD83
 
 ; Level Exit Arrow
 ; sprite X
-BLINK_X		=	$AD84
+BLINK_X		.equ	$AD84
 ; sprite Y
-BLINK_Y		=	$AD85
+BLINK_Y		.equ	$AD85
 ; sprite ID
-BLINK_SHAPE	=	$AD86
+BLINK_SHAPE	.equ	$AD86
 
 ; player pos to win
 ; x
-LAD87		=	$AD87
+LAD87		.equ	$AD87
 ; y
-LAD88		=	$AD88
+LAD88		.equ	$AD88
 
 L1001=*+1
 L1002=*+2
