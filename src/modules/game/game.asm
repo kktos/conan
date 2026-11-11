@@ -208,8 +208,7 @@ mainLoop
 
 onKeyNext
 		bit	sys::KBDSTRB
-		inc	globals::level
-		jmp	L18e6
+		jmp	L18d9			; erase level digit, inc level, draw new digit, load
 onKeyDie
 		bit	sys::KBDSTRB
 		;stz globals::playerLifeCount
