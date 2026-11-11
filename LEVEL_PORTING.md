@@ -180,8 +180,9 @@ Anything else is a translation error. Then run the level in the emulator.
 | level | notes |
 |---|---|
 | 0 | title / attract mode; c5 not meaningful; has a `L0_BITMAP` |
-| 1, 2, 3 | ported (level 2: see TODO.md) |
-| 4, 5 | c4 = 3 KB ($A000-$ABFF), regular exits |
+| 1, 2, 3, 4 | ported (level 2: see TODO.md) |
+| 4 | c4 = 3 KB ($A000-$ABFF). Two local copies of DRAW_SHAPE: $A003 stores (no EOR: `copySrc lda $ffff`), $A0A9 EORs (`mask`). Variables in c3 too: drop paths $9380-$95FF, key $93A1-$93A4 |
+| 5 | c4 = 3 KB ($A000-$ABFF), regular exit |
 | 6 | ends in its code: `CHECK_LEAVE` $AA9A moves the player to the c5 exit ($C0,$C0) |
 | 7 | c3 = 9728 bytes, up to $9FFF: past `L7_DATA`'s end. `FELL_OFF` $AA65 sends back to level 6; `LOAD_FINAL` $AAC9 reads disk 2 T22 into $9F00-$A9FF and jumps to $9F00 (`level7_final.asm`): needs its own file |
 | 8 | ending; c5 not meaningful; counts lives down for the bonus |
