@@ -21,7 +21,6 @@
   "devDependencies": {
     "@jimp/utils": "^1.6.1",
     "jimp": "^1.6.1",
-    "jsasm6502": "^1.7.0",
     "rimraf": "^6.1.4",
     "serve": "^14.2.7"
   }
