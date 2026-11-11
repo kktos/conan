@@ -4,34 +4,6 @@ How levels are ported: [LEVEL_PORTING.md](LEVEL_PORTING.md).
 
 ## Bugs
 
-### Level 2: $AD00-$ADFF not built (torch, start, exit)
-
-`src/levels/level2/data-R5-AC00.asm` only has `levelGeometry` ($AC00-$ACFF), so
-the whole $AD00 page is the `L2_CODE` pad value, $D5 (checked in the built
-`.po` with `tools/levelport/levelcmp.py ... 2`). The engine reads there:
-
-- `ANIMATE_DECOR` walks the torch lists $AD20/$AD30/$AD40 until a Y of 0: with
-  $D5 everywhere it draws 256 garbage "torches" each frame, reading on past
-  $AE00 (and the loop index wraps, so it may never find a 0).
-- the player's start $AD80-$AD83, the arrow $AD84-$AD86 and the exit
-  $AD87-$AD88 are $D5.
-
-The original values (`conan-rev-eng/out/levels/L2_c5_AC00.bin`):
-
-| | |
-|---|---|
-| torch | X $84, Y $2B, shape $21 (one) |
-| start | X $80, Y $09, sprite $0B, facing left ($FF) |
-| arrow | X $07, Y $9D, sprite $24 (left arrow) |
-| exit | X $F4, Y $99 (left of X 0) |
-
-Fix: add `start` / `exit` to `level2/geometry.yaml` (and drop its "TODO: start /
-exit aren't known yet"), and write the $AD00 page as in
-`level3/data-R5-AC00.asm`.
-
-Also not built, but harmless: ladder #10 ($AC6A / $AC8A = $4C), after the end of
-the ladder list (#2 has top 0), so the engine never reads it.
-
 ### Level 7: c3 doesn't fit in L7_DATA
 
 Level 7's c3 is 9728 bytes, $7A00-$9FFF, but `L7_DATA` ends at $9BFF
