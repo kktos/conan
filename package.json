@@ -19,8 +19,6 @@
   },
   "homepage": "https://github.com/kktos/conan#readme",
   "devDependencies": {
-    "@jimp/utils": "^1.6.1",
-    "jimp": "^1.6.1",
     "rimraf": "^6.1.4",
     "serve": "^14.2.7"
   }
