@@ -10,11 +10,11 @@
 ; key, and a door at X $71 (Y $50-$64) that only the key opens.
 ; exit: walking out at the top right (exit at $8B,$28).
 ;
-; drawStore and drawPlain are local copies of the core's sprite routine:
-; drawStore writes the shape (no EOR, the geyser leaves a column behind it),
-; drawPlain EORs it without the priority / collision tests. Before and after
-; drawing over sprites, the code EORs those sprites off and back on
-; (toggleNearGeyser, toggleBottomLeft).
+; spritelib::drawStore and spritelib::drawPlain draw without the priority /
+; collision tests: drawStore writes the shape (no EOR, the geyser leaves a
+; column behind it), drawPlain EORs it. Before and after drawing over
+; sprites, the code EORs those sprites off and back on (toggleNearGeyser,
+; toggleBottomLeft).
 ;
 
 RNDL		.equ	$4E
@@ -44,169 +44,6 @@ AXES_HI		.equ	globals::playerAxeCountHi - globals::playerData
 AXES_LO		.equ	globals::playerAxeCountLo - globals::playerData
 
 La000		jmp levelTick
-
-;
-; drawStore: DRAW_SHAPE without the priority / collision test and without
-; EOR: the shape's bytes are written as is. X, Y, A = shape
-;
-drawStore	sty spritelib::yPos
-		tay
-		lda spritelib::spriteLo-1,y
-		sta $1c
-		lda spritelib::spriteHi-1,y
-		sta $1d
-		ldy #$00
-		sty spritelib::isFlipped
-		lda ($1c),y
-		sta spritelib::dsWidth
-		sta spritelib::dsWidthInit
-		iny
-		lda ($1c),y
-		sta spritelib::dsHeight
-		stx spritelib::dsHeightInit
-		bpl La047
-		inc spritelib::isFlipped
-		and #$7f
-		sta spritelib::dsHeight
-		lda spritelib::LB200,x
-		asl
-		clc
-		adc #$02
-		tay
-		lda ($1c),y
-		sta copySrc+1
-		iny
-		lda ($1c),y
-		sta copySrc+2
-		jmp La05a
-
-La047		lda spritelib::LAF00,x
-		asl
-		clc
-		adc #$02
-		tay
-		lda ($1c),y
-		sta copySrc+1
-		iny
-		lda ($1c),y
-		sta copySrc+2
-La05a		ldy spritelib::yPos
-		lda utils::hgrLow,y
-		sta $1c
-		lda utils::hgrHigh,y
-		sta $1d
-		ldx spritelib::dsHeightInit
-		ldy spritelib::isFlipped
-		beq La076
-		lda spritelib::LB000,x
-		tay
-		jmp La07a
-
-La076		lda spritelib::LB100,x
-		tay
-La07a		cpy #$28
-		bcs La083
-copySrc	lda $ffff
-		sta ($1c),y
-La083		inc copySrc+1
-		bne La08b
-		inc copySrc+2
-La08b		iny
-		cpy #$4a
-		bne La092
-		ldy #$00
-La092		dec spritelib::dsWidth
-		bne La07a
-		ldx spritelib::dsWidthInit
-		stx spritelib::dsWidth
-		dec spritelib::dsHeight
-		beq La0a8
-		inc spritelib::yPos
-		jmp La05a
-
-La0a8		rts
-
-;
-; drawPlain: DRAW_SHAPE without the priority / collision test, plain EOR
-; (the leftover source's STORD). X, Y, A = shape
-;
-drawPlain	sty spritelib::yPos
-		tay
-		lda spritelib::spriteLo-1,y
-		sta $1c
-		lda spritelib::spriteHi-1,y
-		sta $1d
-		ldy #$00
-		sty spritelib::isFlipped
-		lda ($1c),y
-		sta spritelib::dsWidth
-		sta spritelib::dsWidthInit
-		iny
-		lda ($1c),y
-		sta spritelib::dsHeight
-		stx spritelib::dsHeightInit
-		bpl La0ed
-		inc spritelib::isFlipped
-		and #$7f
-		sta spritelib::dsHeight
-		lda spritelib::LB200,x
-		asl
-		clc
-		adc #$02
-		tay
-		lda ($1c),y
-		sta mask+1
-		iny
-		lda ($1c),y
-		sta mask+2
-		jmp La100
-
-La0ed		lda spritelib::LAF00,x
-		asl
-		clc
-		adc #$02
-		tay
-		lda ($1c),y
-		sta mask+1
-		iny
-		lda ($1c),y
-		sta mask+2
-La100		ldy spritelib::yPos
-		lda utils::hgrLow,y
-		sta $1c
-		lda utils::hgrHigh,y
-		sta $1d
-		ldx spritelib::dsHeightInit
-		ldy spritelib::isFlipped
-		beq La11c
-		lda spritelib::LB000,x
-		tay
-		jmp La120
-
-La11c		lda spritelib::LB100,x
-		tay
-La120		cpy #$28
-		bcs La12b
-mask		lda $ffff
-		eor ($1c),y
-		sta ($1c),y
-La12b		inc mask+1
-		bne La133
-		inc mask+2
-La133		iny
-		cpy #$4a
-		bne La13a
-		ldy #$00
-La13a		dec spritelib::dsWidth
-		bne La120
-		ldx spritelib::dsWidthInit
-		stx spritelib::dsWidth
-		dec spritelib::dsHeight
-		beq La150
-		inc spritelib::yPos
-		jmp La100
-
-La150		rts
 
 ;
 ; once per frame
@@ -360,7 +197,7 @@ moveGeyser	jsr toggleNearGeyser
 drawGeyser	ldx geyserX
 		ldy geyserY
 		lda geyserShape
-		jsr drawStore
+		jsr spritelib::drawStore
 		rts
 
 animGeyser	inc geyserShape
@@ -378,7 +215,7 @@ geyserFalls	ldx geyserX
 		dey
 		dey
 		lda #SHAPE_BLANK
-		jsr drawStore
+		jsr spritelib::drawStore
 		jsr drawGeyser
 		jmp toggleNearGeyser
 
@@ -430,7 +267,7 @@ drawBreak	jsr toggleBottomLeft
 		lda breakShapes-1,x
 		ldx boulderX
 		ldy #$a3
-		jsr drawPlain
+		jsr spritelib::drawPlain
 		jmp toggleBottomLeft
 
 drawBurst	ldx burstFrame
@@ -445,15 +282,15 @@ drawBurst	ldx burstFrame
 eraseGeyserHole	ldx geyserX
 		ldy #$95
 		lda #SHAPE_BLANK
-		jsr drawStore
+		jsr spritelib::drawStore
 		ldx geyserX
 		ldy #$9c
 		lda #SHAPE_BLANK
-		jsr drawStore
+		jsr spritelib::drawStore
 		ldx geyserX
 		ldy #$99
 		lda #SHAPE_BLANK
-		jmp drawStore
+		jmp spritelib::drawStore
 
 ;
 ; the boulder is ledge $0E while it's solid, from X-4 to X+$0D at Y-$11;
@@ -1055,7 +892,7 @@ La7c4		tax
 		lda sinkShapes,x
 		ldx sinkX
 		ldy #$9c
-		jsr drawPlain
+		jsr spritelib::drawPlain
 		jsr toggleBottomLeft
 		rts
 
@@ -1179,7 +1016,7 @@ La897		jsr random
 		bpl La8b9
 		lda #SHAPE_AXE
 La8b9		ldx globals::L033B
-		jsr drawPlain
+		jsr spritelib::drawPlain
 		jsr random
 		and #$1f
 		sta bonusWait
@@ -1235,7 +1072,7 @@ takeAxeBonus	jsr addAxe
 eraseAxeBonus	ldx bonusX
 		ldy bonusY
 		lda #SHAPE_AXE
-		jsr drawPlain
+		jsr spritelib::drawPlain
 		ldx #$00
 		stx bonusTime
 		rts
@@ -1243,7 +1080,7 @@ eraseAxeBonus	ldx bonusX
 eraseGemBonus	ldx bonusX
 		ldy bonusY
 		lda #SHAPE_GEM
-		jsr drawPlain
+		jsr spritelib::drawPlain
 		rts
 
 ;
@@ -1378,7 +1215,7 @@ fillSlot2	jsr dropGem
 		ldx #$76
 		ldy #$95
 		lda #SHAPE_SLOT
-		jsr drawPlain
+		jsr spritelib::drawPlain
 Laa33		rts
 
 drawSlotGem	ldy #$a6
@@ -1394,7 +1231,7 @@ blinkSlot	ldx keyState
 		ldx #$76
 		ldy #$95
 		lda #SHAPE_SLOT
-		jsr drawPlain
+		jsr spritelib::drawPlain
 		lda slotBlink
 		eor #$fe
 		sta slotBlink
@@ -1422,7 +1259,7 @@ Laa72		rts
 drawKey		ldx keyX
 		ldy keyY
 		lda #SHAPE_KEY
-		jsr drawPlain
+		jsr spritelib::drawPlain
 		rts
 
 ; player at the key (X $72-$79, Y $9C-$A3): takes it, +100
@@ -1445,7 +1282,7 @@ checkTakeKey	ldx globals::assetKeyCnt
 		ldx keyX
 		ldy keyY
 		lda #SHAPE_KEY
-		jsr drawPlain
+		jsr spritelib::drawPlain
 		jsr game1::scoreAdd100
 		jsr soundlib::L0a6e
 Laab5		rts

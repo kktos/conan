@@ -3,100 +3,6 @@
 levelEntrypoint:
 		jmp	start
 
-		.include	"drawspritebis.asm"
-
-/*
-drawSpriteBis
-		sty globals::yPos
-		tay
-		lda spritelib::spriteLo-1,y
-		sta $1c
-		lda spritelib::spriteHi-1,y
-		sta $1d
-
-		ldy #$00
-		sty spritelib::isFlipped
-		lda ($1c),y
-		sta spritelib::dsWidth
-		sta spritelib::dsWidthInit
-		iny
-		lda ($1c),y
-		sta spritelib::dsHeight
-		stx globals::Ypos
-		bpl :+
-
-		inc spritelib::isFlipped
-		and #$7f
-		sta spritelib::dsHeight
-		lda spritelib::LB200,x
-		bra :++
-		; asl
-		; clc
-		; adc #$02
-		; tay
-		; lda ($1c),y
-		; sta pixels
-		; iny
-		; lda ($1c),y
-		; sta pixels+1
-		; jmp La05a
-
-:	     	lda spritelib::LAF00,x
-:
-		asl
-		clc
-		adc #$02
-		tay
-		lda ($1c),y
-		sta pixels
-		iny
-		lda ($1c),y
-		sta pixels+1
-
-La05a       	ldy globals::yPos
-		lda utils::hgrLow,y
-		sta $1c
-		lda utils::hgrHigh,y
-		sta $1d
-		ldx globals::Ypos
-
-		ldy spritelib::isFlipped
-		beq :+
-
-		lda spritelib::LB000,x
-		bra :++
-
-:	      	lda spritelib::LB100,x
-:		tay
-
-La07a       	cpy #40
-		bcs :+
-
-pixels=*+1
-		lda $ffff
-		sta ($1c),y
-:	   	inc pixels
-		bne :+
-
-		inc pixels+1
-:	      	iny
-		cpy #74
-		bne :+
-
-		ldy #$00
-:               dec spritelib::dsWidth
-		bne La07a
-
-		ldx spritelib::dsWidthInit
-		stx spritelib::dsWidth
-		dec spritelib::dsHeight
-		beq :+
-		inc globals::yPos
-		jmp La05a
-
-:		rts
-*/
-
 ; title screen / conan jumping over spring / hi-score
 start:
 		bit	sys::KBDSTRB
@@ -210,8 +116,8 @@ displayHelp	jsr	utils::clearScreen
 ;a1f1 - was drawTitleGraphic: sprite $4F (27x75) at x=25 (byte 7 = pixel 49), y=16
 ; The text is now drawn with drawText at the same pixels; sprite $4F only keeps
 ; what the font can't do: the dotted underline and the coloured "HALL OF VOLTA".
-INTRO_X = 49
-INTRO_Y = 16
+INTRO_X		=	49
+INTRO_Y		=	16
 
 drawIntroduction
 		drawText	introTitle, INTRO_X+40, INTRO_Y
@@ -224,13 +130,13 @@ drawIntroduction
 		drawText	introLine5, INTRO_X, INTRO_Y+70
 		rts
 
-introTitle	.cstr "INTRODUCTION"
-introConan	.cstr "CONAN:"
-introLine1	.cstr "DESTROY VOLTA.BEWARE OF"	; sic: no space after the dot in the original
-introLine2	.cstr "HIS MINIONS AND OTHER"
-introLine3	.cstr "DANGERS WHICH LIE AHEAD."
-introLine4	.cstr "USE GEMS AND KEYS TO"
-introLine5	.cstr "YOUR ADVANTAGE."
+introTitle	.cstr	"INTRODUCTION"
+introConan	.cstr	"CONAN:"
+introLine1	.cstr	"DESTROY VOLTA.BEWARE OF"	; sic: no space after the dot in the original
+introLine2	.cstr	"HIS MINIONS AND OTHER"
+introLine3	.cstr	"DANGERS WHICH LIE AHEAD."
+introLine4	.cstr	"USE GEMS AND KEYS TO"
+introLine5	.cstr	"YOUR ADVANTAGE."
 
 drawTitleGraphic2
 		drawSprite	{#$50},{#48},{#16}

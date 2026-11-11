@@ -108,9 +108,18 @@ SHAPE_LIFT	.equ	$41		; going up
 `jsr` targets that `level<n>.asm` declares at the top as `Lxxxx = $xxxx`
 ("labels outside the rendered window") are the core calls: map every one.
 
-**DRAW_PLAIN** ($A003, in levels 0, 2, 3, 4, 5, 7, after `JMP BEGIN`): the
-self-modifying `lda $FFFF` becomes `mask lda $ffff`, and `sta $A07F` / `$A080`
-become `sta mask+1` / `mask+2` (copy it from `levels/level3/code.asm`).
+**DRAW_PLAIN** ($A003, in levels 0, 2, 3, 4, 5, 7, after `JMP BEGIN`) is a local
+copy of the shape drawing without the priority / collision test. Don't port it:
+call spritelib's. Compare its write loop to find which one it is:
+
+- `LDA (shape) / EOR (SRCPTR),Y / STA (SRCPTR),Y`: `spritelib::drawPlain`
+  (levels 3, 4 at $A0A9, 5, 7 and level 7's final animation)
+- `LDA (shape) / STA (SRCPTR),Y`, no EOR: `spritelib::drawStore` (levels 0, 4)
+- anything else is a variant to keep in the level (level 2's only EORs where
+  the screen is empty or already holds the byte: `drawSpriteBis`)
+
+Only `levelTick` has to stay at $A000: the rest of c4 moves up, `levelcmp.py`
+then shows a shift from $A003 on.
 
 **Data tables inside c4** (level 3: the bonus path at $A800/$A900/$AA00): put them
 at their address with `placeAt` and dump them with `hexdump.py`. If the code
