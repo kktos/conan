@@ -4,11 +4,6 @@ How levels are ported: [LEVEL_PORTING.md](LEVEL_PORTING.md).
 
 ## Bugs
 
-### Level 7: c3 doesn't fit in L7_DATA
-
-Level 7's c3 is 9728 bytes, $7A00-$9FFF, but `L7_DATA` ends at $9BFF
-(`src/segments.asm`). Check what conan has at $9C00-$9FFF before raising it.
-
 ### Sprites below the screen draw on line 191
 
 The original's line tables send every line from $C0 to $FF to $0F60, a scratch
@@ -56,9 +51,19 @@ original is still to do.
   monsters die), and the top right then leaves to level 7. Not checked:
   the lightning bolt and riding the lower bar, the axe bonus, a real throw
   from the top left ledge.
-- **The build fails from level 7 on.** The uncommitted `macros.asm` fix makes
-  `assertGameStruct` work, and levels 7 and 8 have no R5 yet. Port them, or
-  turn the check off in the placeholders for now.
+- **Level 7 has only been run, not played through.** It builds and matches
+  the original (DATA differs only in the 2 unreferenced c2 blocks; CODE only
+  by relocated operands, `loadFinal` and the slack $AB6C-$ABFF; R1, R3 and
+  R5 identical; `L7/FINAL` only by relocated operands and the slack
+  $A0B3-$A0FF). In the emulator: the throws, the shots, a bat let out by a
+  route 7 shot, the bridge (ledge 7) run; giving the third gem (gem count
+  and `gemsGiven` set by hand) plays the final animation and goes to level
+  8; falling off the screen goes back to level 6. Not checked: the axe on a
+  shot (gem drop, bounce), taking and giving a gem for real, the catapult,
+  the pits.
+- **The build fails on level 8.** The uncommitted `macros.asm` fix makes
+  `assertGameStruct` work, and level 8 has no R5 yet. Port it, or turn the
+  check off in the placeholder for now.
 
 ## conan-rev-eng
 
@@ -82,3 +87,14 @@ original is still to do.
   `guardShape` / `gemReturned` in conan).
 - `globals::sountCnt2` / `soundCnt3` / `soundCnt1` ($0371 / $0372 / $037A) are
   the RND state (`CONAN_RE.md`): rename them in `variables.asm`.
+- `meta/c2/level7.c2`: `L7_EYE_*` is the prisoner in the cage (shapes
+  $5A/$5B at $1A,$24), `L7_GUARD_*` the next bat walking to the door and
+  waiting there (`L7_GUARD_ON` holds its X, $84), `L7_ROPE` the lever that
+  arms the catapult (`L7_SHAPE68_ON` its blink), `L7_TRAP_*` a bridge at
+  the left (ledge 7) that comes and goes, `L7_SHOT_X` the Y where a falling
+  gem lands, `L7_DELAY` "the figure's hand is empty", `L7_ITEM_COUNT` the
+  gems and shots in play (0..4). The shot tables $AB48-$AB6B (X, Y, kind,
+  segment, time, DX, DY, route, shape): kind 1 fireball, 4 carries a gem,
+  $FF the gem falling. The throw tables are at $AB00/$AB0C/.. ($AAFF+1),
+  12 bytes each, read as `table-1,x`.
+

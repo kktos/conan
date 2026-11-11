@@ -9,6 +9,10 @@
 ;   walls:     LACF0 (y)   = 0
 ; so a top / y can't be 0, and a list holds at most column size - 1 entries.
 ;
+; A platform with 'off: true' is written with a top of 0: the level code
+; turns it on by writing its top (level 7's bridge). It ends the list, so
+; it can only be the last one.
+;
 ; The labels (LAC00...) are set with .let: a label written in a macro body
 ; would stay local to the macro, and the level code needs them.
 ;
@@ -43,9 +47,14 @@
 	}
 	.fill $20 - nbPlatforms, 0
 	.let "LAC40" = *	; top
-	.for p of lvl.platforms {
+	.for p of lvl.platforms as i {
 		.assert p.top != 0, "levelGeometry: a platform top can't be 0 (end of list)"
-		.db p.top
+		.if .has(p, "off") {
+			.assert i == nbPlatforms - 1, "levelGeometry: only the last platform can be off"
+			.db 0
+		} .else {
+			.db p.top
+		}
 	}
 	.fill $20 - nbPlatforms, 0
 

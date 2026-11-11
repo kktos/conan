@@ -6,14 +6,14 @@
 
 	.module "L7/DATA"
 	.segment L7_DATA
-	; .include "data-R1-7500.asm"
-	; .include "data-R2-7900.asm"
-	; .include "data-R3-7A00.asm"
+	.include "data-R1-7500.asm"
+	.include "data-R2-7900.asm"
+	.include "data-R3-7A00.asm"
 
 	.module "L7/CODE"
 	.segment L7_CODE
-	; .include "code.asm"
-	; .include "data-R5-AC00.asm"
+	.include "code.asm"
+	.include "data-R5-AC00.asm"
 
 	; game over: 4 pictures of 56 lines x 15 bytes, one per file, drawDeathMsg loads one at random
 	.module "L7/DEAD0"
@@ -31,6 +31,11 @@
 	.module "L7/DEAD3"
 	.segment L7_DEAD3
 	.incbin "../../../assets/gameover/L7_pic3_T21SC.bin"
+
+	; the final animation, loaded by loadFinal (code.asm) over $9F00-$A9FF
+	.module "L7/FINAL"
+	.segment L7_FINAL
+	.include "final.asm"
 
 	assertGameStruct
 
