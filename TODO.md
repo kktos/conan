@@ -46,8 +46,18 @@ original is still to do.
 - **Level 5, in the original too:** `checkFire` calls `closeTop` even when
   the top isn't open, which EORs the guard (shapes $49/$4A at $4A,$58) onto
   the screen and puts a gem back on the pile.
-- **The build fails from level 6 on.** The uncommitted `macros.asm` fix makes
-  `assertGameStruct` work, and levels 6 to 8 have no R5 yet. Port them, or
+- **Level 6 has only been run, not played through.** It builds and matches
+  the original (DATA identical; CODE only by relocated operands, the slack
+  $AB3D-$ABFF and $AD89-$AD8A, $FF $FF on the disk but not read; R5
+  identical otherwise). In the emulator: the monsters fly out of the
+  machine, walk and climb; the bars and the mover move; the axe (put by
+  hand on the mover, 6 times) builds the ladder to the top left ledge
+  (+400 each); the axe on the chain drops the chandelier (+1000, the
+  monsters die), and the top right then leaves to level 7. Not checked:
+  the lightning bolt and riding the lower bar, the axe bonus, a real throw
+  from the top left ledge.
+- **The build fails from level 7 on.** The uncommitted `macros.asm` fix makes
+  `assertGameStruct` work, and levels 7 and 8 have no R5 yet. Port them, or
   turn the check off in the placeholders for now.
 
 ## conan-rev-eng
