@@ -55,11 +55,11 @@ updatePortal	ldx portalOn
 		beq openPortal
 		rts
 
-openPortal	jsr random
+openPortal	jsr utils::random
 		and #$3f
 		adc #$10
 		sta portalOn
-		jsr random
+		jsr utils::random
 		sta portalSide
 		jsr drawPortal
 		rts
@@ -75,7 +75,7 @@ portalIsOpen	jsr drawPortal
 		jsr game1::tone
 		rts
 
-closePortal	jsr random
+closePortal	jsr utils::random
 		and #$1f
 		adc #$08
 		sta portalOff
@@ -127,7 +127,7 @@ La15b		ldx globals::L0322
 		beq La1b3
 		cmp rangeHi-1,y
 		beq La1b3
-		jsr random
+		jsr utils::random
 		cmp #$02
 		bcc La1b3
 		cpx #$01
@@ -810,33 +810,6 @@ checkNoBounceZone
 
 :		ldx #$00
 		stx globals::L0373
-		rts
-
-;
-; random number in A, globals::soundCnt3 (same as the core's)
-;
-random		rol RNDL
-		rol globals::soundCnt1
-		rol globals::sountCnt2
-		lda RNDL
-		asl
-		eor RNDH
-		eor globals::sountCnt2
-		rol
-		rol
-		rol
-		rol
-		rol
-		pha
-		rol RNDH
-		lda RNDH
-		eor globals::soundCnt1
-		sta RNDL
-		pla
-		sta globals::sountCnt2
-		adc RNDL
-		adc globals::soundCnt1
-		sta globals::soundCnt3
 		rts
 
 ;

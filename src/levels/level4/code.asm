@@ -17,9 +17,6 @@
 ; toggleBottomLeft).
 ;
 
-RNDL		.equ	$4E
-RNDH		.equ	$4F
-
 ; inventory items, shape SHAPE_ITEMS + item: globals::assetKeyCnt / assetGemCnt
 SHAPE_ITEMS	.equ	$26
 ITEM_KEY	.equ	1
@@ -164,7 +161,7 @@ geyserDone	jsr toggleNearGeyser
 		stx geyserState
 		stx geyserWait
 		stx burstFrame
-		jsr random
+		jsr utils::random
 		and #$3f
 		adc #$10
 		sta boulderWait
@@ -467,7 +464,7 @@ La481		lda #$00
 		sta creatureJump,x
 		lda #SHAPE_CREATURE
 		sta creatureShape,x
-		jsr random
+		jsr utils::random
 		sta creatureDX,x
 		and #$0f
 		sta creatureTimer,x
@@ -570,16 +567,16 @@ La552		lda creatureActive,x
 		inx
 		cpx #$08
 		bne La552
-		jsr random
+		jsr utils::random
 		and #$1f
 		sta spawnWait
 		rts
 
 spawnInSlot	stx creature
-		jsr random
+		jsr utils::random
 		and spawnMask
 		sta spawnWait
-		jsr random
+		jsr utils::random
 		and #$0f
 		tay
 		ldx creature
@@ -592,7 +589,7 @@ spawnInSlot	stx creature
 		sta creatureActive,x
 		lda #SHAPE_CREATURE_GONE
 		sta creatureShape,x
-		jsr random
+		jsr utils::random
 		and #$0f
 		sta creatureTimer,x
 		lda #$00
@@ -675,7 +672,7 @@ creatureLands	jsr drawCreature
 		sta creatureFalling,x
 		sta creatureDY,x
 		sta creatureJump,x
-		jsr random
+		jsr utils::random
 		and #$0f
 		sta creatureTimer,x
 		lda #SHAPE_CREATURE
@@ -991,7 +988,7 @@ updateBonus	ldx bonusTime
 		bne La878
 		dec bonusWait
 		bne La878
-		jsr random
+		jsr utils::random
 		cmp #$40
 		bcc La892
 		ldx #$ff
@@ -1000,7 +997,7 @@ updateBonus	ldx bonusTime
 
 La892		ldx #$01
 		stx bonusKind
-La897		jsr random
+La897		jsr utils::random
 		and #$0f
 		tay
 		lda spawnX,y
@@ -1017,10 +1014,10 @@ La897		jsr random
 		lda #SHAPE_AXE
 La8b9		ldx globals::L033B
 		jsr spritelib::drawPlain
-		jsr random
+		jsr utils::random
 		and #$1f
 		sta bonusWait
-		jsr random
+		jsr utils::random
 		and #$7f
 		clc
 		adc #$40
@@ -1323,33 +1320,6 @@ doorBlocks	ldx doorOpen
 		ldx #$71
 		stx globals::spriteX
 		jsr drawPlayer
-		rts
-
-;
-; random number in A, globals::soundCnt3 (same as the core's)
-;
-random		rol RNDL
-		rol globals::soundCnt1
-		rol globals::sountCnt2
-		lda RNDL
-		asl
-		eor RNDH
-		eor globals::sountCnt2
-		rol
-		rol
-		rol
-		rol
-		rol
-		pha
-		rol RNDH
-		lda RNDH
-		eor globals::soundCnt1
-		sta RNDL
-		pla
-		sta globals::sountCnt2
-		adc RNDL
-		adc globals::soundCnt1
-		sta globals::soundCnt3
 		rts
 
 ;

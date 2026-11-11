@@ -87,7 +87,7 @@ SHAPE_LIFT	.equ	$41		; going up
 | $1040 / $1050 / $105A / $106A / $1071 | `game1::scoreAdd5` / `scoreAdd25` / `scoreAdd50` / `scoreAdd75` / `scoreAdd250` |
 | `DRAW_DIGIT` $197A (or a copy of it in the level) | `game1::drawDigit` |
 | sounds $0Axx / $0Bxx | `soundlib::L0axx` (same low byte, lower-case: `soundlib::L0ab6`, `soundlib::L0b23`) |
-| the core's RND $0B51 | `soundlib::S0b51` (level 3 keeps its own copy) |
+| the core's RND $0B51 (or a copy of it in the level) | `utils::random`: don't port the level's copy |
 | `PLAYER_X` / `_Y` / `_SHAPE` $0300-$0302 | `globals::spriteX` / `spriteY` / `spriteID` |
 | $0300-$03FF in general | `globals::*`: `src/modules/variables/variables.asm` is at `.org $300`, count the bytes |
 | $0306 / $0307 | `globals::playerXspeed` / `playerYspeed` |

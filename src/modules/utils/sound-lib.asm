@@ -133,7 +133,7 @@ L0ad7               ldx #$18
 
 L0ae6               tya
 L0ae7               pha
-                    jsr S0b51
+                    jsr utils::random
                     tax
                     ldy #$02
                     jsr game1::tone
@@ -189,30 +189,6 @@ L0b3f               ldx #$10
                     ldy #$40
                     jsr game1::tone
                     jsr S0a88
-                    rts
-
-S0b51               rol $4e
-                    rol globals::soundCnt1
-                    rol globals::sountCnt2
-                    lda $4e
-                    asl
-                    eor $4f
-                    eor globals::sountCnt2
-                    rol
-                    rol
-                    rol
-                    rol
-                    rol
-                    pha
-                    rol $4f
-                    lda $4f
-                    eor globals::soundCnt1
-                    sta $4e
-                    pla
-                    sta globals::sountCnt2
-                    adc $4e
-                    adc globals::soundCnt1
-                    sta globals::soundCnt3
                     rts
 
 		.align $10

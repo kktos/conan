@@ -162,6 +162,45 @@ digit:
 
 }
 
+;
+; RANDOM - the original's RND ($0B51): A = the next random number, also
+; stored in globals::soundCnt3. State: $4E/$4F and globals::soundCnt1 /
+; sountCnt2. Called by the core, the sounds and the levels.
+;
+.proc random {
+
+RNDL		.equ	$4E
+RNDH		.equ	$4F
+
+		rol	RNDL
+		rol	globals::soundCnt1
+		rol	globals::sountCnt2
+		lda	RNDL
+		asl
+		eor	RNDH
+		eor	globals::sountCnt2
+		rol
+		rol
+		rol
+		rol
+		rol
+		pha
+		rol	RNDH
+		lda	RNDH
+		eor	globals::soundCnt1
+		sta	RNDL
+		pla
+		sta	globals::sountCnt2
+		adc	RNDL
+		adc	globals::soundCnt1
+		sta	globals::soundCnt3
+		rts
+
+		.align $10
+		.db "random"
+		.align $10
+}
+
 		.include "hgr-tables-M6E00-6FFF.asm"
 
 		.end namespace
