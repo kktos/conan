@@ -4,7 +4,7 @@
 
 		.macro	assertGameStruct
 labels			=	.array("LAC00","LAC20","LAC40","LAC60","LAC80","LACA0","LACC0","LACF0")
-			;assertDefinedLabels	labels, "Missing game interface fields"
+			assertDefinedLabels	labels, "Missing game interface fields"
 		.end
 
 ; highscoreses
