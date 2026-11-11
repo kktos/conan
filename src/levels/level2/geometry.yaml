@@ -1,7 +1,16 @@
-# Level 2 geometry, built into $AC00-$ACFF by levelGeometry
-# (modules/game/level-geometry.macros.asm).
+# Level 2 geometry, built into $AC00-$ACFF and $AD80-$AD88
+# by levelGeometry / levelStartExit (modules/game/level-geometry.macros.asm).
 # YAML numbers: write 0xAA, not $AA.
-# TODO: start / exit ($AD80-$AD88) aren't known yet for this level.
+
+start:
+  x: 0x80
+  y: 0x09
+  sprite: 0x0B
+  facing: left
+
+exit:
+  arrow: { x: 0x07, y: 0x9D, sprite: 0x24 }  # arrow sprite shown at the exit
+  win: { x: 0xF4, y: 0x99 }                   # player position that ends the level
 
 # the player stands on 'top', from left to right (max 31)
 platforms:
