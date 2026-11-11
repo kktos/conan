@@ -166,7 +166,11 @@ reloadLevel
 		; anim conan jump / high score
 		jsr	levelEntrypoint
 
+; mainLoop never returns and every restart path (death panel, return key, debug keys,
+; GAME_OVER) jumps here from inside some jsr: reset the stack so nothing piles up
 restartLevel
+		ldx	#$ff
+		txs
 		jsr	resetVars
 		jsr	resetVars2
 		jsr	loadInitLevel
@@ -209,9 +213,8 @@ onKeyNext
 onKeyDie
 		bit	sys::KBDSTRB
 		;stz globals::playerLifeCount
-		pla
-		pla
-		jmp	drawDeathMsg
+		jsr	drawDeathMsg		; returns on timeout (key/button jumps to restartLevel)
+		jmp	reloadLevel		; same as GAME_OVER
 
 onKeySpritesDbg
 		jsr	spritesDebug
@@ -220,13 +223,13 @@ onKeySpritesDbg
 readUserInput	lda	sys::KBD
 		sta	globals::keypressed
 
-		cmp	#$2D			; - : sprites debug
+		cmp	#"-"|$80		; - : sprites debug
 		beq	onKeySpritesDbg
 
-		cmp	#$F8			; x : immediate death
+		cmp	#"x"|$80		; x : immediate death
 		beq	onKeyDie
 
-		cmp	#$EE			; n : next
+		cmp	#"n"|$80		; n : next
 		beq	onKeyNext		; next level
 
 		cmp	globals::keySoundSwitch	; D3/53/S
