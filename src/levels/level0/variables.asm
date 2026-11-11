@@ -11,7 +11,7 @@ L7903		.db $00
 L7904		.db $F0
 L7905		.db $01
 L7906		.db $46
-L7907		.db $80
+introDelay	.db $80		; INTRODUCTION screen display time; $40 after the first help cycle
 
 HS_Xpos		.db $00
 HS_Ypos		.db $7D

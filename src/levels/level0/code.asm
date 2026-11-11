@@ -1,9 +1,9 @@
 ; code-R4-A000
 
 levelEntrypoint:
-		jmp start
+		jmp	start
 
-		.include "drawspritebis.asm"
+		.include	"drawspritebis.asm"
 
 /*
 drawSpriteBis
@@ -99,88 +99,89 @@ pixels=*+1
 
 ; title screen / conan jumping over spring / hi-score
 start:
-		bit sys::KBDSTRB
-		jsr initHighScore
+		bit	sys::KBDSTRB
+		jsr	initHighScore
 
 mainLoop
-		jsr animConanJump
-		jsr exitOnEvent
-		jsr drawHiScore
+		jsr	animConanJump
+		jsr	exitOnEvent
+		jsr	drawHiScore
 
-		ldx #$30
-		jsr checkUserInput
+		ldx	#$30
+		jsr	checkUserInput
 
-		jsr drawHiScore
-		jsr animConanJump
-		jsr exitOnEvent
-		jsr drawHiScore
+		jsr	drawHiScore
+		jsr	animConanJump
+		jsr	exitOnEvent
+		jsr	drawHiScore
 
-		ldx #$30
-		jsr checkUserInput
+		ldx	#$30
+		jsr	checkUserInput
 
-		jsr displayHelp
-		jsr exitOnEvent
+		jsr	displayHelp
+		jsr	exitOnEvent
 
-		bra mainLoop
+		bra	mainLoop
 
 ; A0D8
 drawTitleBitmap
-		lda #$00
-		ldx #>titlePackedBitmap
-		ldy #183
-		jmp unpack::run
+		lda	#$00
+		ldx	#>titlePackedBitmap
+		ldy	#183
+		jmp	unpack::run
 
 ; A15A
-displayHelp         jsr utils::clearScreen
-                    jsr drawTitleGraphic
+displayHelp	jsr	utils::clearScreen
+		jsr	drawIntroduction
 
-                    ldx L7907
-                    jsr checkUserInput
+		ldx	introDelay
+		jsr	checkUserInput
 
-                    jsr drawTitleGraphic
-                    ldx #$40
-                    stx L7907
-                    jsr drawTitleGraphic2
-                    jsr Sa205
-                    jsr drawHelpIcon1
+		; was drawTitleGraphic again (the sprite is XORed): drawText ORs, so wipe instead
+		jsr	utils::clearScreen
+		ldx	#$40
+		stx	introDelay
+		jsr	drawTitleGraphic2
+		jsr	Sa205
+		jsr	drawHelpIcon1
 
-                    ldx #$10
-                    jsr checkUserInput
+		ldx	#$10
+		jsr	checkUserInput
 
-                    jsr runAnimVolta
-                    jsr drawHelpIcon2
+		jsr	runAnimVolta
+		jsr	drawHelpIcon2
 
-                    ldx #$10
-                    jsr checkUserInput
+		ldx	#$10
+		jsr	checkUserInput
 
-                    jsr Sa27c
-                    jsr drawHelpIcon3
+		jsr	Sa27c
+		jsr	drawHelpIcon3
 
-                    ldx #$20
-                    jsr checkUserInput
+		ldx	#$20
+		jsr	checkUserInput
 
-                    jsr Sa230
-                    jsr Sa2ad
-                    jsr animVolta
-                    jsr drawHelpIcon3
-                    jsr drawHelpIcon2
-                    jsr drawHelpIcon1
-                    jsr drawTitleGraphic2
-                    jsr drawHelpIcon4
+		jsr	Sa230
+		jsr	Sa2ad
+		jsr	animVolta
+		jsr	drawHelpIcon3
+		jsr	drawHelpIcon2
+		jsr	drawHelpIcon1
+		jsr	drawTitleGraphic2
+		jsr	drawHelpIcon4
 
-                    ldx #$ff
-                    stx L7906
-                    jsr displayHelpObj
+		ldx	#$ff
+		stx	L7906
+		jsr	displayHelpObj
 
-                    ldx #$20
-                    jsr checkUserInput
+		ldx	#$20
+		jsr	checkUserInput
 
-                    ldx #$01
-                    stx L7906
-                    jsr displayHelpObj
+		ldx	#$01
+		stx	L7906
+		jsr	displayHelpObj
 
-                    jsr drawTitleBitmap
-                    rts
+		jsr	drawTitleBitmap
+		rts
 ; A1C3
 ; clearScreen         ldx #$00
 ;                     stx L7900
@@ -206,104 +207,124 @@ displayHelp         jsr utils::clearScreen
 ;                     sta $1d
 ;                     rts
 
-;a1f1
-drawTitleGraphic
-		    drawSprite {#$4f},{#25},{#16}
-                    rts
+;a1f1 - was drawTitleGraphic: sprite $4F (27x75) at x=25 (byte 7 = pixel 49), y=16
+; The text is now drawn with drawText at the same pixels; sprite $4F only keeps
+; what the font can't do: the dotted underline and the coloured "HALL OF VOLTA".
+INTRO_X = 49
+INTRO_Y = 16
+
+drawIntroduction
+		drawText	introTitle, INTRO_X+40, INTRO_Y
+		drawSprite	{#$4f},{#25},{#INTRO_Y+6}
+		drawText	introConan, INTRO_X, INTRO_Y+18
+		drawText	introLine1, INTRO_X, INTRO_Y+38
+		drawText	introLine2, INTRO_X, INTRO_Y+46
+		drawText	introLine3, INTRO_X, INTRO_Y+54
+		drawText	introLine4, INTRO_X, INTRO_Y+62
+		drawText	introLine5, INTRO_X, INTRO_Y+70
+		rts
+
+introTitle	.cstr "INTRODUCTION"
+introConan	.cstr "CONAN:"
+introLine1	.cstr "DESTROY VOLTA.BEWARE OF"	; sic: no space after the dot in the original
+introLine2	.cstr "HIS MINIONS AND OTHER"
+introLine3	.cstr "DANGERS WHICH LIE AHEAD."
+introLine4	.cstr "USE GEMS AND KEYS TO"
+introLine5	.cstr "YOUR ADVANTAGE."
 
 drawTitleGraphic2
-		    drawSprite {#$50},{#48},{#16}
-                    rts
+		drawSprite	{#$50},{#48},{#16}
+		rts
 
-Sa205               ldx #$0c
-                    stx L7902
-                    ldx #$f1
-                    stx L7901
-La20f               jsr Sa230
-                    lda L7902
-                    eor #$1c
-                    sta L7902
-                    inc L7901
-                    inc L7901
-                    jsr Sa230
-                    ldx #$40
-                    jsr waitAndExitOnEvent2
-                    ldx L7901
-                    cpx #$19
-                    bne La20f
-                    rts
+Sa205		ldx	#$0c
+		stx	L7902
+		ldx	#$f1
+		stx	L7901
+La20f		jsr	Sa230
+		lda	L7902
+		eor	#$1c
+		sta	L7902
+		inc	L7901
+		inc	L7901
+		jsr	Sa230
+		ldx	#$40
+		jsr	waitAndExitOnEvent2
+		ldx	L7901
+		cpx	#$19
+		bne	La20f
+		rts
 
-Sa230               ldx L7901
-                    lda L7902
-                    ldy #$32
-                    jsr spritelib::drawSprite
-                    rts
+Sa230		ldx	L7901
+		lda	L7902
+		ldy	#$32
+		jsr	spritelib::drawSprite
+		rts
 
 drawHelpIcon1
-                    drawSprite {#$51}, {#20}, {#42}
-                    rts
+		drawSprite	{#$51}, {#20}, {#42}
+		rts
 
 runAnimVolta
-		ldx #$00
-		stx L7903
-		jsr animVolta
+		ldx	#$00
+		stx	L7903
+		jsr	animVolta
 La24e
-		jsr animVolta
-		inc L7903
-		jsr animVolta
-		ldx #$12
-		jsr waitAndExitOnEvent2
-		ldx L7903
-		cpx #$1f
-		bne La24e
+		jsr	animVolta
+		inc	L7903
+		jsr	animVolta
+		ldx	#$12
+		jsr	waitAndExitOnEvent2
+		ldx	L7903
+		cpx	#$1f
+		bne	La24e
 		rts
 
 animVolta
-		ldx L7903
-		drawSprite {animVoltaSpriteIDs,x} , {#$62} , {#$31}
+		ldx	L7903
+		drawSprite	{animVoltaSpriteIDs,x} , {#$62} , {#$31}
 		rts
 
 drawHelpIcon2
-		drawSprite {#$52} , {#$5A} , {#29}
+		drawSprite	{#$52} , {#$5A} , {#29}
 		rts
 
-Sa27c               ldx #$f0
-                    stx L7904
-                    ldx #$47
-                    stx L7905
-La286               jsr Sa2ad
-                    inc L7904
-                    inc L7904
-                    jsr Sa2ad
-                    ldx L7904
-                    cpx #$40
-                    beq La2a1
-                    ldx #$40
-                    jsr waitAndExitOnEvent2
-                    jmp La286
+Sa27c		ldx	#$f0
+		stx	L7904
+		ldx	#$47
+		stx	L7905
+La286		jsr	Sa2ad
+		inc	L7904
+		inc	L7904
+		jsr	Sa2ad
+		ldx	L7904
+		cpx	#$40
+		beq	La2a1
+		ldx	#$40
+		jsr	waitAndExitOnEvent2
+		jmp	La286
 
-La2a1      	jsr Sa2ad
-		ldx #$48
-		stx L7905
-		jsr Sa2ad
+La2a1		jsr	Sa2ad
+		ldx	#$48
+		stx	L7905
+		jsr	Sa2ad
 		rts
 
 Sa2ad
-		drawSprite L7905,L7904,{#60}
+		drawSprite	L7905,L7904,{#60}
 		rts
 
 drawHelpIcon3
-		drawSprite {#$53},{#$3a},{#$54}
+		drawSprite	{#$53},{#$3a},{#$54}
 		rts
 
 drawHelpIcon4
-		drawSprite {#$54},{#$2e},{#$10}
+		drawSprite	{#$54},{#$2e},{#$10}
 		rts
 
 ; $A2CD
-.procedure displayHelpObj {
+		.procedure	displayHelpObj {
 
-		.define spriteList from "spritelist.yaml"
+			.define	spriteList from "spritelist.yaml"
 
 		; .echo "****************"
 		; .echo "spriteList"
@@ -311,139 +332,139 @@ drawHelpIcon4
 		; .echo spriteList
 		; .echo "****************"
 
-		.for sprite of spriteList
+			.for	sprite of spriteList
 			; .echo .hex(sprite.id),sprite.x,sprite.y,sprite.name
-			drawSprite {#sprite.id} , {#sprite.x} , {#sprite.y}
-			jsr waitAndExitOnEvent
-		.end
+				drawSprite	{#sprite.id} , {#sprite.x} , {#sprite.y}
+				jsr	waitAndExitOnEvent
+			.end
 
-		rts
+			rts
 
-}
+		}
 
 waitAndExitOnEvent:
-		ldx L7906
+		ldx	L7906
 waitAndExitOnEvent2:
-:       	lda #$18
-		jsr utils::WAIT
-		jsr exitOnEvent2
+:		lda	#$18
+		jsr	utils::WAIT
+		jsr	exitOnEvent2
 		dex
-		bne :-
+		bne	:-
 		rts
 
 checkUserInput:
-		lda #$ff
-		jsr utils::WAIT
-		jsr exitOnEvent2
+		lda	#$ff
+		jsr	utils::WAIT
+		jsr	exitOnEvent2
 		dex
-		bne checkUserInput
+		bne	checkUserInput
 		rts
 
 initHighScore:
-		ldx #$00
-:	    	lda globals::highScore,x
-                cmp globals::playerScore,x
-                bcc La38b
-                bne La38a
-                inx
-                cpx #$05
-                bne :-
-La38a           rts
+		ldx	#$00
+:		lda	globals::highScore,x
+		cmp	globals::playerScore,x
+		bcc	La38b
+		bne	La38a
+		inx
+		cpx	#$05
+		bne	:-
+La38a		rts
 
-La38b           ldx #$04
-La38d           lda globals::playerScore,x
-                sta globals::highScore,x
-                dex
-                bpl La38d
-                rts
+La38b		ldx	#$04
+La38d		lda	globals::playerScore,x
+		sta	globals::highScore,x
+		dex
+		bpl	La38d
+		rts
 
 ; A397
-		.include "animConanJump.asm"
+		.include	"animConanJump.asm"
 
 ; draw highscore
 drawHiScore:
-		    drawSprite {#$4c} , {#$28} , {#$8c} ; hi-sc
-		    drawSprite {#$4d} , {#$3b} , {#$8c} ; ore :
-                    jsr drawHSvalue
-                    rts
+		drawSprite	{#$4c} , {#$28} , {#$8c}	; hi-sc
+		drawSprite	{#$4d} , {#$3b} , {#$8c}	; ore :
+		jsr	drawHSvalue
+		rts
 
-drawHSvalue         ldx #$4b ; x pos
-                    stx HS_Xpos
-                    ldy #$8c ; y pos
-                    sty HS_Ypos
-                    ldx #$00
-                    stx HS_digitCount ; digits count
-La48a               ldx HS_digitCount
-                    jsr Sa4a0
-                    inc HS_digitCount
-                    ldx HS_digitCount
-                    cpx #$05 ; 5 digits
-                    bne La48a
-                    lda #$0a
-                    jsr Sa4a9
-                    rts
+drawHSvalue	ldx	#$4b			; x pos
+		stx	HS_Xpos
+		ldy	#$8c			; y pos
+		sty	HS_Ypos
+		ldx	#$00
+		stx	HS_digitCount		; digits count
+La48a		ldx	HS_digitCount
+		jsr	Sa4a0
+		inc	HS_digitCount
+		ldx	HS_digitCount
+		cpx	#$05			; 5 digits
+		bne	La48a
+		lda	#$0a
+		jsr	Sa4a9
+		rts
 
-Sa4a0               lda globals::highScore,x
-                    cmp #$00
-                    bne Sa4a9
-                    lda #$0a
-Sa4a9               ldx HS_Xpos ; x pos
-                    ldy HS_Ypos ; y pos
-                    jsr spritelib::drawSprite ; draw sprite
-                    lda HS_Xpos ; x pos
-                    clc
-                    adc #$04 ; add char sprte width
-                    sta HS_Xpos ; x pos
-                    rts
+Sa4a0		lda	globals::highScore,x
+		cmp	#$00
+		bne	Sa4a9
+		lda	#$0a
+Sa4a9		ldx	HS_Xpos			; x pos
+		ldy	HS_Ypos			; y pos
+		jsr	spritelib::drawSprite	; draw sprite
+		lda	HS_Xpos			; x pos
+		clc
+		adc	#$04			; add char sprte width
+		sta	HS_Xpos			; x pos
+		rts
 
 ; A4BC
-exitOnEvent         jsr Sa4c4
-                    bcc La4c3
-                    pla
-                    pla
-La4c3               rts
+exitOnEvent	jsr	Sa4c4
+		bcc	La4c3
+		pla
+		pla
+La4c3		rts
 
-Sa4c4               lda sys::KBD
-                    bmi La4da
-                    ldy sys::BUTNO
-                    bpl La4e0
-                    ldy sys::BUTN1
-                    bmi La4e0
-                    ldy #$ff
-                    sty globals::inputMode
-                    lda #$00
-La4da               cmp #$9e
-                    beq La4ec
-                    sec
-                    rts
+Sa4c4		lda	sys::KBD
+		bmi	La4da
+		ldy	sys::BUTNO
+		bpl	La4e0
+		ldy	sys::BUTN1
+		bmi	La4e0
+		ldy	#$ff
+		sty	globals::inputMode
+		lda	#$00
+La4da		cmp	#$9e
+		beq	La4ec
+		sec
+		rts
 
-La4e0               clc
-                    rts
+La4e0		clc
+		rts
 
 ; A4E2
-exitOnEvent2        jsr Sa4c4
-                    bcc La4c3
-                    pla
-                    pla
-                    pla
-                    pla
-                    rts
+exitOnEvent2	jsr	Sa4c4
+		bcc	La4c3
+		pla
+		pla
+		pla
+		pla
+		rts
 
-La4ec               jsr utils::clearScreen
-                    ldx #$12
-                    ldy #$10
-                    lda #$5e ; special thanks
-                    jsr spritelib::drawSprite
+La4ec		jsr	utils::clearScreen
+		ldx	#$12
+		ldy	#$10
+		lda	#$5e			; special thanks
+		jsr	spritelib::drawSprite
 
-                    bit sys::KBDSTRB
-                    ldx #$40
-La4fd               lda #$ff
-                    jsr utils::WAIT
-                    dex
-                    bne La4fd
+		bit	sys::KBDSTRB
+		ldx	#$40
+La4fd		lda	#$ff
+		jsr	utils::WAIT
+		dex
+		bne	La4fd
 
-                    jsr drawTitleBitmap
+		jsr	drawTitleBitmap
 
-                    ldx #$00
-                    stx isSpringRunning
-                    jmp mainLoop
+		ldx	#$00
+		stx	isSpringRunning
+		jmp	mainLoop

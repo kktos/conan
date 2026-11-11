@@ -28,8 +28,8 @@ letter_W:		.hex 33 33 3F 3F 3F
 letter_X:		.hex 33 33 0C 33 33
 letter_Y:		.hex 33 33 0C 0C 0C
 letter_Z:		.hex 3F 30 0C 03 3F
-letter_Char_3A:		.hex 00 0C 00 0C 00
-letter_Char_2E:		.hex 00 00 00 00 06
+letter_Char_3A:		.hex 00 03 00 03 00
+letter_Char_2E:		.hex 00 00 00 00 03
 letter_Char_30:		.hex 3F 33 33 33 3F
 letter_Char_31:		.hex 0F 0C 0C 0C 3F
 letter_Char_32:		.hex 3F 30 3F 03 3F
