@@ -1,0 +1,50 @@
+# Level 4 geometry, built into $AC00-$ACFF and $AD80-$AD88
+# by levelGeometry / levelStartExit (modules/game/level-geometry.macros.asm).
+# YAML numbers: write 0xAA, not $AA.
+#
+# The boulder is a 15th ledge the level code writes at LAC00/LAC20/LAC40+$0E
+# while it is solid (updateBoulderLedge), and ends the list again with a top
+# of 0 when it's not: 14 ledges here at most.
+
+start:
+  x: 0x04
+  y: 0xF0
+  sprite: 0x0C
+  facing: right
+
+exit:
+  arrow: { x: 0x88, y: 0x2D, sprite: 0x25 }  # right arrow, top right
+  win: { x: 0x8B, y: 0x28 }                   # walking out at the top right
+
+# the player stands on 'top', from left to right (max 31)
+platforms:
+  - { left: 0x71, right: 0x8B, top: 0xA1 }
+  - { left: 0x12, right: 0x3A, top: 0x7B }
+  - { left: 0x47, right: 0x5F, top: 0x7B }
+  - { left: 0x6C, right: 0x8B, top: 0x7D }
+  - { left: 0x16, right: 0x1D, top: 0x4E }
+  - { left: 0x28, right: 0x38, top: 0x4E }
+  - { left: 0x49, right: 0x62, top: 0x53 }
+  - { left: 0x48, right: 0x63, top: 0x53 }
+  - { left: 0x6B, right: 0x8B, top: 0x53 }
+  - { left: 0x7A, right: 0x8B, top: 0x27 }
+  - { left: 0x15, right: 0x38, top: 0x1E }
+  - { left: 0x49, right: 0x55, top: 0x17 }
+  - { left: 0x5C, right: 0x64, top: 0x17 }
+  - { left: 0x00, right: 0x08, top: 0x10 }
+
+# climbable at x, from top to bottom (max 31)
+ladders:
+  - { x: 0x85, top: 0x7E, bottom: 0xA2 }
+  - { x: 0x81, top: 0x28, bottom: 0x54 }
+  - { x: 0x57, top: 0x54, bottom: 0x7C }
+  - { x: 0x30, top: 0x1F, bottom: 0x4F }
+
+# block left/right moves at x, for the player's feet at y (max 15)
+walls:
+  - { x: 0x71, y: 0xA2 }
+  - { x: 0x88, y: 0xA2 }
+  - { x: 0x88, y: 0x7E }
+  - { x: 0x88, y: 0x54 }
+  - { x: 0x7A, y: 0x28 }
+  - { x: 0x88, y: 0xA2 }
