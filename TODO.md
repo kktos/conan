@@ -61,9 +61,22 @@ original is still to do.
   8; falling off the screen goes back to level 6. Not checked: the axe on a
   shot (gem drop, bounce), taking and giving a gem for real, the catapult,
   the pits.
-- **The build fails on level 8.** The uncommitted `macros.asm` fix makes
-  `assertGameStruct` work, and level 8 has no R5 yet. Port it, or turn the
-  check off in the placeholder for now.
+- **Level 8 has been run to the end.** It builds and matches the original
+  (DATA differs only in the unreferenced c2 tail $7933-$79FF; CODE only by
+  relocated operands and `DRAW_DIGIT`'s copy + leftover, $A0CA-$A0FF; R1,
+  R3 and R5 identical). In the emulator (debug key 8, 2 lives): one more
+  life, "BONUS!" / "20000x", 3 icons, score +60000, a key goes back to the
+  title.
+
+## tsasm
+
+- **Anonymous labels resolve across segments.** `NamelessLabels` keeps every
+  `:` in one list sorted by address, and `:-` / `:+` take the nearest one by
+  address, whatever its segment. The levels' CODE segments all overlap at
+  $A000: level 8's `bne :-` at $A08A went to another level's `:` at $A083
+  instead of its own at $A077 (now `sweepLoop`). The other levels are fine
+  today, by luck: any `:` added in one level can retarget a branch in another.
+  `findNearestLabel` should only look at the labels of the current segment.
 
 ## conan-rev-eng
 
