@@ -260,7 +260,7 @@ La24e
 
 animVolta
 		ldx L7903
-		drawSprite {animVoltaSpriteIDs,x} , $62 , $31
+		drawSprite {animVoltaSpriteIDs,x} , {#$62} , {#$31}
 		rts
 
 drawHelpIcon2

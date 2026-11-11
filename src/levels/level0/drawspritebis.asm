@@ -1,6 +1,6 @@
 
 drawSpriteBis
-		sty yPos
+		sty spritelib::yPos
 		tay
 		lda spritelib::spriteLo-1,y
 		sta $1c
@@ -14,7 +14,7 @@ drawSpriteBis
 		iny
 		lda ($1c),y
 		sta spritelib::dsHeight
-		stx Ypos
+		stx spritelib::dsHeightInit
 		bpl :+
 
 		inc spritelib::isFlipped
@@ -43,12 +43,12 @@ drawSpriteBis
 		lda ($1c),y
 		sta pixels+1
 
-La05a       	ldy yPos
+La05a       	ldy spritelib::yPos
 		lda utils::hgrLow,y
 		sta $1c
 		lda utils::hgrHigh,y
 		sta $1d
-		ldx Ypos
+		ldx spritelib::dsHeightInit
 		ldy spritelib::isFlipped
 		beq :+
 
@@ -81,7 +81,7 @@ pixels=*+1
 		stx spritelib::dsWidth
 		dec spritelib::dsHeight
 		beq :+
-		inc yPos
+		inc spritelib::yPos
 		jmp La05a
 
 :		rts
