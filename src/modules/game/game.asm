@@ -1600,7 +1600,7 @@ getHGRLineAddr
 ; game over (no life left): one of 4 pictures of track $1A+LEVEL (disk 2 T1B-T21),
 ; sectors (RND&3)*4.. -> $7500, shown in a black square; wait key/button/timeout
 drawDeathMsg:
-		jsr	random
+		jsr	utils::random
 		and	#$03			; picture 0..3
 
 		; asl
@@ -1650,11 +1650,11 @@ L1caf		rts
 
 fDeadPic	.pstr	"L0/DEAD0"
 
-S1cb0		inc	globals::soundCnt1
-		lda	globals::soundCnt1
+S1cb0		inc	globals::rndSeed1
+		lda	globals::rndSeed1
 		adc	$7900
 		adc	globals::playerScore+3
-		sta	globals::soundCnt1
+		sta	globals::rndSeed1
 L1cbf		rts
 
 readJoystick:
@@ -1910,30 +1910,6 @@ L1e80		cmp	sys::SPKR-$10,x
 		bne	L1e78
 		rts
 
-random:
-		rol	$4e
-		rol	globals::soundCnt1
-		rol	globals::sountCnt2
-		lda	$4e
-		asl
-		eor	$4f
-		eor	globals::sountCnt2
-		rol
-		rol
-		rol
-		rol
-		rol
-		pha
-		rol	$4f
-		lda	$4f
-		eor	globals::soundCnt1
-		sta	$4e
-		pla
-		sta	globals::sountCnt2
-		adc	$4e
-		adc	globals::soundCnt1
-		sta	globals::soundCnt3
-		rts
 /*
 		.if 0
 ;

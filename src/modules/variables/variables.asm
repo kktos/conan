@@ -160,8 +160,8 @@ assetGemCnt	.db 0
 
 		.db $00
 
-sountCnt2	.db $03
-soundCnt3	.db $dc
+rndSeed2	.db $03		; $0371 RND state (also mixed in by levels 3 and 5)
+rndValue	.db $dc		; $0372 last utils::random result
 L0373		.db $00
 
 unknown_xPos	.db $05
@@ -175,7 +175,7 @@ L0378		.db $00
 ; ?
 L0379		.db $00
 
-soundCnt1	.db $d8
+rndSeed1	.db $d8		; $037A RND state (stirred by the core, level 6)
 
 ; 01:kbd ff:joystick
 inputMode	.db $01

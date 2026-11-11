@@ -25,9 +25,6 @@
 ; (checkLeave puts the player on the c5 exit, $C0,$C0).
 ;
 
-RNDL		.equ	$4E
-RNDH		.equ	$4F
-
 SHAPE_AXE	.equ	$1E		; axe bonus
 SHAPE_DEAD	.equ	$19		; player killed
 SHAPE_LEAVE	.equ	$5F		; player leaving, EOR $4F: core shape $10
@@ -211,7 +208,7 @@ La130		jsr	drawFlame1
 		rts
 
 La134		jsr	drawFlame2
-		jsr	random
+		jsr	utils::random
 		and	#$07
 		adc	#$08
 		sta	flameTimer
@@ -398,14 +395,14 @@ maybeStartMover	ldx	moverOn
 		bne	La2b2
 		ldx	rung
 		beq	La2b2
-		jsr	random
+		jsr	utils::random
 		ror
 		bcs	La2b2
 		jsr	startMover
 La2b2		rts
 
 ; one of the 8 scripts at random, from ($64,$F6), below the screen
-startMover	jsr	random
+startMover	jsr	utils::random
 		and	#$07
 		tax
 		lda	#$ff
@@ -622,7 +619,7 @@ maybeSpawn	ldx	levelDone
 		bne	La463
 		ldx	spawnStep
 		bne	La463
-		jsr	random
+		jsr	utils::random
 		cmp	#$08
 		bcs	La463
 		jsr	takeFreeSlot
@@ -631,7 +628,7 @@ La463		rts
 
 startSpawn	ldx	spawnStep
 		inx
-		jsr	random
+		jsr	utils::random
 		cmp	#$40
 		bcs	La479
 		ldy	globals::spriteX
@@ -771,8 +768,8 @@ drawMonster	lda	monsterState-1,x
 		rts
 
 ; shape $57 or $58 at random
-animMonster	rol	globals::soundCnt1
-		jsr	random
+animMonster	rol	globals::rndSeed1
+		jsr	utils::random
 		ror
 		bcc	La598
 		lda	#SHAPE_MONSTER2
@@ -786,10 +783,10 @@ La59d		rts
 ; off a ladder, 8 times in 256: stops, or walks left or right
 turnAtRandom	lda	monsterClimb-1,x
 		bne	La59d
-		jsr	random
+		jsr	utils::random
 		cmp	#$08
 		bcs	La59d
-		jsr	random
+		jsr	utils::random
 		cmp	#$40
 		bcc	La5c1
 		cmp	#$a0
@@ -831,7 +828,7 @@ La5c9		lda	monsterX-1,x
 La5f8		iny
 		jmp	La5c9
 
-La5fc		jsr	random
+La5fc		jsr	utils::random
 		cmp	#$80
 		bcc	La60a
 		cmp	#$c0
@@ -859,7 +856,7 @@ La626		lda	#$00
 		sta	monsterDX-1,x
 		rts
 
-La634		jsr	random
+La634		jsr	utils::random
 		cmp	#$40
 		bcc	La642
 		cmp	#$a0
@@ -1355,7 +1352,7 @@ checkBonus	ldx	bonusOn
 		bne	La9f8
 		ldx	globals::playerAxeCountHi
 		bne	La9f8
-		jsr	random
+		jsr	utils::random
 		cmp	#$08
 		bcs	La9f8
 		inc	bonusOn
@@ -1423,31 +1420,6 @@ Laa56		ldx	#$00
 		inc	globals::playerAxeCountHi
 		ldx	#AXES_HI
 		jsr	drawDigit
-		rts
-
-; random number in A, globals::soundCnt3 (same as the core's)
-random		rol	RNDL
-		rol	globals::soundCnt1
-		rol	globals::sountCnt2
-		lda	RNDL
-		asl
-		eor	RNDH
-		eor	globals::sountCnt2
-		rol
-		rol
-		rol
-		rol
-		rol
-		pha
-		rol	RNDH
-		lda	RNDH
-		eor	globals::soundCnt1
-		sta	RNDL
-		pla
-		sta	globals::sountCnt2
-		adc	RNDL
-		adc	globals::soundCnt1
-		sta	globals::soundCnt3
 		rts
 
 ;

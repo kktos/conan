@@ -20,9 +20,6 @@
 ; which puts the player on the exit: level 8.
 ;
 
-RNDL		.equ	$4E
-RNDH		.equ	$4F
-
 ; inventory items, shape SHAPE_ITEMS + item: globals::assetGemCnt
 SHAPE_ITEMS	.equ	$26
 ITEM_GEM	.equ	2
@@ -214,7 +211,7 @@ updateFlame	dec	flameTimer
 La20a		jsr	drawFlame1
 		rts
 flameNext	jsr	drawFlame2
-		jsr	random
+		jsr	utils::random
 		and	#$07
 		adc	#$08
 		sta	flameTimer
@@ -448,7 +445,7 @@ La3d9		ldx	#BRIDGE_TOP
 updateBridge	dec	bridgeTimer
 		beq	La3e5
 		rts
-La3e5		jsr	random
+La3e5		jsr	utils::random
 		and	#$7f
 		sta	bridgeTimer
 		lda	bridgeOn
@@ -501,7 +498,7 @@ La43c		jsr	drawPrisoner
 		eor	#$01
 		sta	prisonerFrame
 		jsr	drawPrisoner
-		jsr	random
+		jsr	utils::random
 		and	#$1f
 		sta	prisonerTimer
 		rts
@@ -587,19 +584,19 @@ La4dd		lda	shotRoute,y
 		beq	La4f6
 		dey
 		bpl	La4dd
-		jsr	random
+		jsr	utils::random
 		cmp	#$60
 		bcs	La4f6
 		lda	#$07
 		sta	shotRoute,x
 		jmp	La511
-La4f6		jsr	random
+La4f6		jsr	utils::random
 		cmp	#$50
 		bcc	La504
 		lda	globals::L0379
 		cmp	#$07
 		bcc	La50e
-La504		jsr	random
+La504		jsr	utils::random
 		and	#$07
 		tay
 		dey
@@ -613,7 +610,7 @@ La513		lda	shotKind,y
 		beq	La526
 		dey
 		bpl	La513
-		jsr	random
+		jsr	utils::random
 		cmp	#$80
 		bcc	La52e
 La526		lda	#$01
@@ -721,7 +718,7 @@ releaseBat	ldx	#$84
 		sty	batY
 		ldx	#$00
 		stx	batStep
-		jsr	random
+		jsr	utils::random
 		and	#$03
 		sta	batRoute
 		jsr	drawWaitingBat
@@ -732,31 +729,6 @@ releaseBat	ldx	#$84
 		jsr	soundlib::L0b3f
 		ldx	#$10
 		stx	doorTimer
-		rts
-
-; RND, the core's generator: $4E/$4F and globals::sountCnt2 / soundCnt3 / soundCnt1
-random		rol	RNDL
-		rol	globals::soundCnt1
-		rol	globals::sountCnt2
-		lda	RNDL
-		asl
-		eor	RNDH
-		eor	globals::sountCnt2
-		rol
-		rol
-		rol
-		rol
-		rol
-		pha
-		rol	RNDH
-		lda	RNDH
-		eor	globals::soundCnt1
-		sta	RNDL
-		pla
-		sta	globals::sountCnt2
-		adc	RNDL
-		adc	globals::soundCnt1
-		sta	globals::soundCnt3
 		rts
 
 ; the axe hits the shot: +75 points; a shot carrying a gem drops it,

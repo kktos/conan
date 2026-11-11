@@ -20,9 +20,6 @@
 ; (togglePlayerNearBurrower, toggleAxeNearBurrower).
 ;
 
-RNDL		.equ	$4E
-RNDH		.equ	$4F
-
 ; inventory items, shape SHAPE_ITEMS + item: globals::assetKeyCnt / assetGemCnt
 SHAPE_ITEMS	.equ	$26
 ITEM_KEY	.equ	1
@@ -140,7 +137,7 @@ La15a		jsr	drawFireA
 		rts
 
 fireFlicker	jsr	drawFireB
-		jsr	random
+		jsr	utils::random
 		and	#$07
 		adc	#$08
 		sta	fireTimer
@@ -351,7 +348,7 @@ newWalker	jsr	randomWalkerX
 		sta	walkerX,x
 		lda	#$3d
 		sta	walkerY,x
-		jsr	random
+		jsr	utils::random
 		bmi	La2f3
 		lda	#SHAPE_WALKER_R
 		sta	walkerShape,x
@@ -478,7 +475,7 @@ walkerLowToMiddle
 ; top floor (X >= $40) and of the lower one (X < $30).
 ; walker 0 compares itself with walkerDX+$FF.. (Y = $FF): as in the original
 ;
-walkerTurn	jsr	random
+walkerTurn	jsr	utils::random
 		cmp	#$04
 		bcc	turnWalker
 		txa
@@ -596,7 +593,7 @@ moveShot	jsr	drawShot
 		jsr	drawShot
 		rts
 
-La4cb		jsr	random
+La4cb		jsr	utils::random
 		and	#$1f
 		clc
 		adc	#$02
@@ -686,7 +683,7 @@ moveToHole	ldx	#$01
 		stx	burrowerState
 		ldx	#$ff
 		stx	burrowerAnim
-		jsr	random
+		jsr	utils::random
 		cmp	#$00
 		bpl	La58d
 		ldx	#$ff
@@ -720,7 +717,7 @@ La5b3		lda	burrowerDX
 		sta	burrowerDX
 		rts
 
-randomHole	jsr	random
+randomHole	jsr	utils::random
 		and	#$03
 		tax
 		beq	La5d0
@@ -840,7 +837,7 @@ removeShot	stx	shot
 		lda	globals::L033B
 		jsr	spritelib::drawSpriteM
 		ldx	shot
-		jsr	random
+		jsr	utils::random
 		and	#$1f
 		clc
 		adc	#$02
@@ -953,10 +950,10 @@ La780		rts
 
 ; A = a random X ($05-$84) away from the walkers above itemsLeft-1 that are
 ; on the middle floor (it goes into the RND state too)
-randomWalkerX	jsr	random
+randomWalkerX	jsr	utils::random
 		and	#$7f
 		adc	#$05
-		sta	globals::sountCnt2
+		sta	globals::rndSeed2
 		ldx	itemsLeft
 		dex
 La78f		cpx	#$05
@@ -1289,7 +1286,7 @@ checkBonus	ldx	bonusOn
 		bne	Laa0b
 		ldx	globals::playerAxeCountHi
 		bne	Laa0b
-		jsr	random
+		jsr	utils::random
 		cmp	#$08
 		bcs	Laa0b
 		inc	bonusOn
@@ -1360,33 +1357,6 @@ checkOpenDoor	ldx	globals::assetKeyCnt
 		inc	doorOpen
 		jsr	game1::scoreAdd250
 		jsr	soundlib::L0a7d
-		rts
-
-;
-; random: the core's RND, A = the next random number
-;
-random		rol	RNDL
-		rol	globals::soundCnt1
-		rol	globals::sountCnt2
-		lda	RNDL
-		asl
-		eor	RNDH
-		eor	globals::sountCnt2
-		rol
-		rol
-		rol
-		rol
-		rol
-		pha
-		rol	RNDH
-		lda	RNDH
-		eor	globals::soundCnt1
-		sta	RNDL
-		pla
-		sta	globals::sountCnt2
-		adc	RNDL
-		adc	globals::soundCnt1
-		sta	globals::soundCnt3
 		rts
 
 ; the 6 done: the door at ($58,$17), top middle, opens
