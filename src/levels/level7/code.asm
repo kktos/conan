@@ -52,85 +52,6 @@ BRIDGE_TOP	.equ	$7B
 La000		jmp	levelTick
 
 ;
-; drawPlain: DRAW_SHAPE without the priority / collision test, plain EOR
-; (the leftover source's STORD). X, Y, A = shape
-;
-drawPlain	sty	spritelib::yPos
-		tay
-		lda	spritelib::spriteLo-1,y
-		sta	$1c
-		lda	spritelib::spriteHi-1,y
-		sta	$1d
-		ldy	#$00
-		sty	spritelib::isFlipped
-		lda	($1c),y
-		sta	spritelib::dsWidth
-		sta	spritelib::dsWidthInit
-		iny
-		lda	($1c),y
-		sta	spritelib::dsHeight
-		stx	spritelib::dsHeightInit
-		bpl	La047
-		inc	spritelib::isFlipped
-		and	#$7f
-		sta	spritelib::dsHeight
-		lda	spritelib::LB200,x
-		asl
-		clc
-		adc	#$02
-		tay
-		lda	($1c),y
-		sta	mask+1
-		iny
-		lda	($1c),y
-		sta	mask+2
-		jmp	La05a
-La047		lda	spritelib::LAF00,x
-		asl
-		clc
-		adc	#$02
-		tay
-		lda	($1c),y
-		sta	mask+1
-		iny
-		lda	($1c),y
-		sta	mask+2
-La05a		ldy	spritelib::yPos
-		lda	utils::hgrLow,y
-		sta	$1c
-		lda	utils::hgrHigh,y
-		sta	$1d
-		ldx	spritelib::dsHeightInit
-		ldy	spritelib::isFlipped
-		beq	La076
-		lda	spritelib::LB000,x
-		tay
-		jmp	La07a
-La076		lda	spritelib::LB100,x
-		tay
-La07a		cpy	#$28
-		bcs	La085
-mask		lda	$ffff
-		eor	($1c),y
-		sta	($1c),y
-La085		inc	mask+1
-		bne	La08d
-		inc	mask+2
-La08d		iny
-		cpy	#$4a
-		bne	La094
-		ldy	#$00
-La094		dec	spritelib::dsWidth
-		bne	La07a
-		ldx	spritelib::dsWidthInit
-		stx	spritelib::dsWidth
-		dec	spritelib::dsHeight
-		beq	La0aa
-		inc	spritelib::yPos
-		jmp	La05a
-La0aa		rts
-
-;
 ; once per frame (the WAIT halfway sets the pace)
 ;
 levelTick	jsr	updateSparks
@@ -222,7 +143,7 @@ drawOrb		lda	orbPos,x
 		lda	orbX,x
 		tax
 		lda	#SHAPE_ORB
-		jsr	drawPlain
+		jsr	spritelib::drawPlain
 		rts
 
 ; the two flags at the top left, 4 frames each (shapes $5E-$61)
@@ -406,7 +327,7 @@ drawPathGem	ldx	gemStep
 		lda	gemPathX,x
 		tax
 		lda	#SHAPE_GEM
-		jsr	drawPlain
+		jsr	spritelib::drawPlain
 		rts
 
 ; lever armed: EOR it every frame (it blinks), leverDrawn follows it
@@ -508,7 +429,7 @@ drawSplash	ldx	splashFrame
 		lda	splashShapes-1,x
 		ldy	splashY
 		ldx	splashX
-		jsr	drawPlain
+		jsr	spritelib::drawPlain
 		rts
 
 ; the bridge at the left (shape $54 / $55 at $02,$8C) comes and goes:
@@ -541,7 +462,7 @@ La3e5		jsr	random
 drawBridge	ldx	#$02
 		ldy	#$8c
 		lda	bridgeShape
-		jsr	drawPlain
+		jsr	spritelib::drawPlain
 		jsr	bridgeTone
 		rts
 
@@ -628,7 +549,7 @@ drawThrow	ldx	throwStep
 		lda	throwX-1,x
 		tax
 		pla
-		jsr	drawPlain
+		jsr	spritelib::drawPlain
 		ldx	handEmpty
 		bne	La4c0
 		ldx	throwStep
@@ -639,7 +560,7 @@ drawThrow	ldx	throwStep
 		lda	handX-1,x
 		tax
 		pla
-		jsr	drawPlain
+		jsr	spritelib::drawPlain
 La4c0		rts
 
 ; a new shot in a free slot (none free: BRK), from ($13,$20), route:
@@ -1404,7 +1325,7 @@ Laaaf		ldx	#$1a
 		ldx	#$0e
 		ldy	#$29
 		lda	#SHAPE_VOLTA
-		jsr	drawPlain
+		jsr	spritelib::drawPlain
 loadFinal	jmp	loadFinalFile		; past what the file overwrites
 
 

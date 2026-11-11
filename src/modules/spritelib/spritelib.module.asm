@@ -10,4 +10,7 @@
 	.include "tables.asm"
 	.include "global-sprites-dir.data.asm"
 
+	; after the tables: the routines above keep their addresses
+	.include "sprite-plain.asm"
+
 	.end namespace

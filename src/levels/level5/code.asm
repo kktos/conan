@@ -14,10 +14,10 @@
 ; the key opens the door at the top right.
 ; exit: walking out at the top right (exit at $8A,$23).
 ;
-; drawPlain is a local copy of the core's sprite routine: it EORs the shape
-; without the priority / collision tests. Before and after drawing the
-; burrower with it, the code EORs the player and the axe off and back on
-; when they're close (togglePlayerNearBurrower, toggleAxeNearBurrower).
+; spritelib::drawPlain EORs the shape without the priority / collision
+; tests. Before and after drawing the burrower with it, the code EORs the
+; player and the axe off and back on when they're close
+; (togglePlayerNearBurrower, toggleAxeNearBurrower).
 ;
 
 RNDL		.equ	$4E
@@ -49,89 +49,6 @@ AXES_HI		.equ	globals::playerAxeCountHi - globals::playerData
 AXES_LO		.equ	globals::playerAxeCountLo - globals::playerData
 
 La000		jmp	levelTick
-
-;
-; drawPlain: DRAW_SHAPE without the priority / collision test, plain EOR
-; (the leftover source's STORD). X, Y, A = shape
-;
-drawPlain	sty	spritelib::yPos
-		tay
-		lda	spritelib::spriteLo-1,y
-		sta	$1c
-		lda	spritelib::spriteHi-1,y
-		sta	$1d
-		ldy	#$00
-		sty	spritelib::isFlipped
-		lda	($1c),y
-		sta	spritelib::dsWidth
-		sta	spritelib::dsWidthInit
-		iny
-		lda	($1c),y
-		sta	spritelib::dsHeight
-		stx	spritelib::dsHeightInit
-		bpl	La047
-		inc	spritelib::isFlipped
-		and	#$7f
-		sta	spritelib::dsHeight
-		lda	spritelib::LB200,x
-		asl
-		clc
-		adc	#$02
-		tay
-		lda	($1c),y
-		sta	mask+1
-		iny
-		lda	($1c),y
-		sta	mask+2
-		jmp	La05a
-
-La047		lda	spritelib::LAF00,x
-		asl
-		clc
-		adc	#$02
-		tay
-		lda	($1c),y
-		sta	mask+1
-		iny
-		lda	($1c),y
-		sta	mask+2
-
-La05a		ldy	spritelib::yPos
-		lda	utils::hgrLow,y
-		sta	$1c
-		lda	utils::hgrHigh,y
-		sta	$1d
-		ldx	spritelib::dsHeightInit
-		ldy	spritelib::isFlipped
-		beq	La076
-		lda	spritelib::LB000,x
-		tay
-		jmp	La07a
-
-La076		lda	spritelib::LB100,x
-		tay
-La07a		cpy	#$28
-		bcs	La085
-mask		lda	$ffff
-		eor	($1c),y
-		sta	($1c),y
-La085		inc	mask+1
-		bne	La08d
-		inc	mask+2
-La08d		iny
-		cpy	#$4a
-		bne	La094
-		ldy	#$00
-La094		dec	spritelib::dsWidth
-		bne	La07a
-		ldx	spritelib::dsWidthInit
-		stx	spritelib::dsWidth
-		dec	spritelib::dsHeight
-		beq	La0aa
-		inc	spritelib::yPos
-		jmp	La05a
-
-La0aa		rts
 
 ;
 ; once per frame; the more gems are gone from the pile and the more are
@@ -747,7 +664,7 @@ drawBurrower	jsr	toggleAxeNearBurrower
 		tay
 		txa
 		ldx	burrowerX
-		jsr	drawPlain
+		jsr	spritelib::drawPlain
 		jsr	togglePlayerNearBurrower
 		jsr	toggleAxeNearBurrower
 		rts
@@ -1120,7 +1037,7 @@ animGuard	jsr	drawGuard
 drawGuard	ldx	#$4a
 		ldy	#$58
 		lda	guardShape
-		jsr	drawPlain
+		jsr	spritelib::drawPlain
 		rts
 
 checkLeaveTop	ldx	globals::spriteY
@@ -1264,7 +1181,7 @@ drawSplash	ldx	splashFrame
 		lda	splashShapes-1,x
 		ldx	splashX
 		ldy	splashY
-		jsr	drawPlain
+		jsr	spritelib::drawPlain
 		rts
 
 updateSplash	ldx	splashFrame
@@ -1400,7 +1317,7 @@ checkTakeBonus	ldx	bonusOn
 drawBonus	ldx	#$54
 		ldy	#$9c
 		lda	#SHAPE_AXE
-		jsr	drawPlain
+		jsr	spritelib::drawPlain
 		rts
 
 ;

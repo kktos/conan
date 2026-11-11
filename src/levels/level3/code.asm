@@ -24,89 +24,6 @@ SHAPE_DEAD	.equ	$19		; player hit by a monster
 La000		jmp levelTick
 
 ;
-; drawPlain: DRAW_SHAPE without the priority / collision test, plain EOR
-; (the leftover source's STORD). X, Y, A = shape
-;
-drawPlain	sty spritelib::yPos
-		tay
-		lda spritelib::spriteLo-1,y
-		sta $1c
-		lda spritelib::spriteHi-1,y
-		sta $1d
-		ldy #$00
-		sty spritelib::isFlipped
-		lda ($1c),y
-		sta spritelib::dsWidth
-		sta spritelib::dsWidthInit
-		iny
-		lda ($1c),y
-		sta spritelib::dsHeight
-		stx spritelib::dsHeightInit
-		bpl La047
-		inc spritelib::isFlipped
-		and #$7f
-		sta spritelib::dsHeight
-		lda spritelib::LB200,x
-		asl
-		clc
-		adc #$02
-		tay
-		lda ($1c),y
-		sta mask+1
-		iny
-		lda ($1c),y
-		sta mask+2
-		jmp La05a
-
-La047		lda spritelib::LAF00,x
-		asl
-		clc
-		adc #$02
-		tay
-		lda ($1c),y
-		sta mask+1
-		iny
-		lda ($1c),y
-		sta mask+2
-
-La05a		ldy spritelib::yPos
-		lda utils::hgrLow,y
-		sta $1c
-		lda utils::hgrHigh,y
-		sta $1d
-		ldx spritelib::dsHeightInit
-		ldy spritelib::isFlipped
-		beq La076
-		lda spritelib::LB000,x
-		tay
-		jmp La07a
-
-La076		lda spritelib::LB100,x
-		tay
-La07a		cpy #$28
-		bcs La085
-mask		lda $ffff
-		eor ($1c),y
-		sta ($1c),y
-La085		inc mask+1
-		bne La08d
-		inc mask+2
-La08d		iny
-		cpy #$4a
-		bne La094
-		ldy #$00
-La094		dec spritelib::dsWidth
-		bne La07a
-		ldx spritelib::dsWidthInit
-		stx spritelib::dsWidth
-		dec spritelib::dsHeight
-		beq La0aa
-		inc spritelib::yPos
-		jmp La05a
-
-La0aa		rts
-
-;
 ; once per frame
 ;
 levelTick	jsr updatePortal
@@ -714,7 +631,7 @@ drawSink	ldx sinkFrame
 		lda sinkShapes-1,x
 		ldx sinkX
 		ldy #$7f
-		jsr drawPlain
+		jsr spritelib::drawPlain
 		rts
 
 ;

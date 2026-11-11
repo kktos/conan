@@ -4,7 +4,7 @@
 ; (loadFinal, past $A9FF, is not). The original read it from disk 2
 ; T22 S0-SA with RWTS.
 ; $E8 frames of 3 actors, each with X / Y / shape tables by finalFrame: the
-; prisoner (A), the figure (B), both EORed with finalDrawPlain, and the
+; prisoner (A), the figure (B), both EORed with spritelib::drawPlain, and the
 ; player (C), with DRAW_SHAPE. Then the player and the exit go to
 ; ($E0,$E0) and it returns from levelTick's caller: CHECK_EXIT, level 8.
 ;
@@ -14,83 +14,6 @@ finalFrame	.equ	$7900
 
 
 final		jmp	finalBegin
-
-; DRAW_SHAPE without the priority / collision test, plain EOR (as drawPlain
-; in code.asm). X, Y, A = shape
-finalDrawPlain	sty	spritelib::yPos
-		tay
-		lda	spritelib::spriteLo-1,y
-		sta	$1c
-		lda	spritelib::spriteHi-1,y
-		sta	$1d
-		ldy	#$00
-		sty	spritelib::isFlipped
-		lda	($1c),y
-		sta	spritelib::dsWidth
-		sta	spritelib::dsWidthInit
-		iny
-		lda	($1c),y
-		sta	spritelib::dsHeight
-		stx	spritelib::dsHeightInit
-		bpl	L9f47
-		inc	spritelib::isFlipped
-		and	#$7f
-		sta	spritelib::dsHeight
-		lda	spritelib::LB200,x
-		asl
-		clc
-		adc	#$02
-		tay
-		lda	($1c),y
-		sta	finalMask+1
-		iny
-		lda	($1c),y
-		sta	finalMask+2
-		jmp	L9f5a
-L9f47		lda	spritelib::LAF00,x
-		asl
-		clc
-		adc	#$02
-		tay
-		lda	($1c),y
-		sta	finalMask+1
-		iny
-		lda	($1c),y
-		sta	finalMask+2
-L9f5a		ldy	spritelib::yPos
-		lda	utils::hgrLow,y
-		sta	$1c
-		lda	utils::hgrHigh,y
-		sta	$1d
-		ldx	spritelib::dsHeightInit
-		ldy	spritelib::isFlipped
-		beq	L9f76
-		lda	spritelib::LB000,x
-		tay
-		jmp	L9f7a
-L9f76		lda	spritelib::LB100,x
-		tay
-L9f7a		cpy	#$28
-		bcs	L9f85
-finalMask	lda	$ffff
-		eor	($1c),y
-		sta	($1c),y
-L9f85		inc	finalMask+1
-		bne	L9f8d
-		inc	finalMask+2
-L9f8d		iny
-		cpy	#$4a
-		bne	L9f94
-		ldy	#$00
-L9f94		dec	spritelib::dsWidth
-		bne	L9f7a
-		ldx	spritelib::dsWidthInit
-		stx	spritelib::dsWidth
-		dec	spritelib::dsHeight
-		beq	L9faa
-		inc	spritelib::yPos
-		jmp	L9f5a
-L9faa		rts
 
 ; frames 0..$E7, with a tone from $30 to $3F
 finalBegin	ldx	#$00
@@ -162,7 +85,7 @@ drawActorA	lda	actorAY,x
 		lda	actorAX,x
 		tax
 		pla
-		jsr	finalDrawPlain
+		jsr	spritelib::drawPlain
 		rts
 
 updateActorB	ldx	finalFrame
@@ -186,7 +109,7 @@ drawActorB	lda	actorBY,x
 		lda	actorBX,x
 		tax
 		pla
-		jsr	finalDrawPlain
+		jsr	spritelib::drawPlain
 		rts
 
 updateActorC	ldx	finalFrame
