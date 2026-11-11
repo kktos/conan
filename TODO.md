@@ -36,8 +36,18 @@ original is still to do.
   R1, R3 and R5 identical). In the emulator: the geyser, the creatures and
   the drops run; the boulder, the gems, the key, the door and the exit
   haven't been checked.
-- **The build fails from level 5 on.** The uncommitted `macros.asm` fix makes
-  `assertGameStruct` work, and levels 5 to 8 have no R5 yet. Port them, or
+- **Level 5 has only been run, not played through.** It builds and matches
+  the original (DATA differs only in the 2 unreferenced c2 blocks; CODE only
+  by relocated operands, the slack $ABC2-$ABFF and $AD89-$AD8A, $FF $FF on
+  the disk but not read; R1, R3 and the rest of R5 identical). In the
+  emulator: the walkers come out of the gem pile, walk, shoot and take the
+  portals, the burrower and the fire run, taking a gem from the pile works;
+  the axe, the fire's gem, the key, the doors and the exit haven't been checked.
+- **Level 5, in the original too:** `checkFire` calls `closeTop` even when
+  the top isn't open, which EORs the guard (shapes $49/$4A at $4A,$58) onto
+  the screen and puts a gem back on the pile.
+- **The build fails from level 6 on.** The uncommitted `macros.asm` fix makes
+  `assertGameStruct` work, and levels 6 to 8 have no R5 yet. Port them, or
   turn the check off in the placeholders for now.
 
 ## conan-rev-eng
@@ -52,5 +62,13 @@ original is still to do.
 - `meta/level3.meta`: the `L3_PORTAL_SIDE` comment is inverted. Bit 7 set is
   the **bottom** portal (X $5E, Y $9C), clear the top one (X $56, Y $1B): the
   code `bpl`s to the top one.
+- `meta/c2/level5.c2`: `L5_UNUSED_791C` is not unused: it's read as `$78D3,x`
+  (the "per-shape offset table at $78D3" of CONAN_RE.md), the Y offsets of
+  shapes $49-$4D. The "ferry" is a creature that kills on touch
+  (`LAB8B`) and goes into the ground at X $46/$61/$79 (shapes $4B-$4D)
+  ("burrower" in conan). `L5_ITEMS_TAKEN` counts the walkers killed too.
+  `L5_GATES_OPEN` / `L5_LOCK_SHAPE` / `L5_KEY_PLACED` are the top being open,
+  the guard's shape and the gem put back on the pile (`topOpen` /
+  `guardShape` / `gemReturned` in conan).
 - `globals::sountCnt2` / `soundCnt3` / `soundCnt1` ($0371 / $0372 / $037A) are
   the RND state (`CONAN_RE.md`): rename them in `variables.asm`.

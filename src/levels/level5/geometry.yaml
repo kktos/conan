@@ -1,0 +1,48 @@
+# Level 5 geometry, built into $AC00-$ACFF and $AD80-$AD88
+# by levelGeometry / levelStartExit (modules/game/level-geometry.macros.asm).
+# YAML numbers: write 0xAA, not $AA.
+
+start:
+  x: 0x02
+  y: 0x6E
+  sprite: 0x0C
+  facing: right
+
+exit:
+  arrow: { x: 0x7A, y: 0x26, sprite: 0x25 }  # right arrow, top right
+  win: { x: 0x8A, y: 0x23 }                   # walking out at the top right
+
+# the player stands on 'top', from left to right (max 31)
+platforms:
+  - { left: 0x03, right: 0x34, top: 0x9A }
+  - { left: 0x32, right: 0x41, top: 0x94 }
+  - { left: 0x4C, right: 0x5C, top: 0x94 }
+  - { left: 0x68, right: 0x75, top: 0x94 }
+  - { left: 0x7F, right: 0x8A, top: 0x94 }
+  - { left: 0x00, right: 0x21, top: 0x6D }
+  - { left: 0x1C, right: 0x30, top: 0x68 }
+  - { left: 0x2D, right: 0x89, top: 0x5E }
+  - { left: 0x00, right: 0x42, top: 0x40 }
+  - { left: 0x4F, right: 0x8B, top: 0x40 }
+  - { left: 0x62, right: 0x8B, top: 0x22 }
+  - { left: 0x02, right: 0x0D, top: 0x18 }
+  - { left: 0x17, right: 0x44, top: 0x18 }
+  - { left: 0x4F, right: 0x61, top: 0x18 }
+  - { left: 0x0C, right: 0x1D, top: 0x22 }
+
+# climbable at x, from top to bottom (max 31)
+ladders:
+  - { x: 0x6E, top: 0x5F, bottom: 0x95 }
+
+# block left/right moves at x, for the player's feet at y (max 15)
+walls:
+  - { x: 0x02, y: 0x9B }
+  - { x: 0x2F, y: 0x9B }
+  - { x: 0x85, y: 0x95 }
+  - { x: 0x1C, y: 0x6E }
+  - { x: 0x2D, y: 0x69 }
+  - { x: 0x62, y: 0x23 }
+  - { x: 0x01, y: 0x19 }
+  - { x: 0x0C, y: 0x23 }
+  - { x: 0x16, y: 0x23 }
+  - { x: 0x00, y: 0x6E }
