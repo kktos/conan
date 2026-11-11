@@ -31,6 +31,8 @@ platforms:
   - { left: 0x53, right: 0x66, top: 0x9F }
 
 # climbable at x, from top to bottom (max 31)
+# the original c5 also has a ladder #10 ($AC6A / $AC8A = $4C), after the end of
+# the list (#2 has top 0): the engine never reads it, so it isn't built
 ladders:
   - { x: 0x31, top: 0x40, bottom: 0x5A }
   - { x: 0x5A, top: 0x2C, bottom: 0xA0 }
