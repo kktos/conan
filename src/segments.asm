@@ -70,12 +70,13 @@
 .segment L6_DEAD3	{ start: $7500, size: 840 }
 
 .segment L7_BKGD	{ start: $7500, end: $80FF, pad: $AA }
-.segment L7_DATA	{ start: $7500, end: $9BFF, pad: $55 }
+.segment L7_DATA	{ start: $7500, end: $9FFF, pad: $55 }	; c3 goes up to $9FFF
 .segment L7_CODE	{ start: $A000, end: $ADFF, pad: $D5 }
 .segment L7_DEAD0	{ start: $7500, size: 840 }
 .segment L7_DEAD1	{ start: $7500, size: 840 }
 .segment L7_DEAD2	{ start: $7500, size: 840 }
 .segment L7_DEAD3	{ start: $7500, size: 840 }
+.segment L7_FINAL	{ start: $9F00, end: $A9FF, pad: $D5 }	; the final animation, loaded by the level code
 
 .segment L8_BKGD	{ start: $7500, end: $7FFF, pad: $AA }
 .segment L8_DATA	{ start: $7500, end: $9BFF, pad: $55 }

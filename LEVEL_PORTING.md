@@ -134,7 +134,9 @@ Read c5 with `xxd -g1 -o 0xAC00 $L/L<n>_c5_AC00.bin`, layout in CONAN_RE.md:
 
 Only the entries before the first 0 count: the engine stops there. Entries
 after it are dead (level 3 had one, a ledge the level code writes into): leave
-them out and say so in the yaml.
+them out and say so in the yaml. A last platform whose left / right are in c5
+but whose top the code writes (level 7's bridge) is written with `off: true`:
+`levelGeometry` puts 0 for its top.
 
 `data-R5-AC00.asm` (from `levels/level3/`): `levelGeometry`, then **every byte of
 $AD00-$ADFF written explicitly** (`.fill n, 0`): `placeAt` pads with the
@@ -180,9 +182,9 @@ Anything else is a translation error. Then run the level in the emulator.
 | level | notes |
 |---|---|
 | 0 | title / attract mode; c5 not meaningful; has a `L0_BITMAP` |
-| 1, 2, 3, 4, 5, 6 | ported (level 2: see TODO.md) |
+| 1, 2, 3, 4, 5, 6, 7 | ported (level 2: see TODO.md) |
 | 4 | c4 = 3 KB ($A000-$ABFF). Two local copies of DRAW_SHAPE: $A003 stores (no EOR: `copySrc lda $ffff`), $A0A9 EORs (`mask`). Variables in c3 too: drop paths $9380-$95FF, key $93A1-$93A4 |
 | 5 | c4 = 3 KB ($A000-$ABFF), regular exit. c2: `L5_UNUSED_791C` is read (as `$78D3,x`, shapes $49-$4D): the burrower's Y offsets, `burrowerYOfs - SHAPE_BURROWER,x`. The walker tables end the page at $79C4: `placeAt $7A00 - 10 * 6` skips the leftover $7940-$79C3 |
 | 6 | ends in its code: `CHECK_LEAVE` $AA9A moves the player to the c5 exit ($C0,$C0). No DRAW_PLAIN: `levelTick` is at $A000. c2: the `L6_UNUSED_79x7` bytes are the 8th slot of the monster tables (the loops go up to 7): write them as 8-byte tables. Tables in c3: chandelier $8C00, crash frames $8D00-$8FFF, turn points $9000/$9018, a variable at $9040, WAIT table $9048, mover scripts $9100-$94FF. c4 ends at $AB3C, $AB3D-$ABFF is leftover code (level 5's). Labels `LAD20`/`LAD30`/`LAD40` for the torch lists are in `data-R5-AC00.asm` |
-| 7 | c3 = 9728 bytes, up to $9FFF: past `L7_DATA`'s end. `FELL_OFF` $AA65 sends back to level 6; `LOAD_FINAL` $AAC9 reads disk 2 T22 into $9F00-$A9FF and jumps to $9F00 (`level7_final.asm`): needs its own file |
+| 7 | c3 = 9728 bytes, up to $9FFF: `L7_DATA` ends at $9FFF (only the intro, loaded before any level, uses $9C00-$9FFF). Tables: bat routes in c1 $7800/$7880 and c3 $9D00/$9D80, shot routes $9E00/$9E80/$9F00, throw and shot tables in c4 $AB00-$AB6B (throw tables as `table-1,x`, steps 1..$0C). The bridge is ledge 7, `off: true` in `geometry.yaml` (its left/right are in c5, its top is written by the code). `FELL_OFF` $AA65 sends back to level 6. `LOAD_FINAL` $AAC9 read disk 2 T22 into $9F00-$A9FF: now the file `L7/FINAL` (`final.asm`, segment `L7_FINAL`), loaded with `dosLoadFile`. **tinyDOS loads whole blocks**: the 5.5 blocks fill $9F00-$AAFF, so `loadFinal` jumps to `loadFinalFile`, at $AB6C past the tables (an `.assert` checks it). Compare the overlay with `mem/level7_final.bin`'s last $B00 bytes, `levelcmp.py` doesn't |
 | 8 | ending; c5 not meaningful; counts lives down for the bonus |
