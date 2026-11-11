@@ -209,6 +209,17 @@ mainLoop
 onKeyNext
 		bit	sys::KBDSTRB
 		jmp	L18d9			; erase level digit, inc level, draw new digit, load
+onKeyLevel					; A = "0".."8" : jump straight to that level
+		and	#$0f			; -> 0..8
+		pha
+		bit	sys::KBDSTRB
+		ldx	#globals::level-globals::playerData
+		jsr	drawDigit		; erase current level digit
+		pla
+		sta	globals::level
+		ldx	#globals::level-globals::playerData
+		jsr	drawDigit		; draw new one
+		jmp	L18e6			; load
 onKeyDie
 		bit	sys::KBDSTRB
 		;stz globals::playerLifeCount
@@ -230,6 +241,12 @@ readUserInput	lda	sys::KBD
 
 		cmp	#"n"|$80		; n : next
 		beq	onKeyNext		; next level
+
+		cmp	#"0"|$80		; 0..8 : go to level
+		bcc	:+
+		cmp	#"9"|$80
+		bcc	onKeyLevel
+:
 
 		cmp	globals::keySoundSwitch	; D3/53/S
 		beq	L1154
