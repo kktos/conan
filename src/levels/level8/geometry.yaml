@@ -1,0 +1,21 @@
+# Level 8 geometry, built into $AC00-$ACFF and $AD80-$AD88
+# by levelGeometry / levelStartExit (modules/game/level-geometry.macros.asm).
+# YAML numbers: write 0xAA, not $AA.
+#
+# The ending: no ledge, no ladder, no wall. levelTick (code.asm) plays it
+# in one call and moves on to level 9 itself; player and arrow are put
+# below the screen, out of the way.
+
+start:
+  x: 0xD0
+  y: 0xD0
+  sprite: 0x11
+  facing: left
+
+exit:
+  arrow: { x: 0xD0, y: 0xD0, sprite: 0x10 }
+  win: { x: 0x00, y: 0x00 }
+
+platforms: []
+ladders: []
+walls: []
