@@ -30,8 +30,9 @@ L7500
 		.hex 05 05 12 87 2b 87 44 87 5d 87 76 87 8f 87 a8 87
 		; $4E - space - used to erase the spring
 		.hex 02 05 f0 87 f0 87 f0 87 f0 87 f0 87 f0 87 f0 87
-		; $4F - Help "introduction"
-		.hex 1b 4b 00 88 00 88 00 88 00 88 00 88 00 88 00 88
+		; $4F - Help "introduction": only rows 6-22 of the original 27x75 image at $8800
+		; (underline + "HALL OF VOLTA"); the text is drawn with drawText (level0 drawIntroduction)
+		.hex 1b 11 a2 88 a2 88 a2 88 a2 88 a2 88 a2 88 a2 88
 		; $50 - Help "characters"
 		.hex 0c 07 e9 8f e9 8f e9 8f e9 8f e9 8f e9 8f e9 8f
 
