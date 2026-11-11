@@ -98,8 +98,6 @@ original is still to do.
   `L5_GATES_OPEN` / `L5_LOCK_SHAPE` / `L5_KEY_PLACED` are the top being open,
   the guard's shape and the gem put back on the pile (`topOpen` /
   `guardShape` / `gemReturned` in conan).
-- `globals::sountCnt2` / `soundCnt3` / `soundCnt1` ($0371 / $0372 / $037A) are
-  the RND state (`CONAN_RE.md`): rename them in `variables.asm`.
 - `meta/c2/level7.c2`: `L7_EYE_*` is the prisoner in the cage (shapes
   $5A/$5B at $1A,$24), `L7_GUARD_*` the next bat walking to the door and
   waiting there (`L7_GUARD_ON` holds its X, $84), `L7_ROPE` the lever that

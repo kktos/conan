@@ -953,7 +953,7 @@ La780		rts
 randomWalkerX	jsr	utils::random
 		and	#$7f
 		adc	#$05
-		sta	globals::sountCnt2
+		sta	globals::rndSeed2
 		ldx	itemsLeft
 		dex
 La78f		cpx	#$05

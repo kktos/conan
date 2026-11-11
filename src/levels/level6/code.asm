@@ -768,7 +768,7 @@ drawMonster	lda	monsterState-1,x
 		rts
 
 ; shape $57 or $58 at random
-animMonster	rol	globals::soundCnt1
+animMonster	rol	globals::rndSeed1
 		jsr	utils::random
 		ror
 		bcc	La598

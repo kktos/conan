@@ -1650,11 +1650,11 @@ L1caf		rts
 
 fDeadPic	.pstr	"L0/DEAD0"
 
-S1cb0		inc	globals::soundCnt1
-		lda	globals::soundCnt1
+S1cb0		inc	globals::rndSeed1
+		lda	globals::rndSeed1
 		adc	$7900
 		adc	globals::playerScore+3
-		sta	globals::soundCnt1
+		sta	globals::rndSeed1
 L1cbf		rts
 
 readJoystick:

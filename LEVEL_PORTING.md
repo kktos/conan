@@ -96,7 +96,7 @@ SHAPE_LIFT	.equ	$41		; going up
 | `SCORE`,x $0345 / $033C,x | `globals::playerData,x` / `globals::L033C,x` |
 | $034B lives / $034F death state | `globals::playerLifeCount` / `globals::playerDeadAnimIdx` |
 | $036A,y inventory icon X / $036E / $036F | `globals::assetData,y` / `assetKeyCnt` / `assetGemCnt` |
-| RND state $0371 / $0372 / $037A | `globals::sountCnt2` / `soundCnt3` / `soundCnt1` (misnamed: they're the RND state) |
+| RND state $0371 / $0372 / $037A | `globals::rndSeed2` / `rndValue` / `rndSeed1` |
 | $0373 (core skips its wall bounce) | `globals::L0373` |
 | `SHAPE_PTR_LO` / `_HI` $B5FF / $B67F | `spritelib::spriteLo-1` / `spritelib::spriteHi-1` |
 | `LINE_LO` / `_HI` $B400 / $B500 | `utils::hgrLow` / `utils::hgrHigh` |

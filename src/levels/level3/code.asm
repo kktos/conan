@@ -80,9 +80,9 @@ closePortal	jsr utils::random
 		adc #$08
 		sta portalOff
 		lda RNDH
-		adc globals::sountCnt2
-		sta globals::sountCnt2
-		asl globals::sountCnt2
+		adc globals::rndSeed2
+		sta globals::rndSeed2
+		asl globals::rndSeed2
 		ldx #$00
 		stx portalOn
 		rts
