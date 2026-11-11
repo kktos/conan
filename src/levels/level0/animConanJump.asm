@@ -95,21 +95,18 @@ eraseSpring
 		ldx #$45
 		ldy #$a3
 		lda #$4e
-		; jsr drawSpriteBis
-		jsr spritelib::drawSpriteM
+		jsr drawSpriteBis	; plain store, not EOR: the black blocks erase it
 		ldx #$45
 		ldy #$9e
 		lda #$4e
-		; jsr drawSpriteBis
-		jsr spritelib::drawSpriteM
+		jsr drawSpriteBis	; plain store, not EOR: the black blocks erase it
 		rts
 
 renderSpring
 		ldx #$45
 		lda springCurId
 		ldy springCurYpos
-		; jsr drawSpriteBis
-		jsr spritelib::drawSpriteM
+		jsr drawSpriteBis	; plain store, not EOR: each frame overwrites the last
 		lda springCurId
 		eor #$03		; flip between $49 and $4A
 		sta springCurId

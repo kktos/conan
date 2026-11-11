@@ -15,9 +15,9 @@
 		; .org $AE00
 
 .macro drawSprite id, x, y {
+		lda id		; first: id may be indexed by X or Y (level0 animVolta)
 		ldx x
 		ldy y
-		lda id
 		jsr spritelib::drawSprite
 }
 
