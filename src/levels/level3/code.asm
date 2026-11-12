@@ -46,31 +46,31 @@ levelTick	jsr updatePortal
 		rts
 
 ;
-; portal: closed for portalOff frames, then open for portalOn frames
+; portal: closed for portal.off frames, then open for portal.on frames
 ; at a random side
 ;
-updatePortal	ldx portalOn
+updatePortal	ldx portal.on
 		bne portalIsOpen
-		dec portalOff
+		dec portal.off
 		beq openPortal
 		rts
 
 openPortal	jsr utils::random
 		and #$3f
 		adc #$10
-		sta portalOn
+		sta portal.on
 		jsr utils::random
-		sta portalSide
+		sta portal.side
 		jsr drawPortal
 		rts
 
 portalIsOpen	jsr drawPortal
-		dec portalOn
+		dec portal.on
 		beq closePortal
 		jsr togglePortalShape
 		jsr drawPortal
 		jsr portalTransport
-		ldx portalOn
+		ldx portal.on
 		ldy #$10
 		jsr game1::tone
 		rts
@@ -78,37 +78,37 @@ portalIsOpen	jsr drawPortal
 closePortal	jsr utils::random
 		and #$1f
 		adc #$08
-		sta portalOff
+		sta portal.off
 		lda RNDH
 		adc globals::rndSeed2
 		sta globals::rndSeed2
 		asl globals::rndSeed2
 		ldx #$00
-		stx portalOn
+		stx portal.on
 		rts
 
 togglePortalShape
-		lda portalShape
+		lda portal.shape
 		eor #$01
-		sta portalShape
+		sta portal.shape
 		rts
 
-drawPortal	ldx portalSide
+drawPortal	ldx portal.side
 		bpl :+
 		ldx #$5e
-		lda portalShape
+		lda portal.shape
 		ldy #$9c
 		jsr spritelib::drawSpriteM
 		rts
 
 :		ldx #$56
-		lda portalShape
+		lda portal.shape
 		ldy #$1b
 		jsr spritelib::drawSpriteM
 		rts
 
 ;
-; monsters 3 to 1: walk monsterDX, turn around at the ends of their range,
+; monsters 3 to 1: walk monsters.dx, turn around at the ends of their range,
 ; at random (2 chances in 256), and monsters 2 and 3 when they walk into
 ; monster 1 going the same way
 ;
@@ -117,36 +117,36 @@ updateMonsters	ldx #$03
 La15b		ldx globals::L0322
 		jsr drawMonster
 		ldx globals::L0322
-		lda monsterRange-1,x
+		lda monsters.range-1,x
 		tay
-		lda monsterX-1,x
+		lda monsters.x-1,x
 		clc
-		adc monsterDX-1,x
-		sta monsterX-1,x
-		cmp rangeLo-1,y
+		adc monsters.dx-1,x
+		sta monsters.x-1,x
+		cmp ranges.lo-1,y
 		beq La1b3
-		cmp rangeHi-1,y
+		cmp ranges.hi-1,y
 		beq La1b3
 		jsr utils::random
 		cmp #$02
 		bcc La1b3
 		cpx #$01
 		beq La1aa
-		lda monsterY-1,x
-		cmp monsterY
+		lda monsters.y-1,x
+		cmp monsters.y
 		bne La1aa
-		lda monsterDX-1,x
-		cmp monsterDX
+		lda monsters.dx-1,x
+		cmp monsters.dx
 		bne La1aa
 		; turn around if X-2 < monster 1's X <= X+2
-		lda monsterX-1,x
+		lda monsters.x-1,x
 		sec
 		sbc #$02
-		cmp monsterX
+		cmp monsters.x
 		bcs La1aa
 		clc
 		adc #$04
-		cmp monsterX
+		cmp monsters.x
 		bcs La1b3
 La1aa		jsr drawMonster
 		dec globals::L0322
@@ -156,23 +156,23 @@ La1aa		jsr drawMonster
 La1b3		jsr turnMonster
 		jmp La1aa
 
-turnMonster	lda monsterDX-1,x
+turnMonster	lda monsters.dx-1,x
 		eor #$ff
 		clc
 		adc #$01
-		sta monsterDX-1,x
-		lda monsterShape-1,x
+		sta monsters.dx-1,x
+		lda monsters.shape-1,x
 		eor #$01
-		sta monsterShape-1,x
+		sta monsters.shape-1,x
 		rts
 
 ; monster globals::L0322
 drawMonster	ldx globals::L0322
-		lda monsterY-1,x
+		lda monsters.y-1,x
 		tay
-		lda monsterX-1,x
+		lda monsters.x-1,x
 		sta globals::L033B
-		lda monsterShape-1,x
+		lda monsters.shape-1,x
 		ldx globals::L033B
 		jsr spritelib::drawSpriteM
 		rts
@@ -180,33 +180,33 @@ drawMonster	ldx globals::L0322
 ;
 ; bubbles rising in the pool, one column after the other
 ;
-updateBubbles	ldx bubbleFrame
+updateBubbles	ldx bubble.frame
 		beq nextBubble
 		jsr drawBubble
-		inc bubbleFrame
-		ldx bubbleFrame
+		inc bubble.frame
+		ldx bubble.frame
 		cpx #$09
 		beq La212
 		jsr drawBubble
 		rts
 
-nextBubble	inc bubbleColumn
-		ldx bubbleColumn
+nextBubble	inc bubble.column
+		ldx bubble.column
 		cpx #$04
 		bne :+
 		ldx #$00
-		stx bubbleColumn
+		stx bubble.column
 :		ldx #$01
-		stx bubbleFrame
+		stx bubble.frame
 		jsr drawBubble
 		rts
 
 La212		ldx #$00
-		stx bubbleFrame
+		stx bubble.frame
 		rts
 
-drawBubble	lda bubbleFrame
-		ldx bubbleColumn
+drawBubble	lda bubble.frame
+		ldx bubble.column
 :		beq :+
 		clc
 		adc #$10
@@ -218,7 +218,7 @@ drawBubble	lda bubbleFrame
 		tay
 		lda bubblePath-1,x
 		sta globals::L033B
-		ldx bubbleFrame
+		ldx bubble.frame
 		lda bubbleShapes-1,x
 		ldx globals::L033B
 		jsr spritelib::drawSprite
@@ -228,9 +228,9 @@ La23e		rts
 ; flying bonus, one step on its path per frame;
 ; once taken, it flies to the end of its path, then stops
 ;
-updateBonus	ldx bonusTaken
+updateBonus	ldx bonus.taken
 		bmi La23e
-		ldx bonusStep
+		ldx bonus.step
 		lda bonusPathX,x
 		cmp bonusPathX+1,x
 		bne La263
@@ -240,21 +240,21 @@ updateBonus	ldx bonusTaken
 		lda bonusPathShape,x
 		cmp bonusPathShape+1,x
 		bne La263
-		inc bonusStep
+		inc bonus.step
 		rts
 
 La263		jsr drawBonus
-		inc bonusStep
+		inc bonus.step
 		jsr drawBonus
-		ldx bonusTaken
+		ldx bonus.taken
 		beq La23e
-		ldx bonusStep
+		ldx bonus.step
 		bne La23e
 		ldx #$ff
-		stx bonusTaken
+		stx bonus.taken
 		rts
 
-drawBonus	ldx bonusStep
+drawBonus	ldx bonus.step
 		lda bonusPathY,x
 		tay
 		lda bonusPathX,x
@@ -273,7 +273,7 @@ La299		rts
 
 transportPlayer	ldx globals::playerDeadAnimIdx
 		bne La299
-		ldx portalSide
+		ldx portal.side
 		bpl La2dd
 		; bottom portal: player at X $5E-$61, Y $A2 -> ($58, $21)
 		ldx globals::spriteX
@@ -337,12 +337,12 @@ La316		jmp transportDown
 
 		; bottom portal: monster at X $60/$61, Y $AB -> ($58, $2A), range 3
 transportMonster
-		ldx portalSide
+		ldx portal.side
 		bpl La316
-		ldx monsterY
+		ldx monsters.y
 		cpx #$ab
 		bne La355
-		ldx monsterX
+		ldx monsters.x
 		cpx #$60
 		beq :+
 		cpx #$61
@@ -350,23 +350,23 @@ transportMonster
 		jmp La355
 
 :		ldx #$03
-		stx monsterRange
-		ldx monsterX
-		ldy monsterY
-		lda monsterShape
+		stx monsters.range
+		ldx monsters.x
+		ldy monsters.y
+		lda monsters.shape
 		jsr spritelib::drawSpriteM
 		ldx #$58
-		stx monsterX
+		stx monsters.x
 		ldy #$2a
-		sty monsterY
-		lda monsterShape
+		sty monsters.y
+		lda monsters.shape
 		jsr spritelib::drawSpriteM
 		rts
 
-La355		ldx monsterY+2
+La355		ldx monsters.y+2
 		cpx #$ab
 		bne La38b
-		ldx monsterX+2
+		ldx monsters.x+2
 		cpx #$60
 		beq :+
 		cpx #$61
@@ -374,24 +374,24 @@ La355		ldx monsterY+2
 		jmp La38b
 
 :		ldx #$03
-		stx monsterRange+2
-		ldx monsterX+2
-		ldy monsterY+2
-		lda monsterShape+2
+		stx monsters.range+2
+		ldx monsters.x+2
+		ldy monsters.y+2
+		lda monsters.shape+2
 		jsr spritelib::drawSpriteM
 		ldx #$58
-		stx monsterX+2
+		stx monsters.x+2
 		ldy #$2a
-		sty monsterY+2
-		lda monsterShape+2
+		sty monsters.y+2
+		lda monsters.shape+2
 		jsr spritelib::drawSpriteM
 La38b		rts
 
 		; top portal: monster at X $58/$59, Y $2A -> ($60, $AB), range 1
-transportDown	ldx monsterY
+transportDown	ldx monsters.y
 		cpx #$2a
 		bne La3c3
-		ldx monsterX
+		ldx monsters.x
 		cpx #$58
 		beq :+
 		cpx #$59
@@ -399,23 +399,23 @@ transportDown	ldx monsterY
 		jmp La3c3
 
 :		ldx #$01
-		stx monsterRange
-		ldx monsterX
-		ldy monsterY
-		lda monsterShape
+		stx monsters.range
+		ldx monsters.x
+		ldy monsters.y
+		lda monsters.shape
 		jsr spritelib::drawSpriteM
 		ldx #$60
-		stx monsterX
+		stx monsters.x
 		ldy #$ab
-		sty monsterY
-		lda monsterShape
+		sty monsters.y
+		lda monsters.shape
 		jsr spritelib::drawSpriteM
 		rts
 
-La3c3		ldx monsterY+2
+La3c3		ldx monsters.y+2
 		cpx #$2a
 		bne La3f9
-		ldx monsterX+2
+		ldx monsters.x+2
 		cpx #$58
 		beq :+
 		cpx #$59
@@ -423,16 +423,16 @@ La3c3		ldx monsterY+2
 		jmp La3f9
 
 :		ldx #$01
-		stx monsterRange+2
-		ldx monsterX+2
-		ldy monsterY+2
-		lda monsterShape+2
+		stx monsters.range+2
+		ldx monsters.x+2
+		ldy monsters.y+2
+		lda monsters.shape+2
 		jsr spritelib::drawSpriteM
 		ldx #$60
-		stx monsterX+2
+		stx monsters.x+2
 		ldy #$ab
-		sty monsterY+2
-		lda monsterShape+2
+		sty monsters.y+2
+		lda monsters.shape+2
 		jsr spritelib::drawSpriteM
 La3f9		rts
 
@@ -509,11 +509,11 @@ La45a		rts
 		jsr soundlib::L0ac5
 		rts
 
-startLift	inc liftState
+startLift	inc lift.state
 		ldx #$2a
-		stx liftX
+		stx lift.x
 		ldy #$8e
-		sty liftY
+		sty lift.y
 		lda #SHAPE_LIFT
 		jsr spritelib::drawSpriteM
 		rts
@@ -522,32 +522,32 @@ startLift	inc liftState
 ; lift: goes up to Y=$1B, shows SHAPE_LIFT_TOP then SHAPE_LIFT_GONE,
 ; then the gem goes back to where it was taken
 ;
-updateLift	ldx liftState
+updateLift	ldx lift.state
 		beq La4ad
 		bmi liftAtTop
 		jsr drawLift
-		dec liftY
-		ldx liftY
+		dec lift.y
+		ldx lift.y
 		cpx #$1b
 		beq liftArrived
 		jsr drawLift
-		ldx liftY
+		ldx lift.y
 		ldy #$10
 		jsr game1::tone
 La4ad		rts
 
-drawLift	ldx liftX
-		ldy liftY
+drawLift	ldx lift.x
+		ldy lift.y
 		lda #SHAPE_LIFT
 		jsr spritelib::drawSpriteM
 		rts
 
-liftArrived	ldx liftX
-		ldy liftY
+liftArrived	ldx lift.x
+		ldy lift.y
 		lda #SHAPE_LIFT_TOP
 		jsr spritelib::drawSpriteM
 		ldx #$ff
-		stx liftState
+		stx lift.state
 		ldx #$00
 		stx LAC40+8
 		stx onLift
@@ -555,23 +555,23 @@ liftArrived	ldx liftX
 
 liftAtTop	cpx #$fe
 		beq resetGem
-		ldx liftX
-		ldy liftY
+		ldx lift.x
+		ldy lift.y
 		lda #SHAPE_LIFT_TOP
 		jsr spritelib::drawSpriteM
-		ldx liftX
-		ldy liftY
+		ldx lift.x
+		ldy lift.y
 		lda #SHAPE_LIFT_GONE
 		jsr spritelib::drawSpriteM
-		dec liftState
+		dec lift.state
 		rts
 
-resetGem	ldx liftX
-		ldy liftY
+resetGem	ldx lift.x
+		ldy lift.y
 		lda #SHAPE_LIFT_GONE
 		jsr spritelib::drawSpriteM
 		ldx #$00
-		stx liftState
+		stx lift.state
 		ldx #$79
 		ldy #$33
 		lda #SHAPE_GEM
@@ -607,29 +607,29 @@ checkSink	ldx globals::playerDeadAnimIdx
 		jsr spritelib::drawSpriteM
 La544		rts
 
-startSink	inc sinkFrame
+startSink	inc sink.frame
 		ldx globals::spriteX
-		stx sinkX
+		stx sink.x
 		jsr drawSink
 		rts
 
-updateSink	ldx sinkFrame
+updateSink	ldx sink.frame
 		beq La544
 		jsr drawSink
-		inc sinkFrame
-		ldx sinkFrame
+		inc sink.frame
+		ldx sink.frame
 		cpx #$09
 		beq :+
 		jsr drawSink
 		rts
 
 :		ldx #$00
-		stx sinkFrame
+		stx sink.frame
 		rts
 
-drawSink	ldx sinkFrame
+drawSink	ldx sink.frame
 		lda sinkShapes-1,x
-		ldx sinkX
+		ldx sink.x
 		ldy #$7f
 		jsr spritelib::drawPlain
 		rts
@@ -643,13 +643,13 @@ drawSink	ldx sinkFrame
 ;
 checkBoardLift	ldx onLift
 		bne La5b4
-		ldx liftState
+		ldx lift.state
 		beq leaveLift
 		bmi leaveLift
 		jsr isNearLift
 		bcc leaveLift
 		jsr drawPlayer
-		lda liftX
+		lda lift.x
 		sta globals::spriteX
 		inc globals::spriteX
 		jsr drawPlayer
@@ -673,7 +673,7 @@ leaveLift	ldx #$00
 rideLift	ldx onLift
 		beq leaveLift
 		jsr game1::scoreAdd1
-		lda liftY
+		lda lift.y
 		sta LAC40+8
 		inc LAC40+8
 		jsr drawPlayer
@@ -682,7 +682,7 @@ rideLift	ldx onLift
 		ldx globals::playerYspeed
 		cpx #$02
 		bne La5f8
-:		lda liftY
+:		lda lift.y
 		sta globals::spriteY
 		inc globals::spriteY
 		ldx #$00
@@ -714,8 +714,8 @@ fellOffLift	jsr leaveLift
 		stx globals::L031E
 		rts
 
-; C=1 if liftX-6 < player X <= liftX+11 and liftY-16 < player Y <= liftY+20
-isNearLift	lda liftX
+; C=1 if lift.x-6 < player X <= lift.x+11 and lift.y-16 < player Y <= lift.y+20
+isNearLift	lda lift.x
 		clc
 		adc #$0b
 		cmp globals::spriteX
@@ -724,7 +724,7 @@ isNearLift	lda liftX
 		sbc #$11
 		cmp globals::spriteX
 		bcs :+
-		lda liftY
+		lda lift.y
 		sec
 		sbc #$10
 		cmp globals::spriteY
@@ -764,7 +764,7 @@ La676		inc globals::L0322
 		ldx globals::L0322
 		cpx #$03
 		beq La66b
-		lda monsterX,x
+		lda monsters.x,x
 		sec
 		sbc #$04
 		cmp globals::spriteX
@@ -773,7 +773,7 @@ La676		inc globals::L0322
 		adc #$08
 		cmp globals::spriteX
 		bcc La676
-		lda monsterY,x
+		lda monsters.y,x
 		sec
 		sbc #$0c
 		cmp globals::spriteY
@@ -816,9 +816,9 @@ checkNoBounceZone
 ; flying bonus taken: X-7 < player X <= X+13, Y-16 < player Y <= Y+12
 ; (not while it's above the screen): extra life
 ;
-checkBonus	ldx bonusTaken
+checkBonus	ldx bonus.taken
 		bne La747
-		ldx bonusStep
+		ldx bonus.step
 		lda bonusPathX,x
 		sec
 		sbc #$07
@@ -843,12 +843,12 @@ checkBonus	ldx bonusTaken
 		inc globals::playerLifeCount
 		ldx #globals::playerLifeCount-globals::playerData
 		jsr game1::drawDigit
-		inc bonusTaken
+		inc bonus.taken
 		jsr soundlib::L0b23
 La747		rts
 
 ;
-; flying bonus' path: X, Y, shape per step (256 steps, bonusStep wraps)
+; flying bonus' path: X, Y, shape per step (256 steps, bonus.step wraps)
 ; bonusPathShape+1,x reads one byte past the table at step $FF: no matter,
 ; X differs there
 ;
