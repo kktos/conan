@@ -4,6 +4,8 @@ input:
   options:
     listing.case: source
     listing.data: fold
+  symbols:
+    DISK_KB: 800
 
 #   segments:
 #     - { name: main, start: 4096, size: 8192, padValue: 255 }
