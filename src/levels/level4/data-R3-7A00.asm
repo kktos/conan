@@ -2,7 +2,7 @@
 ; level 4 sprite bitmaps (disk chunk c3, at $7A00), for the headers
 ; $41-$5D of data-R1-7500.asm.
 ; A sprite is width x height bytes, rows top to bottom (7 pixels per byte,
-; bit 0 first), one row per line below. defprite sprites have 7 copies, one
+; bit 0 first), one row per line below. defsprite sprites have 7 copies, one
 ; per X mod 7 shift; defpicture ones a single copy.
 ; Then the water drops' paths and the key's state, read and written by the
 ; level code.

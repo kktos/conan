@@ -6,33 +6,33 @@ L7500
 		; $41:$46 - Volta materializing (help page, animVoltaSpriteIDs):
 		;   $41/$42 x7, then $43/$44 x4, then $45/$46 flashing, ends on $45
 		; $41 - lightning sparks
-		defprite	$02, $12, spriteLightningSparks
+		defsprite	$02, $12, spriteLightningSparks
 		; $42 - lightning bolt
-		defprite	$02, $12, spriteLightningBolt
+		defsprite	$02, $12, spriteLightningBolt
 		; $43 - Volta forming 1
-		defprite	$02, $93, spriteVoltaForming1
+		defsprite	$02, $93, spriteVoltaForming1
 		; $44 - Volta forming 2
-		defprite	$02, $92, spriteVoltaForming2
+		defsprite	$02, $92, spriteVoltaForming2
 		; $45 - volta colored
-		defprite	$03, $93, spriteVoltaColored
+		defsprite	$03, $93, spriteVoltaColored
 		; $46 - volta white
-		defprite	$03, $93, spriteVoltaWhite
+		defsprite	$03, $93, spriteVoltaWhite
 
 		; $47 - bird flying (help "avian ally": flies in from x=$F0 to $40)
-		defprite	$04, $8d, spriteBirdFlying
+		defsprite	$04, $8d, spriteBirdFlying
 		; $48 - bird landed (drawn once the flight ends)
-		defprite	$04, $91, spriteBirdLanded
+		defsprite	$04, $91, spriteBirdLanded
 		; $49 - spring frame 1 (title anim: alternates with $4A, x=$45)
-		defprite	$02, $0f, spriteSpring1
+		defsprite	$02, $0f, spriteSpring1
 		; $4A - spring frame 2
-		defprite	$02, $0f, spriteSpring2
+		defsprite	$02, $0f, spriteSpring2
 		; $4B - unused: not drawn by level 0
-		defprite	$02, $04, spriteUnused4B
+		defsprite	$02, $04, spriteUnused4B
 
 		; $4C - HI-SC
-		defprite	$06, $05, spriteHiSc
+		defsprite	$06, $05, spriteHiSc
 		; $4D - ORE
-		defprite	$05, $05, spriteOre
+		defsprite	$05, $05, spriteOre
 		; $4E - blank 2x5 block, drawn twice with drawStore to erase the spring
 		defpicture	$02, $05, spriteBlank
 		; $4F - Help "introduction": underline + "HALL OF VOLTA", rows 6-22 of the original

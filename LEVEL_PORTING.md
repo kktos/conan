@@ -42,7 +42,7 @@ Check that c3 fits: `L<n>_DATA` ends at $9BFF (see TODO.md for level 7).
 
 Then, as done for levels 0 to 8: split c3 into one labelled block per shape
 (one row of `width` bytes per line, one `.hex` block per pre-shifted copy) and
-write the c1 headers as `defprite w, h, label` (7 shifted copies) or
+write the c1 headers as `defsprite w, h, label` (7 shifted copies) or
 `defpicture w, h, label` (one copy, the 7 pointers equal), both in
 `src/includes/defsprite.macro.asm`. The bitmaps can then move, so the bytes no
 header points to can be dropped: header slots past the last shape (leftover

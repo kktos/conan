@@ -2,7 +2,7 @@
 ; level 7 sprite bitmaps (disk chunk c3, at $7A00), for the headers
 ; $41-$68 of data-R1-7500.asm.
 ; A sprite is width x height bytes, rows top to bottom (7 pixels per byte,
-; bit 0 first), one row per line below. defprite sprites have 7 copies, one
+; bit 0 first), one row per line below. defsprite sprites have 7 copies, one
 ; per X mod 7 shift; defpicture ones a single copy.
 ; Then the route tables of the bats and the shots. c3 goes past $9BFF, the
 ; end of the other levels' DATA: L7_DATA ends at $9FFF. The final animation

@@ -1,4 +1,4 @@
-		.macro	defprite width, height, addr {
+		.macro	defsprite width, height, addr {
 			.db	width
 			.db	height
 			.repeat	7 as idx

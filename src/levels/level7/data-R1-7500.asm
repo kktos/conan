@@ -1,6 +1,6 @@
 ;
 ; level 7 sprite headers, shapes $41-$68 (disk chunk c1, at $7500)
-; defprite w, h, label: 7 pre-shifted copies; defpicture w, h, label: one copy
+; defsprite w, h, label: 7 pre-shifted copies; defpicture w, h, label: one copy
 ; (defsprite.macro.asm). h bit 7: draw with the LB000/LB200 tables.
 ; The bitmaps are in data-R3-7A00.asm.
 ;
@@ -8,85 +8,85 @@
 		placeAt	$7500
 
 		; $41 - ? not drawn by the level or the final animation
-		defprite	$03, $90, spriteUnused41
+		defsprite	$03, $90, spriteUnused41
 		; $42 - bat, $42-$45 flying (EOR 1), waiting at the door $42 / $43 (SHAPE_BAT)
-		defprite	$03, $0E, spriteBat1
+		defsprite	$03, $0E, spriteBat1
 		; $43 - bat
-		defprite	$03, $08, spriteBat2
+		defsprite	$03, $08, spriteBat2
 		; $44 - bat
-		defprite	$03, $8E, spriteBat3
+		defsprite	$03, $8E, spriteBat3
 		; $45 - bat
-		defprite	$03, $88, spriteBat4
+		defsprite	$03, $88, spriteBat4
 		; $46 - fireball, $46 / $47 (SHAPE_SHOT + shotKind, EOR 3)
-		defprite	$03, $0D, spriteFireball1
+		defsprite	$03, $0D, spriteFireball1
 		; $47 - fireball
-		defprite	$03, $0C, spriteFireball2
+		defsprite	$03, $0C, spriteFireball2
 		; $48 - the door (SHAPE_DOOR)
-		defprite	$02, $0E, spriteDoor
+		defsprite	$02, $0E, spriteDoor
 		; $49 - shot carrying a gem, $49 / $4A: same bitmaps as $46 / $47
-		defprite	$03, $8D, spriteShotGem1
+		defsprite	$03, $8D, spriteShotGem1
 		; $4A - shot carrying a gem
-		defprite	$03, $0C, spriteShotGem2
+		defsprite	$03, $0C, spriteShotGem2
 		; $4B - the figure throwing, $4B-$4E (SHAPE_VOLTA): same bitmap as level 0's $45
-		defprite	$03, $93, spriteVolta1
+		defsprite	$03, $93, spriteVolta1
 		; $4C - the figure throwing
-		defprite	$03, $93, spriteVolta2
+		defsprite	$03, $93, spriteVolta2
 		; $4D - the figure throwing
-		defprite	$03, $93, spriteVolta3
+		defsprite	$03, $93, spriteVolta3
 		; $4E - the figure throwing
-		defprite	$03, $12, spriteVolta4
+		defsprite	$03, $12, spriteVolta4
 		; $4F - the orbs and the dot (SHAPE_ORB)
-		defprite	$01, $01, spriteOrb
+		defsprite	$01, $01, spriteOrb
 		; $50 - flame, first half (SHAPE_FLAME1 + flameFrame)
-		defprite	$02, $07, spriteFlame1A
+		defsprite	$02, $07, spriteFlame1A
 		; $51 - flame, second half (SHAPE_FLAME2 + flameFrame)
-		defprite	$02, $07, spriteFlame2A
+		defsprite	$02, $07, spriteFlame2A
 		; $52 - flame, first half, flameFrame 2
-		defprite	$02, $07, spriteFlame1B
+		defsprite	$02, $07, spriteFlame1B
 		; $53 - flame, second half, flameFrame 2
-		defprite	$02, $07, spriteFlame2B
+		defsprite	$02, $07, spriteFlame2B
 		; $54 - the bridge at the left, $54 / $55 flickering (SHAPE_BRIDGE)
-		defprite	$05, $82, spriteBridge1
+		defsprite	$05, $82, spriteBridge1
 		; $55 - the bridge
-		defprite	$05, $02, spriteBridge2
+		defsprite	$05, $02, spriteBridge2
 		; $56 - the prisoner in the final animation (actorAShape), $56-$59
-		defprite	$04, $8D, spritePrisonerFree1
+		defsprite	$04, $8D, spritePrisonerFree1
 		; $57 - the prisoner, final animation (makes a sound)
-		defprite	$04, $8B, spritePrisonerFree2
+		defsprite	$04, $8B, spritePrisonerFree2
 		; $58 - the prisoner, final animation: same bitmap as level 2's $47
-		defprite	$04, $8D, spritePrisonerFree3
+		defsprite	$04, $8D, spritePrisonerFree3
 		; $59 - the prisoner, final animation (makes a sound)
-		defprite	$04, $8B, spritePrisonerFree4
+		defsprite	$04, $8B, spritePrisonerFree4
 		; $5A - the prisoner, $5A / $5B (SHAPE_PRISONER + prisonerFrame)
-		defprite	$04, $8B, spritePrisoner1
+		defsprite	$04, $8B, spritePrisoner1
 		; $5B - the prisoner
-		defprite	$04, $8B, spritePrisoner2
+		defsprite	$04, $8B, spritePrisoner2
 		; $5C - spark running on the bridge (SHAPE_SPARK)
-		defprite	$01, $81, spriteSpark
+		defsprite	$01, $81, spriteSpark
 		; $5D - EORed on the cage at the end (SHAPE_CAGE_OPEN)
-		defprite	$01, $0D, spriteCageOpen
+		defsprite	$01, $0D, spriteCageOpen
 		; $5E - flag, $5E-$61 (SHAPE_FLAG + flag1Frame / flag2Frame)
-		defprite	$02, $03, spriteFlag1
+		defsprite	$02, $03, spriteFlag1
 		; $5F - flag
-		defprite	$02, $03, spriteFlag2
+		defsprite	$02, $03, spriteFlag2
 		; $60 - flag
-		defprite	$02, $03, spriteFlag3
+		defsprite	$02, $03, spriteFlag3
 		; $61 - flag
-		defprite	$02, $03, spriteFlag4
+		defsprite	$02, $03, spriteFlag4
 		; $62 - splash, $62-$65 (splashShapes)
-		defprite	$03, $8F, spriteSplash1
+		defsprite	$03, $8F, spriteSplash1
 		; $63 - splash
-		defprite	$03, $8F, spriteSplash2
+		defsprite	$03, $8F, spriteSplash2
 		; $64 - splash
-		defprite	$03, $8F, spriteSplash3
+		defsprite	$03, $8F, spriteSplash3
 		; $65 - splash
-		defprite	$04, $8F, spriteSplash4
+		defsprite	$04, $8F, spriteSplash4
 		; $66 - bat dying, $66 / $67 (batDieShapes)
-		defprite	$03, $8F, spriteBatDie1
+		defsprite	$03, $8F, spriteBatDie1
 		; $67 - bat dying
-		defprite	$03, $8E, spriteBatDie2
+		defsprite	$03, $8E, spriteBatDie2
 		; $68 - lever (SHAPE_LEVER)
-		defprite	$02, $04, spriteLever
+		defsprite	$02, $04, spriteLever
 
 ; $7780-$77FF: leftover bytes, not headers
 
