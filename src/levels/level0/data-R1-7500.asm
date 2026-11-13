@@ -6,74 +6,74 @@ L7500
 		; $41:$46 - Volta materializing (help page, animVoltaSpriteIDs):
 		;   $41/$42 x7, then $43/$44 x4, then $45/$46 flashing, ends on $45
 		; $41 - lightning sparks
-		.hex	02 12 00 7a 24 7a 48 7a 6c 7a 90 7a b4 7a d8 7a
+		defprite	$02, $12, spriteLightningSparks
 		; $42 - lightning bolt
-		.hex	02 12 fc 7a 20 7b 44 7b 68 7b 8c 7b b0 7b d4 7b
+		defprite	$02, $12, spriteLightningBolt
 		; $43 - Volta forming 1
-		.hex	02 93 f8 7b 1e 7c 44 7c 6a 7c 90 7c b6 7c dc 7c
+		defprite	$02, $93, spriteVoltaForming1
 		; $44 - Volta forming 2
-		.hex	02 92 02 7d 26 7d 4a 7d 6e 7d 92 7d b6 7d da 7d
+		defprite	$02, $92, spriteVoltaForming2
 		; $45 - volta colored
-		.hex	03 93 fe 7d 37 7e 70 7e a9 7e e2 7e 1b 7f 54 7f
+		defprite	$03, $93, spriteVoltaColored
 		; $46 - volta white
-		.hex	03 93 8d 7f c6 7f ff 7f 38 80 71 80 aa 80 e3 80
+		defprite	$03, $93, spriteVoltaWhite
 
 		; $47 - bird flying (help "avian ally": flies in from x=$F0 to $40)
-		.hex	04 8d 1c 81 50 81 84 81 b8 81 ec 81 20 82 54 82
+		defprite	$04, $8d, spriteBirdFlying
 		; $48 - bird landed (drawn once the flight ends)
-		.hex	04 91 88 82 cc 82 10 83 54 83 98 83 dc 83 20 84
+		defprite	$04, $91, spriteBirdLanded
 		; $49 - spring frame 1 (title anim: alternates with $4A, x=$45)
-		.hex	02 0f 64 84 82 84 a0 84 be 84 dc 84 fa 84 18 85
+		defprite	$02, $0f, spriteSpring1
 		; $4A - spring frame 2
-		.hex	02 0f 36 85 54 85 72 85 90 85 ae 85 cc 85 ea 85
+		defprite	$02, $0f, spriteSpring2
 		; $4B - unused: not drawn by level 0
-		.hex	02 04 08 86 10 86 18 86 20 86 28 86 30 86 38 86
+		defprite	$02, $04, spriteUnused4B
 
 		; $4C - HI-SC
-		.hex	06 05 40 86 5e 86 7c 86 9a 86 b8 86 d6 86 f4 86
+		defprite	$06, $05, spriteHiSc
 		; $4D - ORE
-		.hex	05 05 12 87 2b 87 44 87 5d 87 76 87 8f 87 a8 87
+		defprite	$05, $05, spriteOre
 		; $4E - blank 2x5 block, drawn twice with drawStore to erase the spring
-		.hex	02 05 f0 87 f0 87 f0 87 f0 87 f0 87 f0 87 f0 87
-		; $4F - Help "introduction": only rows 6-22 of the original 27x75 image at $8800
-		; (underline + "HALL OF VOLTA"); the text is drawn with drawText (level0 drawIntroduction)
-		.hex	1b 11 a2 88 a2 88 a2 88 a2 88 a2 88 a2 88 a2 88
+		defpicture	$02, $05, spriteBlank
+		; $4F - Help "introduction": underline + "HALL OF VOLTA", rows 6-22 of the original
+		; 27x75 screen; the text is drawn with drawText (level0 drawIntroduction)
+		defpicture	$1b, $11, spriteIntroduction
 		; $50 - Help "characters"
-		.hex	0c 07 e9 8f e9 8f e9 8f e9 8f e9 8f e9 8f e9 8f
+		defpicture	$0c, $07, spriteHelpCharacters
 
 
 ; $51 - $60
 L7600
 		; $51 - Help "conan"
-		.hex	06 05 3d 90 3d 90 3d 90 3d 90 3d 90 3d 90 3d 90
+		defpicture	$06, $05, spriteHelpConan
 		; $52 - Help "volta"
-		.hex	07 05 5b 90 5b 90 5b 90 5b 90 5b 90 5b 90 5b 90
+		defpicture	$07, $05, spriteHelpVolta
 		; $53 - Help "avian ally"
-		.hex	07 0d 7e 90 7e 90 7e 90 7e 90 7e 90 7e 90 7e 90
+		defpicture	$07, $0d, spriteHelpAvianAlly
 		; $54 - Help "objects"
-		.hex	09 07 d9 90 d9 90 d9 90 d9 90 d9 90 d9 90 d9 90
+		defpicture	$09, $07, spriteHelpObjects
 		; $55 - Help "key"
-		.hex	04 05 18 91 18 91 18 91 18 91 18 91 18 91 18 91
+		defpicture	$04, $05, spriteHelpKey
 		; $56 - Help icon gem holder
-		.hex	02 07 2c 91 2c 91 2c 91 2c 91 2c 91 2c 91 2c 91
+		defpicture	$02, $07, spriteIconGemHolder
 		; $57 - Help "locked door"
-		.hex	07 0c 3a 91 3a 91 3a 91 3a 91 3a 91 3a 91 3a 91
+		defpicture	$07, $0c, spriteHelpLockedDoor
 		; $58 - Help "unlocked door"
-		.hex	0a 0c 8e 91 8e 91 8e 91 8e 91 8e 91 8e 91 8e 91
+		defpicture	$0a, $0c, spriteHelpUnlockedDoor
 		; $59 - Help "gem"
-		.hex	04 05 06 92 06 92 06 92 06 92 06 92 06 92 06 92
+		defpicture	$04, $05, spriteHelpGem
 		; $5A - Help "gem holder"
-		.hex	07 0c 1a 92 1a 92 1a 92 1a 92 1a 92 1a 92 1a 92
+		defpicture	$07, $0c, spriteHelpGemHolder
 		; $5B - Help "extra sword"
-		.hex	09 0d 6e 92 6e 92 6e 92 6e 92 6e 92 6e 92 6e 92
+		defpicture	$09, $0d, spriteHelpExtraSword
 
 		; $5C - Help icon locked door
-		.hex	03 12 e3 92 e3 92 e3 92 e3 92 e3 92 e3 92 e3 92
+		defpicture	$03, $12, spriteIconLockedDoor
 		; $5D - Help icon unlocked door
-		.hex	03 12 19 93 19 93 19 93 19 93 19 93 19 93 19 93
+		defpicture	$03, $12, spriteIconUnlockedDoor
 
 		; $5E - SPECIAL THANKS
-		.hex	1e 38 4f 93 4f 93 4f 93 4f 93 4f 93 4f 93 4f 93
+		defpicture	$1e, $38, spriteSpecialThanks
 
 		; $5F:$60 - unused: leftover disk buffer bytes (6502 code + "BLOAD LO TO HI"),
 		; not a valid directory entry
