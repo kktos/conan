@@ -1,25 +1,25 @@
-		.define geometry from "geometry.yaml"
+		.define	geometry from "geometry.yaml"
 
-		levelGeometry geometry		; $AC00-$ACFF
+		levelGeometry	geometry	; $AC00-$ACFF
 
-		placeAt $AD00
+		placeAt	$AD00
 ;LAD00
-	.hex { C4 B1 00 13 0B 09 01 B9 32 37 32 30 C8 4C 4E 2C }
-	.hex { 58 33 00 23 0B 0C 01 B9 32 36 35 36 C8 4C 4E 2C }
+		.hex	{ C4 B1 00 13 0B 09 01 B9 32 37 32 30 C8 4C 4E 2C }
+		.hex	{ 58 33 00 23 0B 0C 01 B9 32 36 35 36 C8 4C 4E 2C }
 LAD20
-	.hex { 05 05 64 3C 04 42 00 B9 32 36 38 38 C8 4C 4E 2C }
+		.hex	{ 05 05 64 3C 04 42 00 B9 32 36 38 38 C8 4C 4E 2C }
 LAD30
-	.hex { A1 7F 80 6F 31 6F 00 97 3A B1 00 41 0B 2C 01 97 }
+		.hex	{ A1 7F 80 6F 31 6F 00 97 3A B1 00 41 0B 2C 01 97 }
 LAD40
-	.hex { 21 22 22 21 23 23 00 58 48 3A 20 20 58 20 48 49 }
-	.hex { 47 48 20 4C 45 44 47 45 22 00 72 0B 30 01 BA 22 }
+		.hex	{ 21 22 22 21 23 23 00 58 48 3A 20 20 58 20 48 49 }
+		.hex	{ 47 48 20 4C 45 44 47 45 22 00 72 0B 30 01 BA 22 }
 
-	.hex { 58 4C 3A 20 20 4C 20 4C 4F 57 20 4C 45 44 47 45 }
-	.hex { 22 00 89 0B 32 01 BA 22 59 31 3A 20 20 59 20 4F }
+		.hex	{ 58 4C 3A 20 20 4C 20 4C 4F 57 20 4C 45 44 47 45 }
+		.hex	{ 22 00 89 0B 32 01 BA 22 59 31 3A 20 20 59 20 4F }
 
-		levelStartExit geometry		; $AD80-$AD88
+		levelStartExit	geometry	; $AD80-$AD88
 
-	.align $100
+		.align	$100
 
 	; .hex A1 0B 34 01 BA 22 4C
 	; .hex 58 3A 20 20 58 20 4F 46 20 4C 41 44 44 45 52 22

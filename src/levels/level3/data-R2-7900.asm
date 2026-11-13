@@ -8,15 +8,15 @@
 
 ; portal: appears at random at the bottom or at the top of the shaft,
 ; moves the player and monsters 1 and 3 through it
-		.struct PortalVars
-on		.byte				; active: frames left (random $10-$4F); also the tone's period
-off		.byte				; idle: frames left before it opens again (random $08-$27)
-shape		.byte				; $48 / $49, toggled each frame
-side		.byte				; bit 7: 1 = bottom portal (X=$5E, Y=$9C), 0 = top portal (X=$56, Y=$1B)
+		.struct	PortalVars
+on		.db				; active: frames left (random $10-$4F); also the tone's period
+off		.db				; idle: frames left before it opens again (random $08-$27)
+shape		.db				; $48 / $49, toggled each frame
+side		.db				; bit 7: 1 = bottom portal (X=$5E, Y=$9C), 0 = top portal (X=$56, Y=$1B)
 		.end
 
 ; 3 walking monsters (1..3): one table per field, indexed by the monster
-		.struct MonsterVars
+		.struct	MonsterVars
 x		.res	3
 y		.res	3
 shape		.res	3			; EOR 1 when turning around
@@ -25,34 +25,34 @@ range		.res	3			; range number (1..3) of each monster, changed by the portal
 		.end
 
 ; walking ranges, per range number (1..3)
-		.struct RangeVars
+		.struct	RangeVars
 lo		.res	3			; low X
 hi		.res	3			; high X
 		.end
 
 ; rising bubbles
-		.struct BubbleVars
-frame		.byte				; 1..8, 0 = none
-column		.byte				; which of the 4 bubble columns, 0..3
+		.struct	BubbleVars
+frame		.db				; 1..8, 0 = none
+column		.db				; which of the 4 bubble columns, 0..3
 		.end
 
 ; flying bonus
-		.struct BonusVars
-step		.byte				; step on its path (bonusPathX/Y/Shape)
-taken		.byte				; 0: flying, 1: taken (extra life), $FF: taken and its path ended
+		.struct	BonusVars
+step		.db				; step on its path (bonusPathX/Y/Shape)
+taken		.db				; 0: flying, 1: taken (extra life), $FF: taken and its path ended
 		.end
 
 ; lift (shapes $41-$43)
-		.struct LiftVars
-x		.byte				; $2A once started
-y		.byte				; $8E up to $1B
-state		.byte				; 0 idle, >0 going up, $FF / $FE at the top
+		.struct	LiftVars
+x		.db				; $2A once started
+y		.db				; $8E up to $1B
+state		.db				; 0 idle, >0 going up, $FF / $FE at the top
 		.end
 
 ; player sinking in the water
-		.struct SinkVars
-frame		.byte				; 1..8, 0 = none
-x		.byte				; player X, drawn at Y=$7F
+		.struct	SinkVars
+frame		.db				; 1..8, 0 = none
+x		.db				; player X, drawn at Y=$7F
 		.end
 
 portal		.res	PortalVars { off: $20, shape: $48 }

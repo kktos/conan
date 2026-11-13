@@ -1,6 +1,6 @@
-	.MODULE variables
+		.MODULE	variables
 
-	.segment variables
+		.segment	variables
 	; S0-S1
 	;
 	; load intro
@@ -13,4 +13,4 @@
 	; load T3 in $A700:B6FF
 	; jump game1
 	;
-	.include "variables.asm"
+		.include	"variables.asm"

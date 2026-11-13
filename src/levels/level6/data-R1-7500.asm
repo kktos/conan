@@ -12,9 +12,9 @@
 ; $65-$70): pointers into the core's shapes, not used by the level.
 ;
 
-		placeAt $7500
+		placeAt	$7500
 
-	.hex
+		.hex
 	03 07 00 7A 15 7A 2A 7A 3F 7A 54 7A 69 7A 7E 7A
 	03 07 93 7A A8 7A BD 7A D2 7A E7 7A FC 7A 11 7B
 	03 87 26 7B 3B 7B 50 7B 65 7B 7A 7B 8F 7B A4 7B
@@ -63,4 +63,4 @@
 	03 8C 1F 64 43 64 67 64 8B 64 AF 64 D3 64 F7 64
 	03 0C 1B 65 3F 65 63 65 87 65 AB 65 CF 65 F3 65
 	03 8C 17 66 3B 66 5F 66 83 66 A7 66 CB 66 EF 66
-	.end
+		.end

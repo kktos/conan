@@ -25,24 +25,24 @@
 ; (checkLeave puts the player on the c5 exit, $C0,$C0).
 ;
 
-SHAPE_AXE	.equ	$1E		; axe bonus
-SHAPE_DEAD	.equ	$19		; player killed
-SHAPE_LEAVE	.equ	$5F		; player leaving, EOR $4F: core shape $10
+SHAPE_AXE	.equ	$1E			; axe bonus
+SHAPE_DEAD	.equ	$19			; player killed
+SHAPE_LEAVE	.equ	$5F			; player leaving, EOR $4F: core shape $10
 
-SHAPE_MOVER_HIT	.equ	$43		; first frame of moverHitShapes
+SHAPE_MOVER_HIT	.equ	$43			; first frame of moverHitShapes
 SHAPE_BLINK1	.equ	$47
 SHAPE_BLINK2	.equ	$48
 SHAPE_LAMP	.equ	$49
 SHAPE_RUNG	.equ	$4A
-SHAPE_GATE1	.equ	$4B		; + gateFrame
-SHAPE_GATE2	.equ	$4D		; + gateFrame
-SHAPE_LOWER_PLAT .equ	$4F
-SHAPE_UPPER_PLAT .equ	$50
-SHAPE_BOLT	.equ	$55		; + boltFrame
-SHAPE_MONSTER	.equ	$57		; walking $57 / $58, dying $59 / $5A
+SHAPE_GATE1	.equ	$4B			; + gateFrame
+SHAPE_GATE2	.equ	$4D			; + gateFrame
+SHAPE_LOWER_PLAT	.equ	$4F
+SHAPE_UPPER_PLAT	.equ	$50
+SHAPE_BOLT	.equ	$55			; + boltFrame
+SHAPE_MONSTER	.equ	$57			; walking $57 / $58, dying $59 / $5A
 SHAPE_MONSTER2	.equ	$58
-SHAPE_FLAME1	.equ	$5B		; + flameFrame
-SHAPE_FLAME2	.equ	$5C		; + flameFrame
+SHAPE_FLAME1	.equ	$5B			; + flameFrame
+SHAPE_FLAME2	.equ	$5C			; + flameFrame
 
 AXES_HI		.equ	globals::playerAxeCountHi - globals::playerData
 AXES_LO		.equ	globals::playerAxeCountLo - globals::playerData
@@ -968,7 +968,7 @@ La701		lda	monsterState,x
 		pla
 		rts
 
-		.db	$60		; not reached
+		.db	$60			; not reached
 
 La70d		dec	monsterState,x
 		rts

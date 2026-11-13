@@ -1,4 +1,4 @@
-		.namespace welcome_data
+		.namespace	welcome_data
 
 ; packed bytes
 ; $FE: repeat
@@ -8,7 +8,7 @@
 
 introScreenPage1:
 
-	.hex
+		.hex
 	FE 00 75 20 FE 2A 09 0A FE 2A 09 22 0A 2A 2A 2A
 	22 FE 2A 04 02 22 2A 2A 2A 26 6A 2A 2A 2A 65 45
 	45 44 44 44 50 10 FE 00 15 08 04 28 54 64 50 FE
@@ -144,11 +144,11 @@ introScreenPage1:
 	00 00 00 00 00 80 80 00 00 80 80 80 00 00 00 00
 	00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 	00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-	.end
+		.end
 
 introScreenPage2:
 
-	.hex
+		.hex
 	FE 00 9D FE FF 04 FE 00 19 FE FF 06 FE 00 9F FE
 	FF 06 FE 00 19 FF FF FE 00 A1 FF FE 00 1C FF FF
 	FE 00 A0 FF FF FE 00 1C FF FF FE 00 A0 FF FE 00
@@ -245,4 +245,4 @@ introScreenPage2:
 	00 00 00 00 00 00 00 80 00 80 80 00 80 80 80 00
 	00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 	00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-	.end
+		.end

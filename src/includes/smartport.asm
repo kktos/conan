@@ -1,11 +1,11 @@
-		.namespace smartport
+		.namespace	smartport
 
 ; smartport commands
-command			= $42
-unit			= $43
-adrlo			= $44
-adrhi			= $45
-bloklo			= $46
-blokhi			= $47
+command		.equ	$42
+unit		.equ	$43
+adrlo		.equ	$44
+adrhi		.equ	$45
+bloklo		.equ	$46
+blokhi		.equ	$47
 
 		.namespace

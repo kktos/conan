@@ -1,14 +1,14 @@
-	.MODULE BOOT
+		.MODULE	BOOT
 	;
 	; TRACK 0
 	;
 
 
-	.segment BOOTLOADER
-	.include "bootloader.asm"
+		.segment	BOOTLOADER
+		.include	"bootloader.asm"
 
-	.segment TINY_DOS
-	.include "tiny-dos.asm"
+		.segment	TINY_DOS
+		.include	"tiny-dos.asm"
 
 
 	;.segment DIRBLOCK

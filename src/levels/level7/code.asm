@@ -1305,29 +1305,29 @@ loadFinal	jmp	loadFinalFile		; past what the file overwrites
 
 ; Volta's throw, by throwStep 1..$0C (as table-1,x): the figure, then what
 ; it holds (the gem, then a fireball)
-		placeAt $AB00
+		placeAt	$AB00
 
-throwX		.db $0E, $0E, $0E, $0E, $0E, $0A, $0A, $0A, $0E, $0E, $0E, $0E
-throwY		.db $29, $29, $29, $29, $29, $2A, $2A, $2A, $29, $29, $29, $29
-throwShape	.db $4B, $4D, $4C, $4D, $4D, $4E, $4E, $4E, $4D, $4C, $4D, $4B
-handX		.db $12, $12, $13, $13, $13, $08, $08, $08, $13, $13, $13, $13
-handY		.db $20, $24, $26, $2F, $2F, $32, $32, $30, $2D, $24, $20, $20
-handShape	.db $28, $28, $28, $28, $28, $28, $28, $47, $47, $47, $47, $47
+throwX		.db	$0E, $0E, $0E, $0E, $0E, $0A, $0A, $0A, $0E, $0E, $0E, $0E
+throwY		.db	$29, $29, $29, $29, $29, $2A, $2A, $2A, $29, $29, $29, $29
+throwShape	.db	$4B, $4D, $4C, $4D, $4D, $4E, $4E, $4E, $4D, $4C, $4D, $4B
+handX		.db	$12, $12, $13, $13, $13, $08, $08, $08, $13, $13, $13, $13
+handY		.db	$20, $24, $26, $2F, $2F, $32, $32, $30, $2D, $24, $20, $20
+handShape	.db	$28, $28, $28, $28, $28, $28, $28, $47, $47, $47, $47, $47
 
 ; the 4 shots (updateShots)
-shotX		.db $13, $13, $13, $13
-shotY		.db $20, $20, $20, $20
-shotKind	.db $00, $00, $00, $00	; 0 free, 1 fireball, 4 carries a gem, $FF a gem falling
-shotSeg		.db $00, $00, $00, $00	; segment of its route
-shotTime	.db $10, $10, $10, $10	; frames left in the segment
-shotDX		.db $00, $00, $00, $00
-shotDY		.db $00, $00, $00, $00
-shotRoute	.db $01, $01, $01, $01	; 0..7
-shotShape	.db $45, $45, $45, $45	; $45 / $46, + shotKind
+shotX		.db	$13, $13, $13, $13
+shotY		.db	$20, $20, $20, $20
+shotKind	.db	$00, $00, $00, $00	; 0 free, 1 fireball, 4 carries a gem, $FF a gem falling
+shotSeg		.db	$00, $00, $00, $00	; segment of its route
+shotTime	.db	$10, $10, $10, $10	; frames left in the segment
+shotDX		.db	$00, $00, $00, $00
+shotDY		.db	$00, $00, $00, $00
+shotRoute	.db	$01, $01, $01, $01	; 0..7
+shotShape	.db	$45, $45, $45, $45	; $45 / $46, + shotKind
 
 ; loadFinal's tinyDOS call: L7/FINAL, from $9F00, is loaded by whole
 ; blocks of 512 bytes, up to $AAFF
-		.assert * >= $9F00 + .ceil(($A9FF + 1 - $9F00) / 512) * 512, "loadFinalFile is overwritten by L7/FINAL"
+		.assert	* >= $9F00 + .ceil(($A9FF + 1 - $9F00) / 512) * 512, "loadFinalFile is overwritten by L7/FINAL"
 loadFinalFile	dosLoadFile	fFinal
 		jmp	final
 

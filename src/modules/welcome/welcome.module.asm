@@ -1,6 +1,6 @@
-	.MODULE WELCOME
+		.MODULE	WELCOME
 
-	.segment WELCOME
+		.segment	WELCOME
 	; S0-S1
 	;
 	; load intro
@@ -13,4 +13,4 @@
 	; load T3 in $A700:B6FF
 	; jump game1
 	;
-	.include "main-M0200-03FF.asm"
+		.include	"main-M0200-03FF.asm"

@@ -4,20 +4,20 @@
 		; .end
 		; .echo "7900 =", .hex(.pc)
 
-L7900		.db $00
-L7901		.db $F0
-L7902		.db $01
-L7903		.db $00
-L7904		.db $F0
-L7905		.db $01
-L7906		.db $46
-introDelay	.db $80		; INTRODUCTION screen display time; $40 after the first help cycle
+L7900		.db	$00
+L7901		.db	$F0
+L7902		.db	$01
+L7903		.db	$00
+L7904		.db	$F0
+L7905		.db	$01
+L7906		.db	$46
+introDelay	.db	$80			; INTRODUCTION screen display time; $40 after the first help cycle
 
-HS_Xpos		.db $00
-HS_Ypos		.db $7D
-HS_digitCount	.db $02
+HS_Xpos		.db	$00
+HS_Ypos		.db	$7D
+HS_digitCount	.db	$02
 
-		.db $00, $7D, $02, $00, $7D
+		.db	$00, $7D, $02, $00, $7D
 
 animVoltaSpriteIDs
 		.hex
@@ -25,13 +25,13 @@ animVoltaSpriteIDs
 			43 44 43 44 43 44 45 46 45 46 45 46 45 45 45 45
 		.end
 
-animFrameIdx	.db $00
-L7931		.db $F8
-isSpringRunning	.db $00
-springCurYpos	.db $A3
-springCurId	.db $49
+animFrameIdx	.db	$00
+L7931		.db	$F8
+isSpringRunning	.db	$00
+springCurYpos	.db	$A3
+springCurId	.db	$49
 
-		.align $100
+		.align	$100
 
 /*
 		.hex

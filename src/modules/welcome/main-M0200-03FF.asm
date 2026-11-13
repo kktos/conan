@@ -1,18 +1,18 @@
-		.namespace welcome
+		.namespace	welcome
 
 ;L1000		=	$1000
 
-main		ldx #$01
-		stx $0478
-		ldx #$04
-		stx $04f8
-		ldx #$21
-		stx $0578
+main		ldx	#$01
+		stx	$0478
+		ldx	#$04
+		stx	$04f8
+		ldx	#$21
+		stx	$0578
 		; ldx #$60
 		; stx $05f8
 		; stx $0678
-		ldx #$02
-		stx $06f8
+		ldx	#$02
+		stx	$06f8
 		; ldx #$c6
 		; stx $07f8
 
@@ -20,7 +20,7 @@ main		ldx #$01
                     ; and run intro screen
                     ; with the key settings screen
                     ; if user press R
-L0254		jsr S02af
+L0254		jsr	S02af
 
 		; relocate T4S0 loaded in $1000
 		; variables-page03
@@ -31,7 +31,7 @@ L0254		jsr S02af
 ; 		bne L0259
 
 
-		jsr intro::showLevelBar
+		jsr	intro::showLevelBar
 
 		;
 		; load T6 to T9 in $4000:7FFF
@@ -42,42 +42,42 @@ L0254		jsr S02af
 		; .include "load-part2.asm"
 
 		; read_diskw $0300, $A700, $B700-$A700
-		dosLoadFile fspritelib
+		dosLoadFile	fspritelib
 
 		; read_diskw $0500, $1000, $1000
-		dosLoadFile fgame_code
+		dosLoadFile	fgame_code
 
 		; read_diskw $0600, $4000, $4000
 		; is it useful ?
-		dosLoadFile fsprites_data
+		dosLoadFile	fsprites_data
 
 		; read_diskw $0400, $0300, $1000-$0300
-		dosLoadFile fvariables
+		dosLoadFile	fvariables
 
-		delRegions("WELC", "INTR")
+		delRegions("WELC",	"INTR")
 
 		; jsr intro.showFlipDisk
-		jmp game1::gameStart
+		jmp	game1::gameStart
 
 ; clear hires1
-S02af		ldy #$00
-		sty $1a
+S02af		ldy	#$00
+		sty	$1a
 		;sty rwts_buf
 		; sty L0810
-		ldx #$20
-		stx $1b
+		ldx	#$20
+		stx	$1b
 		tya
-L02be		sta ($1a),y
+L02be		sta	($1a),y
 		iny
-		bne L02be
-		inc $1b
+		bne	L02be
+		inc	$1b
 		dex
-		bpl L02be
+		bpl	L02be
 
-		bit sys::PAGE2OFF
-		bit sys::TEXTOFF
-		bit sys::MIXEDOFF
-		bit sys::HIRESON
+		bit	sys::PAGE2OFF
+		bit	sys::TEXTOFF
+		bit	sys::MIXEDOFF
+		bit	sys::HIRESON
 
 ; 05.0 load disk[A000-AFFF] to MEM[6000-6FFF]
 ; first screen
@@ -92,55 +92,55 @@ L02be		sta ($1a),y
 		; read_diskw $0A00, $6000, $1000
 		; read_diskw $0A00, $6000, $0E00
 
-		dosLoadFile fwelcome_data
+		dosLoadFile	fwelcome_data
 
 		;lda sys::LCBANK2
 		;lda sys::LCBANK2
 
 		; read_diskw $0102, $D000, $0E00
-		dosLoadFile futils
+		dosLoadFile	futils
 		; MVPw $6E00, $D000, $200
 
 ; unpack to hires
 ; intro screen
 		; ldx rwts_slot
 		; lda $c089,x
-		lda #$00
-		ldx #>welcome_data::introScreenPage1
-		ldy #192
-		jsr unpack::run
+		lda	#$00
+		ldx	#>welcome_data::introScreenPage1
+		ldy	#192
+		jsr	unpack::run
 
-		lda #$20
-		ldx #>welcome_data::introScreenPage2
-		ldy #192
+		lda	#$20
+		ldx	#>welcome_data::introScreenPage2
+		ldy	#192
 		; stx L0343
 		; ldx #$20
 		; stx L0810
-		jsr unpack::run
+		jsr	unpack::run
 
 		;
 		; load TB to TF in $6000:AFFF and T4S0:$1000 ->L0257
 		;
 		; .include "load-part1.asm"
-		dosLoadFile fintro
+		dosLoadFile	fintro
 
 		;;; useless now
 		; read_diskw $0400, $1000, $0100
 
-		bit sys::KBDSTRB
+		bit	sys::KBDSTRB
 
 		; splash screens with anim
-		jmp intro::run
+		jmp	intro::run
 
 		; .include "unpack.asm"
 		; .include "read-disk.asm"
 
-fwelcome_data:	.pstr "WELCOME.DATA"
-fsprites_data:	.pstr "SPRITES.DATA"
-fgame_code:	.pstr "GAME"
-fspritelib:	.pstr "SPRITELIB"
-fvariables:	.pstr "VARIABLES"
-futils:		.pstr "UTILS"
-fintro:		.pstr "INTRO"
+fwelcome_data:	.pstr	"WELCOME.DATA"
+fsprites_data:	.pstr	"SPRITES.DATA"
+fgame_code:	.pstr	"GAME"
+fspritelib:	.pstr	"SPRITELIB"
+fvariables:	.pstr	"VARIABLES"
+futils:		.pstr	"UTILS"
+fintro:		.pstr	"INTRO"
 
 		; .align $100,$FF

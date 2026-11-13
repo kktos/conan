@@ -1,9 +1,9 @@
-	.MODULE GAME
-	.segment GAME
+		.MODULE	GAME
+		.segment	GAME
 
-	.namespace game1
+		.namespace	game1
 
-	.include "game.asm"
-	.include "spritesdebug.asm"
+		.include	"game.asm"
+		.include	"spritesdebug.asm"
 
-	.end namespace
+		.end	namespace

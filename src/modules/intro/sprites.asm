@@ -1,18 +1,18 @@
-		.align $100
+		.align	$100
 spritesAddr
-		.dw img_conan1, img_conan2, img_conan3, img_conan4, img_conan5
-		.dw img_conan6, img_conan7, img_conan8, img_conan9, img_conan10
-		.dw img_conan11, img_conan12
-		.dw img_horse1, img_horse2, img_horse3, img_horse4, img_horse5, img_horse6, img_horse7
-		.dw img_sword1, img_sword2
-		.dw img_flip_disk, img_bar_score
-		.dw img_copyright, img_mask, img_datasoft
+		.dw	img_conan1, img_conan2, img_conan3, img_conan4, img_conan5
+		.dw	img_conan6, img_conan7, img_conan8, img_conan9, img_conan10
+		.dw	img_conan11, img_conan12
+		.dw	img_horse1, img_horse2, img_horse3, img_horse4, img_horse5, img_horse6, img_horse7
+		.dw	img_sword1, img_sword2
+		.dw	img_flip_disk, img_bar_score
+		.dw	img_copyright, img_mask, img_datasoft
 
 ; drawImg id:00 w:0B h:19
 ; [6000.6112]
 ; conan 1
 img_conan1
-	.hex
+		.hex
 	80 80 FF 9F 80 80 C0 85 80 80 80
 	80 F8 FF 87 80 80 80 9F 80 80 80
 	80 FE B5 80 F0 E7 BF 86 BF FE 83
@@ -38,13 +38,13 @@ img_conan1
 	80 80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80 80
-	.end
+		.end
 
 ; drawImg id:01 w:0B h:13
 ; [6113.61E3]
 ; conan 2
 img_conan2
-	.hex
+		.hex
 	80 E0 FF 97 80 80 80 96 80 80 80
 	80 F8 FF 83 C0 87 AF FC BC F8 82
 	80 FE D5 F8 8F 96 AC D8 B0 E1 82
@@ -64,13 +64,13 @@ img_conan2
 	80 80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80 80
-	.end
+		.end
 
 ; drawImg id:02 w:0B h:11
 ; [61E4.629E]
 ; conan 3
 img_conan3
-	.hex
+		.hex
 	80 E0 FF 85 80 80 80 80 80 80 80
 	80 F8 F9 80 C0 87 AF 8E BC F8 82
 	80 BE 81 F8 8F 96 AC D8 B0 E1 82
@@ -88,13 +88,13 @@ img_conan3
 	80 80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80 80
-	.end
+		.end
 
 ; drawImg id:03 w:0A h:0F
 ; [629F.6334]
 ; conan 4
 img_conan4
-	.hex
+		.hex
 	80 80 FF 8F 80 80 80 96 80 80
 	80 E0 BF C2 87 86 AF D8 8C DE
 	80 F0 85 F8 BF 9E AC FC BC D8
@@ -110,13 +110,13 @@ img_conan4
 	80 00 00 00 00 00 00 00 00 00
 	80 00 00 00 00 00 00 00 00 00
 	80 00 00 00 00 00 00 00 00 00
-	.end
+		.end
 
 ; drawImg id:04 w:0A h:0F
 ; [6335.63CA]
 ; conan 5
 img_conan5
-	.hex
+		.hex
 	80 80 F0 DF 80 80 80 80 80 80
 	80 80 FC 91 9E 80 C0 81 80 80
 	80 80 DE E0 FF 96 8D 96 C3 86
@@ -132,13 +132,13 @@ img_conan5
 	80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80
-	.end
+		.end
 
 ; drawImg id:05 w:0A h:0E
 ; [63CB.6456]
 ; conan 6
 img_conan6
-	.hex
+		.hex
 	80 80 80 FE 82 80 80 80 80 80
 	80 80 C0 C7 80 80 80 80 80 80
 	80 80 F0 83 FC F9 B0 DC 8C 86
@@ -153,13 +153,13 @@ img_conan6
 	80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80
-	.end
+		.end
 
 ; drawImg id:06 w:0A h:0D
 ; [6457.64D8]
 ; conan 7
 img_conan7
-	.hex
+		.hex
 	80 80 80 80 AF 80 80 80 80 80
 	80 80 80 E0 C9 E7 B2 98 AC 86
 	80 80 80 F8 F1 DC B3 DC B4 86
@@ -173,13 +173,13 @@ img_conan7
 	80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80
-	.end
+		.end
 
 ; drawImg id:07 w:0A h:0C
 ; [64D9.6550]
 ; conan 8
 img_conan8
-	.hex
+		.hex
 	80 80 80 80 FC 81 80 80 80 80
 	80 80 80 80 8F 80 80 80 80 80
 	80 80 80 80 87 CF B3 86 CE 81
@@ -192,13 +192,13 @@ img_conan8
 	80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80 80
-	.end
+		.end
 
 ; drawImg id:08 w:09 h:0B
 ; [6551.65B3]
 ; conan 9
 img_conan9
-	.hex
+		.hex
 	80 80 80 80 C0 9F 80 80 80
 	80 80 80 80 E0 81 B3 86 B3
 	80 80 80 80 E0 F9 BE DD BE
@@ -210,13 +210,13 @@ img_conan9
 	80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80
-	.end
+		.end
 
 ; drawImg id:09 w:09 h:07
 ; [65B4.65F2]
 ; conan 10
 img_conan10
-	.hex
+		.hex
 	80 80 80 80 80 F0 83 80 80
 	80 80 80 80 80 D8 B5 96 83
 	80 80 80 80 80 B8 DE DD 83
@@ -224,13 +224,13 @@ img_conan10
 	80 80 80 80 80 F0 83 80 80
 	80 80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80 80
-	.end
+		.end
 
 ;drawImg id:0A w:08 h:09
 ; [65F3.663A]
 ; conan 11
 img_conan11
-	.hex
+		.hex
 	80 80 80 80 80 80 8C 80
 	80 80 80 80 80 80 B3 E6
 	80 80 80 80 80 80 DD AA
@@ -240,23 +240,23 @@ img_conan11
 	80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80
 	80 80 80 80 80 80 80 80
-	.end
+		.end
 
 ;drawImg id:0B w:08 h:03
 ; [663B.6652]
 ; conan 12
 img_conan12
-	.hex
+		.hex
 	80 80 80 80 80 80 B0 80
 	80 80 80 80 80 80 D8 9D
 	80 80 80 80 80 80 B0 88
-	.end
+		.end
 
 ;drawImg id:0C x:0F y:0C w:07 h:1F
 ;[6653.672B]
 ; anim horse 1
 img_horse1
-	.hex
+		.hex
 	00 00 00 00 00 00 81
 	00 00 00 00 00 A0 80
 	00 00 00 00 00 A8 80
@@ -288,13 +288,13 @@ img_horse1
 	00 00 20 10 00 00 00
 	00 00 20 20 00 00 00
 	00 00 40 00 00 00 00
-	.end
+		.end
 
 ; drawImg id:0D x:0F y:0C w:07 h:1E
 ; [672C.67FD]
 ; anim horse 2
 img_horse2
-	.hex
+		.hex
 	00 00 00 00 00 00 C0
 	00 00 00 00 00 00 90
 	00 00 00 00 00 00 84
@@ -325,13 +325,13 @@ img_horse2
 	00 00 20 08 00 40 00
 	00 00 10 10 00 00 01
 	00 00 00 10 00 00 02
-	.end
+		.end
 
 ; drawImg id:0E w:09 h:1F
 ; [67FE.6914]
 ; anim horse 3
 img_horse3
-	.hex
+		.hex
 	00 00 00 00 00 00 00 A0 00
 	00 00 00 00 00 00 00 88 00
 	00 00 00 00 00 00 80 82 00
@@ -363,13 +363,13 @@ img_horse3
 	00 00 00 06 00 00 02 00 00
 	00 00 00 20 00 00 04 00 00
 	00 00 00 20 00 00 04 00 00
-	.end
+		.end
 
 ; drawImg id:0F x:0F y:0C w:09 h:1D
 ; [6915.6A19]
 ; anim horse 4
 img_horse4
-	.hex
+		.hex
 	00 00 00 00 00 00 00 00 81
 	00 00 00 00 00 00 00 A0 00
 	00 00 00 00 00 00 00 88 00
@@ -399,13 +399,13 @@ img_horse4
 	00 00 00 20 00 18 18 00 00
 	00 00 00 00 00 08 10 00 00
 	00 00 00 00 00 0C 30 00 00
-	.end
+		.end
 
 ; drawImg id:10 x:0F y:0C w:09 h:1F
 ; [6A1A.6B30]
 ; anim horse 5
 img_horse5
-	.hex
+		.hex
 	00 00 00 00 00 00 00 00 90
 	00 00 00 00 00 00 00 00 84
 	00 00 00 00 00 00 00 00 81
@@ -437,13 +437,13 @@ img_horse5
 	00 00 00 00 00 00 23 00 00
 	00 00 00 00 00 00 20 00 00
 	00 00 00 00 00 00 40 00 00
-	.end
+		.end
 
 ;ID $11 w:$0A h:$1E
 ; anim horse 6
 ; [6B31.6C5C]
 img_horse6
-	.hex
+		.hex
 	00 00 00 00 00 00 00 00 00 88
 	00 00 00 00 00 00 00 00 00 82
 	00 00 00 00 00 00 00 00 C0 80
@@ -474,13 +474,13 @@ img_horse6
 	00 00 00 00 00 00 36 67 00 00
 	00 00 00 00 00 00 18 30 00 00
 	00 00 00 00 00 00 30 00 00 00
-	.end
+		.end
 
 ;ID $12 w:$0B h:$1F
 ; anim horse 7
 ; [6C5D.6DB1]
 img_horse7
-	.hex
+		.hex
 	00 00 00 00 00 00 00 00 00 00 88
 	00 00 00 00 00 00 00 00 00 00 82
 	00 00 00 00 00 00 00 00 00 C0 80
@@ -512,13 +512,13 @@ img_horse7
 	00 00 00 00 00 00 20 00 02 00 00
 	00 00 00 00 00 00 40 00 00 00 00
 	00 00 00 00 00 00 40 00 00 00 00
-	.end
+		.end
 
 ;ID $13 w:$12 h:$13
 ; big sword title 2
 ; [6DB2.6F07]
 img_sword1
-	.hex
+		.hex
 	00 00 00 00 80 8C 00 00 00 00 00 00 00 00 00 00 00 00
 	00 00 00 00 80 8E 80 80 80 80 80 80 80 80 80 80 80 80
 	00 00 00 00 80 8E 80 80 80 80 80 80 80 80 80 80 80 80
@@ -538,13 +538,13 @@ img_sword1
 	00 00 00 00 80 87 80 80 80 80 80 80 80 80 80 80 80 80
 	00 00 00 00 80 87 80 80 80 80 80 80 80 80 80 80 80 80
 	00 00 00 00 80 86 80 80 80 80 80 80 80 80 80 80 80 80
-	.end
+		.end
 
 ; drawImg id:14 x:05 y:0C w:12 h:13
 ; [6F08.705D]
 ; big sword title
 img_sword2
-	.hex
+		.hex
 	00 00 00 00 80 86 80 80 80 80 80 80 80 80 80 80 80 80
 	00 00 00 00 80 87 80 80 80 80 80 80 80 80 80 80 80 80
 	00 00 00 00 80 87 80 80 80 80 80 80 80 80 80 80 80 80
@@ -564,7 +564,7 @@ img_sword2
 	00 00 00 00 C0 83 80 80 80 80 80 80 80 80 80 80 80 80
 	00 00 00 00 C0 83 80 80 80 80 80 80 80 80 80 80 80 80
 	00 00 00 00 80 83 80 80 80 80 80 80 80 80 80 80 80 80
-	.end
+		.end
 
 ; L8b5E
 ; drawImg id:15 w:28 h:09
@@ -604,7 +604,7 @@ img_bar_score:
 ;ID $17
 ;copyright text
 img_copyright
-	.hex
+		.hex
 	50 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 	04 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 	51 08 44 0A 15 22 00 0A 04 2A 54 28 01 28 51 02 41 0A 15 2A 54 28 51 22 05 00 15 2A 54 00
@@ -668,13 +668,13 @@ img_copyright
 	00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 	00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 	00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-	.end
+		.end
 
 ;LA800
 ;ID $18
 ; mask..?
 img_mask
-	.hex
+		.hex
 	FF FF FF FF FF FF FF FF FF FF FF 00
 	FF FF FF FF FF FF FF FF FF FF FF 00
 	FF FF FF FF FF FF FF FF FF FF FF FF
@@ -695,13 +695,13 @@ img_mask
 	FF FF FF FF FF FF FF FF FF FF FF 00
 	FF FF FF FF FF FF FF FF FF FF FF 00
 	FF FF FF FF FF FF FF FF FF FF FF 00
-	.end
+		.end
 
 ;LA900
 ;ID $19
 ; DATASOFT PRESENTS
 img_datasoft
-	.hex
+		.hex
 	94 A8 D1 A2 C5 8A 95 AA D4
 	C4 88 C1 A0 C4 80 91 82 90
 	C4 A8 C1 A0 C5 8A 91 8A 90
@@ -714,4 +714,4 @@ img_datasoft
 	D4 A8 D1 A0 C5 82 91 88 D4
 	84 A8 90 80 C4 80 91 88 C0
 	84 88 D1 A2 C5 8A 91 88 D4
-	.end
+		.end
