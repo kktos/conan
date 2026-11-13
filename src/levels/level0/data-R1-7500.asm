@@ -73,17 +73,7 @@ L7600
 		.hex	a0 86 a9 95 20 f9 08 20 d3 0e 4c fc 11 42 4c 4f
 		.hex	41 44 20 4c 4f 20 54 4f 20 48 49 00 a0 11 a9 79
 
-L7700
-		.hex
-		6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 69 67 65 63 61 5f
-		5d 5b 59 57 55 53 51 4f 4d 4b 49 47 45 43 41 3f
-		3d 3b 39 37 35 33 31 2f 2d 2b 29 27 25 23 21 1f
-		1d 1b 19 17 15 13 11 0f 0d 0b 09 07 f1 f1 f1 f1
-		f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1
-		f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1
-		f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1
-		f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1
-		.end
+		.align	$100
 
 ; anim jumping conan title screen
 ; x pos for anim

@@ -81,12 +81,13 @@ RelocateLoop:
 	; add mem region
 	;
 
-		BRK
-		.db	$03
-		.dw	dosSegment.start
-		.dw	dosSegment.size
-		.dw	regionname
-		.dw	$0000
+		addMemRegion	dosSegment.start, dosSegment.size, regionname, $0000
+;		BRK
+;		.db	$03
+;		.dw	dosSegment.start
+;		.dw	dosSegment.size
+;		.dw	regionname
+;		.dw	$0000
 
 		ldx	#<tinyDOS::ErrorMsgFile
 		ldy	#>tinyDOS::ErrorMsgFile

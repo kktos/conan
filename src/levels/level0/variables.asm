@@ -4,6 +4,8 @@
 		; .end
 		; .echo "7900 =", .hex(.pc)
 
+		placeAt	$7900
+
 L7900		.db	$00
 L7901		.db	$F0
 L7902		.db	$01

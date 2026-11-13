@@ -7,10 +7,9 @@
 		.include	"segments.asm"
 
 		.include	"includes/macros.asm"
-		.include	"modules/game/level-geometry.macros.asm"
-		.include	"modules/game/table-scan.macros.asm"
+		.include	"includes/level-geometry.macros.asm"
+		.include	"includes/table-scan.macros.asm"
 		.include	"includes/extended-cmds.asm"
-		.include	"includes/disk-io.asm"
 		.include	"includes/a2-firmware.asm"
 		.include	"includes/smartport.asm"
 
@@ -19,9 +18,6 @@
 
 		.include	"modules/boot/boot.module.asm"
 
-	;
-	; TRACK $01
-	;
 
 		.include	"modules/welcome/welcome.module.asm"
 		.include	"modules/welcome_data/welcome_data.module.asm"
@@ -36,52 +32,6 @@
 
 	; useful ?
 		.include	"modules/sprites_data/sprites_data.module.asm"
-
-	;
-	; TRACK $02
-	;
-	;.segment PAD1
-
-	;.MODULE GAME
-
-	;
-	; TRACK $03
-	;
-	; .include "game1/sprite-lib.asm"
-
-	;
-	; TRACK $04
-	;
-	;.include "game1/data/data.asm"
-
-	;
-	; TRACK $05
-	;
-	;.include "game1/game1.asm"
-
-	;
-	; TRACK $06
-	;
-	;.include "game_data/game_data.asm"
-
-	;
-	; TRACK $0A
-	;
-	; .segment WELCOME_DATA
-	; .include "modules/welcome/bkg-image-TAS0-F-M6000-6DFF.asm"
-	; .include "welcome/hgr-tables-M6E00-6FFF.asm"
-
-	;
-	; TRACK $0B
-	;
-	;.include "intro/intro.asm"
-
-	;.segment PAD2
-
-
-	;
-	; TRACK $10
-	;
 
 		.include	"levels/level0/level.asm"
 		.include	"levels/level1/level.asm"

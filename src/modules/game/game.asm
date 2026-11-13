@@ -1910,62 +1910,6 @@ L1e80		cmp	sys::SPKR-$10,x
 		bne	L1e78
 		rts
 
-/*
-		.if 0
-;
-; LOADRANGE Y:range idx
-;
-; 1EC3
-loadRange	lda levels::rangeTracks,y
-		sta globals::track
-		lda levels::rangeSectors,y
-		sta globals::sector
-		iny
-		lda levels::rangeTracks,y
-		sta globals::trackend
-		lda levels::rangeSectors,y
-		sta globals::sectorend
-		ldx #$00
-		stx rwts_buf
-
-		; check if ptrs =. exit of true
-:		ldx globals::sector
-		cpx globals::sectorend
-		bne L1ef2
-		ldx globals::track
-		cpx globals::trackend
-		bne L1ef2
-		rts
-
-L1ef2		jsr readSector
-		inc rwts_buf+1
-		inc globals::sector
-		ldx globals::sector
-		cpx #$10
-		bne :-
-		ldx #$00
-		stx globals::sector
-		inc globals::track
-		jmp :-
-
-
-readTrack	jsr S1f1e
-		inc rwts_buf+1
-		inc rwts_sec
-		ldx rwts_sec
-		cpx #$10
-		bne readTrack
-		rts
-
-S1f1e		ldx #$00
-		stx rwts_vol
-		stx $48
-		ldy #$e8
-		lda #$b7
-		jsr rwts
-
-		.end
-*/
 L1f2c		rts
 
 testIncAxeCount:
