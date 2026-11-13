@@ -6,8 +6,6 @@
 ; per X mod 7 shift; defpicture ones a single copy.
 ;
 
-		placeAt	$7A00
-
 ; $41 - bat, frames by batSpriteTbl (data-R4-A200.asm)
 ; 3x10 bytes, 7 pre-shifted copies of 30 bytes ($1E)
 spriteBat1

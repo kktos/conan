@@ -4,8 +4,6 @@
 ; tables indexed from 1 are used as table-1,x.
 ;
 
-		placeAt	$7900
-
 clock		.db	$00			; 0..$0F, +1 per frame: drives the gate, the riser and the blinkers
 lamp		.db	$01			; 1..4: the lit one of the 4 lamps (shape $49 at X $3A+4n, Y $4E)
 flameTimer	.db	$0A			; frames before the exit's flame flickers again (random 8..15)

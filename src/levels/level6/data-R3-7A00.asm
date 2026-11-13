@@ -8,8 +8,6 @@
 ; and the mover's scripts, read (and $9040 written) by the level code.
 ;
 
-		placeAt	$7A00
-
 ; $41 - mover flying, $41-$43 (moverScriptShape); shot with the axe to build the ladder
 ; 3x7 bytes, 7 pre-shifted copies of 21 bytes ($15)
 spriteMover1

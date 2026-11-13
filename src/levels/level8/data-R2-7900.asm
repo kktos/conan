@@ -3,8 +3,6 @@
 ; private RAM of the level code, initial values from the disk.
 ;
 
-		placeAt	$7900
-
 ; the 12 characters of "BONUS!" / "20000x", drawn by drawBonusText (11..0)
 textX		.db	$30, $35, $3A, $40, $45, $4A	; B O N U S !
 		.db	$2C, $30, $34, $38, $3C, $42	; 2 0 0 0 0 x, then the life icons from X $48
