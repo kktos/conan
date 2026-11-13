@@ -19,6 +19,17 @@
 		.segment	L0_BITMAP
 		.include	"data-A600.asm"
 
-		assertGameStruct
+; no level description (c5) here: the title picture fills $AC00-$ADFF and the
+; game only reads c5 once level 1 is loaded. The labels are only there for
+; assertGameStruct.
+;LAC00		.equ	$AC00
+;LAC20		.equ	$AC20
+;LAC40		.equ	$AC40
+;LAC60		.equ	$AC60
+;LAC80		.equ	$AC80
+;LACA0		.equ	$ACA0
+;LACC0		.equ	$ACC0
+;LACF0		.equ	$ACF0
+;		assertGameStruct
 
 		.end	namespace
