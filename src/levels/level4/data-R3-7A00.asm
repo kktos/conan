@@ -8,8 +8,6 @@
 ; level code.
 ;
 
-		placeAt	$7A00
-
 ; $41 - creature walking (SHAPE_CREATURE)
 ; 3x8 bytes, 7 pre-shifted copies of 24 bytes ($18)
 spriteCreatureWalk

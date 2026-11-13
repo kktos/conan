@@ -9,8 +9,6 @@
 ; (final.asm) loads over $9F00-$9FFF.
 ;
 
-		placeAt	$7A00
-
 ; $41 - ? not drawn by the level or the final animation
 ; 3x16 bytes, 7 pre-shifted copies of 48 bytes ($30)
 spriteUnused41

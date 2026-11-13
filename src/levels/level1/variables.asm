@@ -1,6 +1,4 @@
 
-		placeAt	$7900
-
 batPathIndex	.db	$00
 batTempX	.db	$00
 batState	.db	$00			; 00: Active, 01: Exploding, FF: Dead

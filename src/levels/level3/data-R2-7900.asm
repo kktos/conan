@@ -4,8 +4,6 @@
 ; monsters and ranges are indexed from 1 (table-1,x).
 ;
 
-		placeAt	$7900
-
 ; portal: appears at random at the bottom or at the top of the shaft,
 ; moves the player and monsters 1 and 3 through it
 		.struct	PortalVars
@@ -88,4 +86,4 @@ bubblePath
 bubbleShapes	.hex	{ 4C 4C 4C 4C 4C 4C 4D 4E }
 sinkShapes	.hex	{ 4F 50 51 52 52 51 50 4F }
 
-; $79D0-$79FF: not referenced, leftover memory (data-R3 starts with placeAt $7A00)
+; $79D0-$79FF: not referenced, leftover memory (the original's data-R3 starts at $7A00)

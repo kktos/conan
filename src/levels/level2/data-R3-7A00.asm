@@ -6,8 +6,6 @@
 ; per X mod 7 shift; defpicture ones a single copy.
 ;
 
-		placeAt	$7A00
-
 ; $41 - splash when the player falls in the water, $41-$44
 ; 3x15 bytes, 7 pre-shifted copies of 45 bytes ($2D)
 spriteSplash1

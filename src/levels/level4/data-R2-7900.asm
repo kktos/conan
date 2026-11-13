@@ -5,8 +5,6 @@
 ; code sets them before using them.
 ;
 
-		placeAt	$7900
-
 ; boulder (shape $54): falls from the top left onto the ground and breaks,
 ; then sits on the geyser's hole and rides it up. While it is solid
 ; (isBoulderSolid) it is ledge $0E (LAC00/LAC20/LAC40+$0E)
@@ -51,11 +49,13 @@ jumpShapes	.db	$42, $42, $42, $43, $43, $44, $43, $43	; creature shape while jum
 bonusKind	.db	$00			; 1 = a gem (shape $28), $FF = an axe (shape $1E)
 slotBlink	.db	$FF			; $FF / $01: slot 2's marker (shape $58 at $76,$95) is drawn when $01
 spawnMask	.db	$7F			; random mask for spawnWait, -3 per creature down to 4 (they come faster)
-halfFrame	.db	$00			; 0 / 1: creatures move every other frame
 
 ; $792F-$793F: not referenced, leftover memory from an align
 		.align	$40
 
+; halfFrame sits in front of breakShapes, read as breakShapes-1,x: keeps
+; the read in the page (the original has halfFrame at $792E, breakShapes at $7940)
+halfFrame	.db	$00			; 0 / 1: creatures move every other frame
 breakShapes	.db	$5A, $5A, $5B, $5B, $5C, $5C, $5B, $5A	; for breakFrame 1..8
 
 ; $7948-$797F: not referenced, leftover memory from an align

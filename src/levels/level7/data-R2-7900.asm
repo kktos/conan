@@ -4,8 +4,6 @@
 ; tables indexed from 1 are used as table-1,x.
 ;
 
-		placeAt	$7900
-
 sparkPos	.db	$01, $10, $20, $2C	; the 4 sparks: step in sparkX/Y, 0..$34
 orbPos		.db	$08, $0F		; the 2 orbs: step in orbX/Y, 0..$0F
 idx		.db	$00			; loop index: 3..0 over the sparks, 1..0 over the orbs

@@ -5,8 +5,6 @@
 ; values are leftovers: walkerDX = 0 is a free slot.
 ;
 
-		placeAt	$7900
-
 ; fire at ($14,$14), top left, in front of the key: flickers, burns the
 ; player while fireTimer < 7, put out with a gem
 fireTimer	.db	$20			; frames before it flickers again (random 8..15)

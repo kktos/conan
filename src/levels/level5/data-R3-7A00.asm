@@ -6,8 +6,6 @@
 ; per X mod 7 shift; defpicture ones a single copy.
 ;
 
-		placeAt	$7A00
-
 ; $41 - walker going left, $41 / $42 (SHAPE_WALKER_L, EOR 3)
 ; 5x14 bytes, 7 pre-shifted copies of 70 bytes ($46)
 spriteWalkerL1

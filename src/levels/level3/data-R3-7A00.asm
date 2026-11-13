@@ -6,8 +6,6 @@
 ; per X mod 7 shift; defpicture ones a single copy.
 ;
 
-		placeAt	$7A00
-
 ; $41 - lift going up (SHAPE_LIFT)
 ; 5x21 bytes, 7 pre-shifted copies of 105 bytes ($69)
 spriteLift

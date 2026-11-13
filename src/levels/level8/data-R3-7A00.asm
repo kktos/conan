@@ -6,8 +6,6 @@
 ; per X mod 7 shift; defpicture ones a single copy.
 ;
 
-		placeAt	$7A00
-
 ; $41 - "B" of "BONUS!" (drawBonusText)
 ; 2x7 bytes, 7 pre-shifted copies of 14 bytes ($0E)
 spriteLetterB
