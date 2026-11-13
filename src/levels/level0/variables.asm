@@ -4,12 +4,14 @@
 		; .end
 		; .echo "7900 =", .hex(.pc)
 
+		placeAt	$7900
+
 L7900		.db	$00
 L7901		.db	$F0
 L7902		.db	$01
-L7903		.db	$00
-L7904		.db	$F0
-L7905		.db	$01
+voltaFrameIdx	.db	$00			; index into animVoltaSpriteIDs
+birdX		.db	$F0			; help "avian ally" bird: x pos
+birdSpriteID	.db	$01			; $47 flying, $48 landed
 L7906		.db	$46
 introDelay	.db	$80			; INTRODUCTION screen display time; $40 after the first help cycle
 

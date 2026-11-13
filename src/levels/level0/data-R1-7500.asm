@@ -3,32 +3,37 @@
 
 ; $41 - $50
 L7500
-		; $41:$46 - Anim Volta
+		; $41:$46 - Volta materializing (help page, animVoltaSpriteIDs):
+		;   $41/$42 x7, then $43/$44 x4, then $45/$46 flashing, ends on $45
+		; $41 - lightning sparks
 		.hex	02 12 00 7a 24 7a 48 7a 6c 7a 90 7a b4 7a d8 7a
+		; $42 - lightning bolt
 		.hex	02 12 fc 7a 20 7b 44 7b 68 7b 8c 7b b0 7b d4 7b
+		; $43 - Volta forming 1
 		.hex	02 93 f8 7b 1e 7c 44 7c 6a 7c 90 7c b6 7c dc 7c
+		; $44 - Volta forming 2
 		.hex	02 92 02 7d 26 7d 4a 7d 6e 7d 92 7d b6 7d da 7d
 		; $45 - volta colored
 		.hex	03 93 fe 7d 37 7e 70 7e a9 7e e2 7e 1b 7f 54 7f
 		; $46 - volta white
 		.hex	03 93 8d 7f c6 7f ff 7f 38 80 71 80 aa 80 e3 80
 
-		; $47 - bird flying 1
+		; $47 - bird flying (help "avian ally": flies in from x=$F0 to $40)
 		.hex	04 8d 1c 81 50 81 84 81 b8 81 ec 81 20 82 54 82
-		; $48 - bird flying 2
+		; $48 - bird landed (drawn once the flight ends)
 		.hex	04 91 88 82 cc 82 10 83 54 83 98 83 dc 83 20 84
-		; $49 - spring 1
+		; $49 - spring frame 1 (title anim: alternates with $4A, x=$45)
 		.hex	02 0f 64 84 82 84 a0 84 be 84 dc 84 fa 84 18 85
-		; $4A - spring 2
+		; $4A - spring frame 2
 		.hex	02 0f 36 85 54 85 72 85 90 85 ae 85 cc 85 ea 85
-		; $4B - spring 3 ?
+		; $4B - unused: not drawn by level 0
 		.hex	02 04 08 86 10 86 18 86 20 86 28 86 30 86 38 86
 
 		; $4C - HI-SC
 		.hex	06 05 40 86 5e 86 7c 86 9a 86 b8 86 d6 86 f4 86
 		; $4D - ORE
 		.hex	05 05 12 87 2b 87 44 87 5d 87 76 87 8f 87 a8 87
-		; $4E - space - used to erase the spring
+		; $4E - blank 2x5 block, drawn twice with drawStore to erase the spring
 		.hex	02 05 f0 87 f0 87 f0 87 f0 87 f0 87 f0 87 f0 87
 		; $4F - Help "introduction": only rows 6-22 of the original 27x75 image at $8800
 		; (underline + "HALL OF VOLTA"); the text is drawn with drawText (level0 drawIntroduction)
@@ -49,7 +54,7 @@ L7600
 		.hex	09 07 d9 90 d9 90 d9 90 d9 90 d9 90 d9 90 d9 90
 		; $55 - Help "key"
 		.hex	04 05 18 91 18 91 18 91 18 91 18 91 18 91 18 91
-		; $56 - Help
+		; $56 - Help icon gem holder
 		.hex	02 07 2c 91 2c 91 2c 91 2c 91 2c 91 2c 91 2c 91
 		; $57 - Help "locked door"
 		.hex	07 0c 3a 91 3a 91 3a 91 3a 91 3a 91 3a 91 3a 91
@@ -70,20 +75,12 @@ L7600
 		; $5E - SPECIAL THANKS
 		.hex	1e 38 4f 93 4f 93 4f 93 4f 93 4f 93 4f 93 4f 93
 
-		.hex	a0 86 a9 95 20 f9 08 20 d3 0e 4c fc 11 42 4c 4f
-		.hex	41 44 20 4c 4f 20 54 4f 20 48 49 00 a0 11 a9 79
+		; $5F:$60 - unused: leftover disk buffer bytes (6502 code + "BLOAD LO TO HI"),
+		; not a valid directory entry
+		;.hex	a0 86 a9 95 20 f9 08 20 d3 0e 4c fc 11 42 4c 4f
+		;.hex	41 44 20 4c 4f 20 54 4f 20 48 49 00 a0 11 a9 79
 
-L7700
-		.hex
-		6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 69 67 65 63 61 5f
-		5d 5b 59 57 55 53 51 4f 4d 4b 49 47 45 43 41 3f
-		3d 3b 39 37 35 33 31 2f 2d 2b 29 27 25 23 21 1f
-		1d 1b 19 17 15 13 11 0f 0d 0b 09 07 f1 f1 f1 f1
-		f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1
-		f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1
-		f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1
-		f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1
-		.end
+		.align	$100
 
 ; anim jumping conan title screen
 ; x pos for anim

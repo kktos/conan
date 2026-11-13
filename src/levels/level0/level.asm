@@ -2,7 +2,8 @@
 
 		.module	"L0/BKGD"
 		.segment	L0_BKGD
-		.include	"data-bkgnd-R0-7500.asm"
+		.incbin	"../../../assets/bkgnd/L0_c0_7500.bin"
+
 
 		.module	"L0/DATA"
 		.segment	L0_DATA

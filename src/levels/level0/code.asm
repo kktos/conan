@@ -60,14 +60,14 @@ displayHelp	jsr	utils::clearScreen
 		ldx	#$10
 		jsr	checkUserInput
 
-		jsr	Sa27c
+		jsr	animBird
 		jsr	drawHelpIcon3
 
 		ldx	#$20
 		jsr	checkUserInput
 
 		jsr	Sa230
-		jsr	Sa2ad
+		jsr	drawBird
 		jsr	animVolta
 		jsr	drawHelpIcon3
 		jsr	drawHelpIcon2
@@ -172,21 +172,21 @@ drawHelpIcon1
 
 runAnimVolta
 		ldx	#$00
-		stx	L7903
+		stx	voltaFrameIdx
 		jsr	animVolta
 La24e
 		jsr	animVolta
-		inc	L7903
+		inc	voltaFrameIdx
 		jsr	animVolta
 		ldx	#$12
 		jsr	waitAndExitOnEvent2
-		ldx	L7903
+		ldx	voltaFrameIdx
 		cpx	#$1f
 		bne	La24e
 		rts
 
 animVolta
-		ldx	L7903
+		ldx	voltaFrameIdx
 		drawSprite	{animVoltaSpriteIDs,x} , {#$62} , {#$31}
 		rts
 
@@ -194,29 +194,32 @@ drawHelpIcon2
 		drawSprite	{#$52} , {#$5A} , {#29}
 		rts
 
-Sa27c		ldx	#$f0
-		stx	L7904
+animBird
+		ldx	#$f0
+		stx	birdX
 		ldx	#$47
-		stx	L7905
-La286		jsr	Sa2ad
-		inc	L7904
-		inc	L7904
-		jsr	Sa2ad
-		ldx	L7904
+		stx	birdSpriteID
+animBirdLoop
+		jsr	drawBird
+		inc	birdX
+		inc	birdX
+		jsr	drawBird
+		ldx	birdX
 		cpx	#$40
-		beq	La2a1
+		beq	birdLanded
 		ldx	#$40
 		jsr	waitAndExitOnEvent2
-		jmp	La286
+		jmp	animBirdLoop
 
-La2a1		jsr	Sa2ad
+birdLanded
+		jsr	drawBird
 		ldx	#$48
-		stx	L7905
-		jsr	Sa2ad
+		stx	birdSpriteID
+		jsr	drawBird
 		rts
 
-Sa2ad
-		drawSprite	L7905,L7904,{#60}
+drawBird
+		drawSprite	birdSpriteID,birdX,{#60}
 		rts
 
 drawHelpIcon3
