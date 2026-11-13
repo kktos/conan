@@ -1,68 +1,94 @@
 ;
-; level 7 shape headers, shapes $41-$68, disk chunk c1 ($7500-$78FF)
-; 16 bytes each: width in bytes, height (bit 7: use the LB000/LB200 tables),
-; 7 pointers (one per pre-shifted copy) into the bitmaps of data-R3-7A00.asm.
-; $41 ?; $42-$45 bat (waiting $42 / $43, flying); $46 / $47 fireball,
-; $49 / $4A shot carrying a gem; $48 the door; $4B-$4E the figure throwing
-; (Volta?); $4F orbs and dot; $50 / $51 flame; $52 / $53 ?; $54 / $55 the
-; bridge at the left; $56-$59 ?; $5A / $5B the prisoner; $5C spark; $5D on
-; the cage at the end; $5E-$61 flags; $62-$65 splash; $66 / $67 bat dying;
-; $68 lever.
-; $7780-$77FF: leftover bytes, then the bats' routes.
+; level 7 sprite headers, shapes $41-$68 (disk chunk c1, at $7500)
+; defprite w, h, label: 7 pre-shifted copies; defpicture w, h, label: one copy
+; (defsprite.macro.asm). h bit 7: draw with the LB000/LB200 tables.
+; The bitmaps are in data-R3-7A00.asm.
 ;
 
 		placeAt	$7500
 
-		.hex
-	03 90 00 7A 30 7A 60 7A 90 7A C0 7A F0 7A 20 7B
-	03 0E 50 7B 7A 7B A4 7B CE 7B F8 7B 22 7C 4C 7C
-	03 08 76 7C 8E 7C A6 7C BE 7C D6 7C EE 7C 06 7D
-	03 8E 1E 7D 48 7D 72 7D 9C 7D C6 7D F0 7D 1A 7E
-	03 88 44 7E 5C 7E 74 7E 8C 7E A4 7E BC 7E D4 7E
-	03 0D EC 7E 13 7F 3A 7F 61 7F 88 7F AF 7F D6 7F
-	03 0C FD 7F 21 80 45 80 69 80 8D 80 B1 80 D5 80
-	02 0E F9 80 15 81 31 81 4D 81 69 81 85 81 A1 81
-	03 8D BD 81 E4 81 0B 82 32 82 59 82 80 82 A7 82
-	03 0C CE 82 F2 82 16 83 3A 83 5E 83 82 83 A6 83
-	03 93 CA 83 03 84 3C 84 75 84 AE 84 E7 84 20 85
-	03 93 59 85 92 85 CB 85 04 86 3D 86 76 86 AF 86
-	03 93 E8 86 21 87 5A 87 93 87 CC 87 05 88 3E 88
-	03 12 77 88 AD 88 E3 88 19 89 4F 89 85 89 BB 89
-	01 01 F1 89 F2 89 F3 89 F4 89 F5 89 F6 89 F7 89
-	02 07 F8 89 06 8A 14 8A 22 8A 30 8A 3E 8A 4C 8A
-	02 07 5A 8A 68 8A 76 8A 84 8A 92 8A A0 8A AE 8A
-	02 07 BC 8A CA 8A D8 8A E6 8A F4 8A 02 8B 10 8B
-	02 07 1E 8B 2C 8B 3A 8B 48 8B 56 8B 64 8B 72 8B
-	05 82 80 8B 8A 8B 94 8B 9E 8B A8 8B B2 8B BC 8B
-	05 02 C6 8B D0 8B DA 8B E4 8B EE 8B F8 8B 02 8C
-	04 8D 0C 8C 40 8C 74 8C A8 8C DC 8C 10 8D 44 8D
-	04 8B 78 8D A4 8D D0 8D FC 8D 28 8E 54 8E 80 8E
-	04 8D AC 8E E0 8E 14 8F 48 8F 7C 8F B0 8F E4 8F
-	04 8B 18 90 44 90 70 90 9C 90 C8 90 F4 90 20 91
-	04 8B 4C 91 78 91 A4 91 D0 91 FC 91 28 92 54 92
-	04 8B 80 92 AC 92 D8 92 04 93 30 93 5C 93 88 93
-	01 81 B4 93 B5 93 B6 93 B7 93 B8 93 B9 93 BA 93
-	01 0D BB 93 C8 93 D5 93 E2 93 EF 93 FC 93 09 94
-	02 03 16 94 1C 94 22 94 28 94 2E 94 34 94 3A 94
-	02 03 40 94 46 94 4C 94 52 94 58 94 5E 94 64 94
-	02 03 6A 94 70 94 76 94 7C 94 82 94 88 94 8E 94
-	02 03 94 94 9A 94 A0 94 A6 94 AC 94 B2 94 B8 94
-	03 8F BE 94 EB 94 18 95 45 95 72 95 9F 95 CC 95
-	03 8F F9 95 26 96 53 96 80 96 AD 96 DA 96 07 97
-	03 8F 34 97 61 97 8E 97 BB 97 E8 97 15 98 42 98
-	04 8F 6F 98 AB 98 E7 98 23 99 5F 99 9B 99 D7 99
-	03 8F 13 9A 40 9A 6D 9A 9A 9A C7 9A F4 9A 21 9B
-	03 8E 4E 9B 78 9B A2 9B CC 9B F6 9B 20 9C 4A 9C
-	02 04 74 9C 7C 9C 84 9C 8C 9C 94 9C 9C 9C A4 9C
-	87 12 53 82 41 68 00 DA 12 E3 82 5A F9 42 A0 C0
-	A9 46 20 3B 09 DA 86 DC 31 5A 57 43 4C DA 12 3A
-	A0 12 A9 D9 20 F9 08 A0 86 A9 46 20 96 09 A5 9D
-	F0 03 4C 40 13 4C BF 12 42 4C 4F 41 44 20 00 A0
-	86 A9 5B 20 F9 08 20 D3 0E 4C D3 12 42 4C 4F 41
-	44 20 00 A0 12 A9 CC 20 F9 08 20 D3 0E 4C E8 12
-	2C 41 24 34 30 30 30 00 A0 86 A9 31 20 F9 08 20
-	D3 0E 4C FD 12 2C 41 24 34 30 30 30 00 A0 12 00
-		.end
+		; $41 - ? not drawn by the level or the final animation
+		defprite	$03, $90, spriteUnused41
+		; $42 - bat, $42-$45 flying (EOR 1), waiting at the door $42 / $43 (SHAPE_BAT)
+		defprite	$03, $0E, spriteBat1
+		; $43 - bat
+		defprite	$03, $08, spriteBat2
+		; $44 - bat
+		defprite	$03, $8E, spriteBat3
+		; $45 - bat
+		defprite	$03, $88, spriteBat4
+		; $46 - fireball, $46 / $47 (SHAPE_SHOT + shotKind, EOR 3)
+		defprite	$03, $0D, spriteFireball1
+		; $47 - fireball
+		defprite	$03, $0C, spriteFireball2
+		; $48 - the door (SHAPE_DOOR)
+		defprite	$02, $0E, spriteDoor
+		; $49 - shot carrying a gem, $49 / $4A: same bitmaps as $46 / $47
+		defprite	$03, $8D, spriteShotGem1
+		; $4A - shot carrying a gem
+		defprite	$03, $0C, spriteShotGem2
+		; $4B - the figure throwing, $4B-$4E (SHAPE_VOLTA): same bitmap as level 0's $45
+		defprite	$03, $93, spriteVolta1
+		; $4C - the figure throwing
+		defprite	$03, $93, spriteVolta2
+		; $4D - the figure throwing
+		defprite	$03, $93, spriteVolta3
+		; $4E - the figure throwing
+		defprite	$03, $12, spriteVolta4
+		; $4F - the orbs and the dot (SHAPE_ORB)
+		defprite	$01, $01, spriteOrb
+		; $50 - flame, first half (SHAPE_FLAME1 + flameFrame)
+		defprite	$02, $07, spriteFlame1A
+		; $51 - flame, second half (SHAPE_FLAME2 + flameFrame)
+		defprite	$02, $07, spriteFlame2A
+		; $52 - flame, first half, flameFrame 2
+		defprite	$02, $07, spriteFlame1B
+		; $53 - flame, second half, flameFrame 2
+		defprite	$02, $07, spriteFlame2B
+		; $54 - the bridge at the left, $54 / $55 flickering (SHAPE_BRIDGE)
+		defprite	$05, $82, spriteBridge1
+		; $55 - the bridge
+		defprite	$05, $02, spriteBridge2
+		; $56 - the prisoner in the final animation (actorAShape), $56-$59
+		defprite	$04, $8D, spritePrisonerFree1
+		; $57 - the prisoner, final animation (makes a sound)
+		defprite	$04, $8B, spritePrisonerFree2
+		; $58 - the prisoner, final animation: same bitmap as level 2's $47
+		defprite	$04, $8D, spritePrisonerFree3
+		; $59 - the prisoner, final animation (makes a sound)
+		defprite	$04, $8B, spritePrisonerFree4
+		; $5A - the prisoner, $5A / $5B (SHAPE_PRISONER + prisonerFrame)
+		defprite	$04, $8B, spritePrisoner1
+		; $5B - the prisoner
+		defprite	$04, $8B, spritePrisoner2
+		; $5C - spark running on the bridge (SHAPE_SPARK)
+		defprite	$01, $81, spriteSpark
+		; $5D - EORed on the cage at the end (SHAPE_CAGE_OPEN)
+		defprite	$01, $0D, spriteCageOpen
+		; $5E - flag, $5E-$61 (SHAPE_FLAG + flag1Frame / flag2Frame)
+		defprite	$02, $03, spriteFlag1
+		; $5F - flag
+		defprite	$02, $03, spriteFlag2
+		; $60 - flag
+		defprite	$02, $03, spriteFlag3
+		; $61 - flag
+		defprite	$02, $03, spriteFlag4
+		; $62 - splash, $62-$65 (splashShapes)
+		defprite	$03, $8F, spriteSplash1
+		; $63 - splash
+		defprite	$03, $8F, spriteSplash2
+		; $64 - splash
+		defprite	$03, $8F, spriteSplash3
+		; $65 - splash
+		defprite	$04, $8F, spriteSplash4
+		; $66 - bat dying, $66 / $67 (batDieShapes)
+		defprite	$03, $8F, spriteBatDie1
+		; $67 - bat dying
+		defprite	$03, $8E, spriteBatDie2
+		; $68 - lever (SHAPE_LEVER)
+		defprite	$02, $04, spriteLever
+
+; $7780-$77FF: leftover bytes, not headers
 
 ; the bats' routes, read by nextBatStep: 4 routes of 32 steps, by
 ; batRoute * 32 + batStep; a step of batRouteTime frames moving by

@@ -1,66 +1,94 @@
 ;
-; level 6 shape headers, shapes $41-$70, disk chunk c1 ($7500-$77FF)
-; 16 bytes each: width in bytes, height (bit 7: use the LB000/LB200 tables),
-; 7 pointers (one per pre-shifted copy) into the bitmaps of data-R3-7A00.asm.
-; $41-$43 mover (flying, shot with the axe to build the ladder), $60-$62
-; mover hit; $44-$46 the riser in the centre machine (decorX/Y/Shape);
-; $47/$48 the blinkers under it; $49 lamp; $4A ladder rung; $4B-$4E gate
-; (2 frames x 2 pieces); $4F lower platform, $50 upper platform; $51-$54,
-; $59/$5A spawn arc and dying monster; $55/$56 lightning bolt; $57/$58
-; monster; $5B-$5E flame guarding the exit; $5F player leaving.
-; $7720-$773F (shapes $63/$64): leftover bytes; $7740-$77FF (shapes
-; $65-$70): pointers into the core's shapes, not used by the level.
+; level 6 sprite headers, shapes $41-$70 (disk chunk c1, at $7500)
+; defprite w, h, label: 7 pre-shifted copies; defpicture w, h, label: one copy
+; (defsprite.macro.asm). h bit 7: draw with the LB000/LB200 tables.
+; The bitmaps are in data-R3-7A00.asm.
 ;
 
 		placeAt	$7500
 
-		.hex
-	03 07 00 7A 15 7A 2A 7A 3F 7A 54 7A 69 7A 7E 7A
-	03 07 93 7A A8 7A BD 7A D2 7A E7 7A FC 7A 11 7B
-	03 87 26 7B 3B 7B 50 7B 65 7B 7A 7B 8F 7B A4 7B
-	02 01 B9 7B BB 7B BD 7B BF 7B C1 7B C3 7B C5 7B
-	02 02 C7 7B CB 7B CF 7B D3 7B D7 7B DB 7B DF 7B
-	02 02 E3 7B E7 7B EB 7B EF 7B F3 7B F7 7B FB 7B
-	02 03 FF 7B 05 7C 0B 7C 11 7C 17 7C 1D 7C 23 7C
-	02 03 29 7C 2F 7C 35 7C 3B 7C 41 7C 47 7C 4D 7C
-	01 05 53 7C 58 7C 5D 7C 62 7C 67 7C 6C 7C 71 7C
-	02 86 76 7C 82 7C 8E 7C 9A 7C A6 7C B2 7C BE 7C
-	02 02 CA 7C CE 7C D2 7C D6 7C DA 7C DE 7C E2 7C
-	02 02 E6 7C EA 7C EE 7C F2 7C F6 7C FA 7C FE 7C
-	02 02 02 7D 06 7D 0A 7D 0E 7D 12 7D 16 7D 1A 7D
-	02 02 1E 7D 22 7D 26 7D 2A 7D 2E 7D 32 7D 36 7D
-	04 82 3A 7D 42 7D 4A 7D 52 7D 5A 7D 62 7D 6A 7D
-	04 82 72 7D 7A 7D 82 7D 8A 7D 92 7D 9A 7D A2 7D
-	03 03 AA 7D B3 7D BC 7D C5 7D CE 7D D7 7D E0 7D
-	03 03 E9 7D F2 7D FB 7D 04 7E 0D 7E 16 7E 1F 7E
-	03 03 28 7E 31 7E 3A 7E 43 7E 4C 7E 55 7E 5E 7E
-	03 03 67 7E 70 7E 79 7E 82 7E 8B 7E 94 7E 9D 7E
-	03 20 A6 7E 06 7F 66 7F C6 7F 26 80 86 80 E6 80
-	03 20 46 81 A6 81 06 82 66 82 C6 82 26 83 86 83
-	03 09 E6 83 01 84 1C 84 37 84 52 84 6D 84 88 84
-	03 0A A3 84 C1 84 DF 84 FD 84 1B 85 39 85 57 85
-	03 05 75 85 84 85 93 85 A2 85 B1 85 C0 85 CF 85
-	03 05 DE 85 ED 85 FC 85 0B 86 1A 86 29 86 38 86
-	02 0E 47 86 63 86 7F 86 9B 86 B7 86 D3 86 EF 86
-	02 0E 0B 87 27 87 43 87 5F 87 7B 87 97 87 B3 87
-	02 0E CF 87 EB 87 07 88 23 88 3F 88 5B 88 77 88
-	02 0E 93 88 AF 88 CB 88 E7 88 03 89 1F 89 3B 89
-	03 10 57 89 87 89 B7 89 E7 89 17 8A 47 8A 77 8A
-	03 86 A7 8A B9 8A CB 8A DD 8A EF 8A 01 8B 13 8B
-	03 85 25 8B 34 8B 43 8B 52 8B 61 8B 70 8B 7F 8B
-	03 84 8E 8B 9A 8B A6 8B B2 8B BE 8B CA 8B D6 8B
-	99 01 02 FE 34 D0 F6 68 91 02 D0 E9 46 41 C9 95
-	F0 E3 C9 88 D0 07 98 F0 C5 88 4C D3 11 C9 84 D0
-	02 85 14 5E 1E 5E 28 5E 32 5E 3C 5E 46 5E 50 5E
-	02 88 5A 5E 6A 5E 7A 5E 8A 5E 9A 5E AA 5E BA 5E
-	03 83 CA 5E D3 5E DC 5E E5 5E EE 5E F7 5E 00 5F
-	02 85 09 5F 13 5F 1D 5F 27 5F 31 5F 3B 5F 45 5F
-	02 84 4F 5F 57 5F 5F 5F 67 5F 6F 5F 77 5F 7F 5F
-	03 12 87 5F BD 5F F3 5F 29 60 5F 60 95 60 CB 60
-	03 8D 01 61 28 61 4F 61 76 61 9D 61 C4 61 EB 61
-	03 0C 12 62 36 62 5A 62 7E 62 A2 62 C6 62 EA 62
-	03 0D 0E 63 35 63 5C 63 83 63 AA 63 D1 63 F8 63
-	03 8C 1F 64 43 64 67 64 8B 64 AF 64 D3 64 F7 64
-	03 0C 1B 65 3F 65 63 65 87 65 AB 65 CF 65 F3 65
-	03 8C 17 66 3B 66 5F 66 83 66 A7 66 CB 66 EF 66
-		.end
+		; $41 - mover flying, $41-$43 (moverScriptShape); shot with the axe to build the ladder
+		defprite	$03, $07, spriteMover1
+		; $42 - mover
+		defprite	$03, $07, spriteMover2
+		; $43 - mover, also the first frame of moverHitShapes (SHAPE_MOVER_HIT)
+		defprite	$03, $87, spriteMover3
+		; $44 - the riser in the centre machine, $44-$46 (decorShape)
+		defprite	$02, $01, spriteRiser1
+		; $45 - riser
+		defprite	$02, $02, spriteRiser2
+		; $46 - riser
+		defprite	$02, $02, spriteRiser3
+		; $47 - blinker under the machine (SHAPE_BLINK1)
+		defprite	$02, $03, spriteBlink1
+		; $48 - blinker (SHAPE_BLINK2)
+		defprite	$02, $03, spriteBlink2
+		; $49 - lamp (SHAPE_LAMP)
+		defprite	$01, $05, spriteLamp
+		; $4A - ladder rung (SHAPE_RUNG)
+		defprite	$02, $86, spriteRung
+		; $4B - gate, first piece, frame 0 (SHAPE_GATE1 + gateFrame)
+		defprite	$02, $02, spriteGate1A
+		; $4C - gate, first piece, frame 1
+		defprite	$02, $02, spriteGate1B
+		; $4D - gate, second piece, frame 0 (SHAPE_GATE2 + gateFrame)
+		defprite	$02, $02, spriteGate2A
+		; $4E - gate, second piece, frame 1
+		defprite	$02, $02, spriteGate2B
+		; $4F - lower platform (SHAPE_LOWER_PLAT)
+		defprite	$04, $82, spriteLowerPlat
+		; $50 - upper platform (SHAPE_UPPER_PLAT)
+		defprite	$04, $82, spriteUpperPlat
+		; $51 - monster flying out, right arc, $51 / $52 (spawnShape)
+		defprite	$03, $03, spriteSpawnR1
+		; $52 - monster flying out, right arc
+		defprite	$03, $03, spriteSpawnR2
+		; $53 - monster flying out, left arc, $53 / $54
+		defprite	$03, $03, spriteSpawnL1
+		; $54 - monster flying out, left arc
+		defprite	$03, $03, spriteSpawnL2
+		; $55 - lightning bolt (SHAPE_BOLT + boltFrame)
+		defprite	$03, $20, spriteBolt1
+		; $56 - lightning bolt
+		defprite	$03, $20, spriteBolt2
+		; $57 - monster walking, $57 / $58 (SHAPE_MONSTER)
+		defprite	$03, $09, spriteMonster1
+		; $58 - monster walking (SHAPE_MONSTER2)
+		defprite	$03, $0A, spriteMonster2
+		; $59 - monster landing (end of the arc) / dying, $59 / $5A
+		defprite	$03, $05, spriteMonsterLand1
+		; $5A - monster landing / dying
+		defprite	$03, $05, spriteMonsterLand2
+		; $5B - flame guarding the exit, first half (SHAPE_FLAME1 + flameFrame)
+		defprite	$02, $0E, spriteFlame1A
+		; $5C - flame, second half (SHAPE_FLAME2 + flameFrame)
+		defprite	$02, $0E, spriteFlame2A
+		; $5D - flame, first half, flameFrame 2
+		defprite	$02, $0E, spriteFlame1B
+		; $5E - flame, second half, flameFrame 2
+		defprite	$02, $0E, spriteFlame2B
+		; $5F - player leaving (SHAPE_LEAVE)
+		defprite	$03, $10, spriteLeave
+		; $60 - mover hit, shrinking, $60-$62 (moverHitShapes)
+		defprite	$03, $86, spriteMoverHit1
+		; $61 - mover hit
+		defprite	$03, $85, spriteMoverHit2
+		; $62 - mover hit
+		defprite	$03, $84, spriteMoverHit3
+
+		; $7720-$773F (shapes $63 / $64): leftover bytes, not headers
+		placeAt	$7500 + ($65 - $41) * 16
+
+		; $65-$70: pointers into the core's shape bitmaps ($5E14-$6712), not used by the level
+		defprite	$02, $85, $5E14
+		defprite	$02, $88, $5E5A
+		defprite	$03, $83, $5ECA
+		defprite	$02, $85, $5F09
+		defprite	$02, $84, $5F4F
+		defprite	$03, $12, $5F87
+		defprite	$03, $8D, $6101
+		defprite	$03, $0C, $6212
+		defprite	$03, $0D, $630E
+		defprite	$03, $8C, $641F
+		defprite	$03, $0C, $651B
+		defprite	$03, $8C, $6617

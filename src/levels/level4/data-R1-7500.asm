@@ -1,46 +1,69 @@
 ;
-; level 4 shape headers, shapes $41-$5D, disk chunk c1 ($7500-$76FF)
-; 16 bytes each: width in bytes, height (bit 7: use the LB000/LB200 tables),
-; 7 pointers (one per pre-shifted copy) into the bitmaps of data-R3-7A00.asm.
-; $41-$48 creature, $49-$50 player sinking, $51-$53 geyser, $54 boulder,
-; $55-$57 boulder bursting, $58 empty slot, $59 water drop,
-; $5A-$5C boulder breaking, $5D blank 2x8 (eraser: all 7 copies are zeros).
-; $75D0-$76FF: sector slack.
+; level 4 sprite headers, shapes $41-$5D (disk chunk c1, at $7500)
+; defprite w, h, label: 7 pre-shifted copies; defpicture w, h, label: one copy
+; (defsprite.macro.asm). h bit 7: draw with the LB000/LB200 tables.
+; The bitmaps are in data-R3-7A00.asm.
 ;
 
 		placeAt	$7500
 
-		.hex
-	03 88 00 7A 18 7A 30 7A 48 7A 60 7A 78 7A 90 7A
-	03 08 A8 7A C0 7A D8 7A F0 7A 08 7B 20 7B 38 7B
-	03 89 50 7B 6B 7B 86 7B A1 7B BC 7B D7 7B F2 7B
-	03 89 0D 7C 28 7C 43 7C 5E 7C 79 7C 94 7C AF 7C
-	03 08 CA 7C E2 7C FA 7C 12 7D 2A 7D 42 7D 5A 7D
-	03 08 72 7D 8A 7D A2 7D BA 7D D2 7D EA 7D 02 7E
-	03 08 1A 7E 32 7E 4A 7E 62 7E 7A 7E 92 7E AA 7E
-	03 08 C2 7E DA 7E F2 7E 0A 7F 22 7F 3A 7F 52 7F
-	03 8F 6A 7F 97 7F C4 7F F1 7F 1E 80 4B 80 78 80
-	03 8F A5 80 D2 80 FF 80 2C 81 59 81 86 81 B3 81
-	03 8F E0 81 0D 82 3A 82 67 82 94 82 C1 82 EE 82
-	04 8F 1B 83 57 83 93 83 CF 83 0B 84 47 84 83 84
-	03 0F BF 84 EC 84 19 85 46 85 73 85 A0 85 CD 85
-	03 0F FA 85 27 86 54 86 81 86 AE 86 DB 86 08 87
-	03 0F 35 87 62 87 8F 87 BC 87 E9 87 16 88 43 88
-	04 0F 70 88 AC 88 E8 88 24 89 60 89 9C 89 D8 89
-	02 0F 14 8A 32 8A 50 8A 6E 8A 8C 8A AA 8A C8 8A
-	02 0F E6 8A 04 8B 22 8B 40 8B 5E 8B 7C 8B 9A 8B
-	02 0F B8 8B D6 8B F4 8B 12 8C 30 8C 4E 8C 6C 8C
-	05 85 8A 8C A3 8C BC 8C D5 8C EE 8C 07 8D 20 8D
-	05 84 39 8D 4D 8D 61 8D 75 8D 89 8D 9D 8D B1 8D
-	05 84 C5 8D D9 8D ED 8D 01 8E 15 8E 29 8E 3D 8E
-	05 84 51 8E 65 8E 79 8E 8D 8E A1 8E B5 8E C9 8E
-	03 84 DD 8E E9 8E F5 8E 01 8F 0D 8F 19 8F 25 8F
-	02 81 31 8F 33 8F 35 8F 37 8F 39 8F 3B 8F 3D 8F
-	04 88 3F 8F 5F 8F 7F 8F 9F 8F BF 8F DF 8F FF 8F
-	05 88 1F 90 47 90 6F 90 97 90 BF 90 E7 90 0F 91
-	05 88 37 91 5F 91 87 91 AF 91 D7 91 FF 91 27 92
-	02 08 80 92 80 92 80 92 80 92 80 92 80 92 80 92
-	41 84 56 BE 34 E3 8D C7 FF 3C A4 6E B1 3C C9 C7
-	D0 05 99 3B 02 E3 A0 BF 54 C9 E0 90 02 29 DF 29
-	7F 09 40 91 02 20 EE 0D A4 34 A5 54 91 02 20 44
-		.end
+		; $41 - creature walking (SHAPE_CREATURE)
+		defprite	$03, $88, spriteCreatureWalk
+		; $42 - creature falling (SHAPE_CREATURE_FALL); $42-$44 jumping (jumpShapes)
+		defprite	$03, $08, spriteCreatureJump1
+		; $43 - creature jumping
+		defprite	$03, $89, spriteCreatureJump2
+		; $44 - creature jumping
+		defprite	$03, $89, spriteCreatureJump3
+		; $45 - creature appearing ($48 down to $45) / dying ($45 up to $48)
+		defprite	$03, $08, spriteCreaturePop1
+		; $46 - creature appearing / dying
+		defprite	$03, $08, spriteCreaturePop2
+		; $47 - creature appearing / dying
+		defprite	$03, $08, spriteCreaturePop3
+		; $48 - creature gone (SHAPE_CREATURE_GONE)
+		defprite	$03, $08, spriteCreaturePop4
+		; $49 - player sinking, $49-$4C (sinkShapes)
+		defprite	$03, $8F, spriteSplash1
+		; $4A - splash
+		defprite	$03, $8F, spriteSplash2
+		; $4B - splash
+		defprite	$03, $8F, spriteSplash3
+		; $4C - splash
+		defprite	$04, $8F, spriteSplash4
+		; $4D - player sinking, the other sinkDir: $4D-$50 (sinkShapes+8), same bitmaps as $49-$4C
+		defprite	$03, $0F, spriteSplash1b
+		; $4E - splash
+		defprite	$03, $0F, spriteSplash2b
+		; $4F - splash
+		defprite	$03, $0F, spriteSplash3b
+		; $50 - splash
+		defprite	$04, $0F, spriteSplash4b
+		; $51 - geyser, $51-$53 cycling (SHAPE_GEYSER)
+		defprite	$02, $0F, spriteGeyser1
+		; $52 - geyser
+		defprite	$02, $0F, spriteGeyser2
+		; $53 - geyser
+		defprite	$02, $0F, spriteGeyser3
+		; $54 - boulder (SHAPE_BOULDER)
+		defprite	$05, $85, spriteBoulder
+		; $55 - boulder bursting, $54-$57 (burstShapes)
+		defprite	$05, $84, spriteBoulderBurst1
+		; $56 - boulder bursting
+		defprite	$05, $84, spriteBoulderBurst2
+		; $57 - boulder bursting
+		defprite	$05, $84, spriteBoulderBurst3
+		; $58 - empty slot, slot 2's blinking marker (SHAPE_SLOT)
+		defprite	$03, $84, spriteSlot
+		; $59 - water drop (SHAPE_DROP)
+		defprite	$02, $81, spriteDrop
+		; $5A - boulder breaking, $5A-$5C (breakShapes)
+		defprite	$04, $88, spriteBoulderBreak1
+		; $5B - boulder breaking
+		defprite	$05, $88, spriteBoulderBreak2
+		; $5C - boulder breaking
+		defprite	$05, $88, spriteBoulderBreak3
+		; $5D - blank 2x8 block, eraser drawn with drawStore (SHAPE_BLANK)
+		defpicture	$02, $08, spriteBlank
+
+; $75D0-$76FF: sector slack
