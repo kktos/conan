@@ -1,12 +1,10 @@
-; level 0 shape bitmaps (c3, from $7A00), for the headers $41-$5E in data-R1-7500.asm
+; level 0 shape bitmaps (c3, originally at $7A00), for the headers $41-$5E in sprites-definition.asm
 ;
 ; A shape is width x height bytes, rows top to bottom (7 pixels per byte, bit 0 first).
 ; The animated shapes ($41-$4D) have 7 copies, one per X mod 7 shift, as DRAW_SHAPE needs.
 ; The static help/credit pictures ($4F-$5E) have one copy: all 7 header pointers point to it,
 ; so they can only be drawn on a byte boundary.
 ; One row per line below, so the line length is the shape width.
-
-		placeAt	$7A00
 
 ; $41 - lightning sparks (Volta materializing)
 ; 2x18 bytes, 7 pre-shifted copies of 36 bytes ($24)

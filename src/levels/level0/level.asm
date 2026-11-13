@@ -7,9 +7,9 @@
 
 		.module	"L0/DATA"
 		.segment	L0_DATA
-		.include	"data-R1-7500.asm"
+		.include	"sprites-definition.asm"
 		.include	"variables.asm"
-		.include	"data-R3-7A00.asm"
+		.include	"sprites-data.asm"
 
 		.module	"L0/CODE"
 		.segment	L0_CODE
