@@ -1,80 +1,80 @@
 
-	.include "../../includes/prodos.asm"
+		.include	"../../includes/prodos.asm"
 
-	.namespace tinyDOS scope="lc_bank2"
+		.namespace	tinyDOS scope="lc_bank2"
 
-BUFFER 		.equ $0800
+BUFFER		.equ	$0800
 
-namelen 	.equ $02
-tmplen 		.equ $03
-blockPage	.equ $04
-blockStart	.equ $05
-blockCount	.equ $06
+namelen		.equ	$02
+tmplen		.equ	$03
+blockPage	.equ	$04
+blockStart	.equ	$05
+blockCount	.equ	$06
 
 SmartPortEntry:
-	jmp $FFFF
+		jmp	$FFFF
 
 LoadFile:
-	jmp LoadFileEntry
+		jmp	LoadFileEntry
 LoadFromFile:
-	jmp LoadFromFileEntry
+		jmp	LoadFromFileEntry
 RunFile:
-	jmp RunFileEntry
+		jmp	RunFileEntry
 
 ;
 ; x/y points to
 ;  .pstr path: a file name, or directory names and a file name separated by '/', "L0/BKGD"
 ;
 LoadFileEntry:
-	stz blockStart		; read from first file block
-	stz blockCount		; read the 256 block, i.e all
+		stz	blockStart		; read from first file block
+		stz	blockCount		; read the 256 block, i.e all
 
-	stx tmpPtr
-	sty tmpPtr+1
+		stx	tmpPtr
+		sty	tmpPtr+1
 
 internalLoadFile:
 	; the path's first name, after its length byte
-	lda #$01
-	sta pathIdx
+		lda	#$01
+		sta	pathIdx
 
 	; read
-	sta smartport::command
+		sta	smartport::command
 
 	; directory block $0002
-	inc a
-	sta smartport::bloklo
-	stz smartport::blokhi
+		inc	a
+		sta	smartport::bloklo
+		stz	smartport::blokhi
 
 dirLoop:
-	jsr initBuffer
-        jsr SmartPortEntry
+		jsr	initBuffer
+		jsr	SmartPortEntry
 
-        jsr FindFile
-        bcc nextDirBlock          ; C=1 if found
+		jsr	FindFile
+		bcc	nextDirBlock		; C=1 if found
 
 	; the path goes on after this name: it's a directory, search it from its key block
-	lda (tmpPtr)
-	cmp nameEnd
-	bcc isFile		  ; length < nameEnd: the path's last name, the file
-	ldy nameEnd
-	iny			  ; past the '/'
-	sty pathIdx
-	bra dirLoop
+		lda	(tmpPtr)
+		cmp	nameEnd
+		bcc	isFile			; length < nameEnd: the path's last name, the file
+		ldy	nameEnd
+		iny				; past the '/'
+		sty	pathIdx
+		bra	dirLoop
 isFile:
-        jmp LoadFileBlocks
+		jmp	LoadFileBlocks
 
 nextDirBlock:
 	; get next directory block
-	lda BUFFER+2
-	sta smartport::bloklo
-	lda BUFFER+3
-	sta smartport::blokhi
+		lda	BUFFER+prodos::DirBlock.nextBlock
+		sta	smartport::bloklo
+		lda	BUFFER+prodos::DirBlock.nextBlock+1
+		sta	smartport::blokhi
 
-	lda smartport::bloklo
-	ora smartport::blokhi
-	bne dirLoop
+		lda	smartport::bloklo
+		ora	smartport::blokhi
+		bne	dirLoop
 
-	jmp ShowError
+		jmp	ShowError
 
 ;
 ; x/y points to
@@ -83,85 +83,85 @@ nextDirBlock:
 ;  .pstr filename
 ;
 LoadFromFileEntry:
-	stx tmpPtr
-	sty tmpPtr+1
+		stx	tmpPtr
+		sty	tmpPtr+1
 
-	lda (tmpPtr)
-	sta blockStart
-	inc tmpPtr
+		lda	(tmpPtr)
+		sta	blockStart
+		inc	tmpPtr
 
-	lda (tmpPtr)
-	sta blockCount
-	inc tmpPtr
-	bra internalLoadFile
+		lda	(tmpPtr)
+		sta	blockCount
+		inc	tmpPtr
+		bra	internalLoadFile
 
 initBuffer:
-	lda #>BUFFER
-	sta smartport::adrhi
-	stz smartport::adrlo
-	rts
+		lda	#>BUFFER
+		sta	smartport::adrhi
+		stz	smartport::adrlo
+		rts
 
 ;
 ; x/y points to
 ;  .pstr filename
 ;
 RunFileEntry:
-	jsr LoadFileEntry
-	jmp (srcPtr)
+		jsr	LoadFileEntry
+		jmp	(srcPtr)
 
 
 FindFile:
-	stz blockPage
-        ldy #4                      ; first entry
+		stz	blockPage
+		ldy	#.size(prodos::DirBlock)	; first entry
 
 NextEntry:
-        lda (smartport::adrlo),y
-        beq NotFound                ; unused entry
+		lda	(smartport::adrlo),y
+		beq	NotFound		; unused entry
 
-	cmp #$E0		    ; a volume or subdirectory header ($Fx, $Ex), not a file:
-	bcs Next		    ; its name can be a file's or the directory's
+		cmp	#prodos::ST_SUBDIR_HDR	; a volume or subdirectory header ($Fx, $Ex), not a file:
+		bcs	Next			; its name can be a file's or the directory's
 
-        jsr MatchName
-        bcc Next                    ; C=0 → no match
+		jsr	MatchName
+		bcc	Next			; C=0 → no match
 
-	lda smartport::adrhi
-	sta srcPtr+1
+		lda	smartport::adrhi
+		sta	srcPtr+1
 
-	tya
-	clc
-	adc smartport::adrlo
-	sta srcPtr
-	bcc :+
-	inc srcPtr+1
+		tya
+		clc
+		adc	smartport::adrlo
+		sta	srcPtr
+		bcc	:+
+		inc	srcPtr+1
 :
         ; Starting block: a file's index block, a directory's key block
-	ldy #prodos::keyPtr
-        lda (srcPtr),y
-        sta smartport::bloklo
-        iny
-        lda (srcPtr),y
-        sta smartport::blokhi
+		ldy	#prodos::DirEntry.keyPtr
+		lda	(srcPtr),y
+		sta	smartport::bloklo
+		iny
+		lda	(srcPtr),y
+		sta	smartport::blokhi
 
-        sec
-        rts
+		sec
+		rts
 
 Next:
-        tya
-        clc
-        adc #$27
-        tay
-        bcc NextEntry
+		tya
+		clc
+		adc	#.size(prodos::DirEntry)
+		tay
+		bcc	NextEntry
 
-	lda blockPage
-	bne NotFound 	; we should read the next dir block - TBD
+		lda	blockPage
+		bne	NotFound		; we should read the next dir block - TBD
 
-	inc blockPage
-	inc smartport::adrhi
-        bra NextEntry
+		inc	blockPage
+		inc	smartport::adrhi
+		bra	NextEntry
 
 NotFound:
-        clc
-        rts
+		clc
+		rts
 
 ;
 ; A = the entry's storage type and name length, Y = the entry's offset
@@ -169,159 +169,159 @@ NotFound:
 ; C=1 if it does, with nameEnd the path index after the name
 ;
 MatchName:
-        and #$0F
-	sta namelen
+		and	#prodos::NAMELEN_MASK
+		sta	namelen
 
-        phy
-	lda pathIdx
-	sta tmplen
+		phy
+		lda	pathIdx
+		sta	tmplen
 
 NameLoop:
-	lda (tmpPtr)		; past the path's end
-	cmp tmplen
-	bcc NoMatch
+		lda	(tmpPtr)		; past the path's end
+		cmp	tmplen
+		bcc	NoMatch
 
-        iny
-        phy
-        ldy tmplen
-        lda (tmpPtr),y
-        ply
-        cmp (smartport::adrlo),y
-        bne NoMatch
+		iny
+		phy
+		ldy	tmplen
+		lda	(tmpPtr),y
+		ply
+		cmp	(smartport::adrlo),y
+		bne	NoMatch
 
-        inc tmplen
-	dec namelen
-	bne NameLoop
+		inc	tmplen
+		dec	namelen
+		bne	NameLoop
 
 	; the path's name must end with the entry's: at the path's end, or on a '/'
-	ldy tmplen
-	sty nameEnd
-	lda (tmpPtr)
-	cmp tmplen
-	bcc Matched		; length < nameEnd: the path's end
+		ldy	tmplen
+		sty	nameEnd
+		lda	(tmpPtr)
+		cmp	tmplen
+		bcc	Matched			; length < nameEnd: the path's end
 
-	lda (tmpPtr),y
-	cmp #'/'
-	bne NoMatch
+		lda	(tmpPtr),y
+		cmp	#'/'
+		bne	NoMatch
 
 Matched:
-        ply
-        sec
-        rts
+		ply
+		sec
+		rts
 
 NoMatch:
-        clc
-        ply
-        rts
+		clc
+		ply
+		rts
 
 LoadFileBlocks:
         ; Load address
-	ldy #prodos::auxType
-        lda (srcPtr),y
-        sta tmpPtr
-        iny
-        lda (srcPtr),y
-        sta tmpPtr+1
+		ldy	#prodos::DirEntry.auxType
+		lda	(srcPtr),y
+		sta	tmpPtr
+		iny
+		lda	(srcPtr),y
+		sta	tmpPtr+1
 
-	jsr dbgAddMemRegion
+		jsr	dbgAddMemRegion
 
-	jsr initBuffer
+		jsr	initBuffer
 
 	; read index block
-        jsr SmartPortEntry
+		jsr	SmartPortEntry
 
-	lda tmpPtr
-	sta smartport::adrlo
-	sta srcPtr
-	lda tmpPtr+1
-	sta smartport::adrhi
-	sta srcPtr+1
+		lda	tmpPtr
+		sta	smartport::adrlo
+		sta	srcPtr
+		lda	tmpPtr+1
+		sta	smartport::adrhi
+		sta	srcPtr+1
 
 	; =0 LoadFile
 	; =xx LoadFromFile
-	ldy blockStart
+		ldy	blockStart
 loop:
-	dec blockCount
+		dec	blockCount
 
 	; the index block: the blocks' low bytes, then their high bytes; block 0 ends the file
-	lda BUFFER+$100,y
-	sta smartport::blokhi
-	lda BUFFER,y
-	sta smartport::bloklo
-	ora smartport::blokhi
-	beq loaded
+		lda	BUFFER+$100,y
+		sta	smartport::blokhi
+		lda	BUFFER,y
+		sta	smartport::bloklo
+		ora	smartport::blokhi
+		beq	loaded
 
-        jsr SmartPortEntry
+		jsr	SmartPortEntry
 
-	lda blockCount
-	beq loaded
+		lda	blockCount
+		beq	loaded
 
-	inc smartport::adrhi
-	inc smartport::adrhi
-	iny
-	bne loop
+		inc	smartport::adrhi
+		inc	smartport::adrhi
+		iny
+		bne	loop
 loaded:
 
-	rts
+		rts
 
 ShowError:
-	lda sys::PAGE2OFF
-	lda sys::TEXTON
+		lda	sys::PAGE2OFF
+		lda	sys::TEXTON
 
-        ldy #$00
-        lda (tmpPtr),y
-	tay
-	lda #$00
-	sta ErrorMsgFile+1,y
+		ldy	#$00
+		lda	(tmpPtr),y
+		tay
+		lda	#$00
+		sta	ErrorMsgFile+1,y
 :
-        lda (tmpPtr),y
-	sta ErrorMsgFile,y
-	dey
-	bne :-
-	lda #' '		; over the length byte
-	sta ErrorMsgFile
+		lda	(tmpPtr),y
+		sta	ErrorMsgFile,y
+		dey
+		bne	:-
+		lda	#' '			; over the length byte
+		sta	ErrorMsgFile
 
-        ldx #0
-        ldy #5
+		ldx	#0
+		ldy	#5
 :
-        lda ErrorMsg,x
-        beq Hang
-	ora #$80
-	sta LINE10,y
-        inx
-        iny
-        bne :-
+		lda	ErrorMsg,x
+		beq	Hang
+		ora	#$80
+		sta	LINE10,y
+		inx
+		iny
+		bne	:-
 Hang:
-        bra Hang
+		bra	Hang
 
 ErrorMsg:
-        .text "UNABLE TO FIND"
+		.text	"UNABLE TO FIND"
 ErrorMsgFile:
-        .pstr "WELCOME"
-        .align 16, $A0
-	.db 0
+		.pstr	"WELCOME"
+		.align	16, $A0
+		.db	0
 
 ; the path's index of the name searched for
-pathIdx:	.db 0
+pathIdx:	.db	0
 ; the path's index after the name found
-nameEnd:	.db 0
+nameEnd:	.db	0
 
 dbgAddMemRegion:
 
-	lda tmpPtr
-	sta start
-	lda tmpPtr+1
-	sta start+1
+		lda	tmpPtr
+		sta	start
+		lda	tmpPtr+1
+		sta	start+1
 
-	lda blockCount 		; =0 LoadFile => size = EOF
-	beq setSizeEOF
+		lda	blockCount		; =0 LoadFile => size = EOF
+		beq	setSizeEOF
 
-	asl
-	sta size+1
-	bra setFilename
+		asl
+		sta	size+1
+		bra	setFilename
 
         ; ; block size
-	; ldy #prodos::blockSize
+	; ldy #prodos::DirEntry.blocksUsed
         ; lda (srcPtr),y
         ; sta size
         ; iny
@@ -330,37 +330,37 @@ dbgAddMemRegion:
 
 setSizeEOF:
         ; block size
-	ldy #prodos::EOF
-        lda (srcPtr),y
-        sta size
-        iny
-        lda (srcPtr),y
-        sta size+1
+		ldy	#prodos::DirEntry.eof
+		lda	(srcPtr),y
+		sta	size
+		iny
+		lda	(srcPtr),y
+		sta	size+1
 
 setFilename:
         ; filename
-        lda srcPtr+1
-        sta name+1
-	clc
-	lda #prodos::filename
-        adc srcPtr
-        sta name
-	bcc :+
-        inc name+1
+		lda	srcPtr+1
+		sta	name+1
+		clc
+		lda	#prodos::DirEntry.name
+		adc	srcPtr
+		sta	name
+		bcc	:+
+		inc	name+1
 :
 	; addMemRegion(filename, addr, len, color)
 
-	BRK
-	.db $03
-start:	.dw $0000
-size:	.dw $0000
-name:	.dw $0000
-	.dw $0000
+		BRK
+		.db	$03
+start:		.dw	$0000
+size:		.dw	$0000
+name:		.dw	$0000
+		.dw	$0000
 
-	rts
-	.align $10
-	.text "tiny_dos"
-	.end namespace
+		rts
+		.align	$10
+		.text	"tiny_dos"
+		.end	namespace
 
 	; .org $A00 - 5
 	; .text "kktos"
