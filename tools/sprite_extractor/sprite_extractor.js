@@ -11,7 +11,7 @@ const HEX_CONTENT_RE = /([0-9a-fA-F]{2})/g;
 
 // Regex to parse the sprite definition file.
 // Captures: 1=width, 2=height, 3=address, 4=optional index
-const SPRITE_DEF_RE = /defprite\s+\$([0-9a-fA-F]+),\s*\$([0-9a-fA-F]+),\s*\$([0-9a-fA-F]+)(?:\s*;\s*(\d+))?/;
+const SPRITE_DEF_RE = /defsprite\s+\$([0-9a-fA-F]+),\s*\$([0-9a-fA-F]+),\s*\$([0-9a-fA-F]+)(?:\s*;\s*(\d+))?/;
 
 // Regex to determine the memory range from a data file's name.
 // e.g., M4000-4FFF -> 4000

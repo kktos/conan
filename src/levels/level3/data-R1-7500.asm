@@ -1,44 +1,59 @@
 ;
-; level 3 shape headers, shapes $41-$58, disk chunk c1 ($7500-$76FF)
-; 16 bytes each: width in bytes, height (bit 7: use the LB000/LB200 tables),
-; 7 pointers (one per pre-shifted copy) into the bitmaps of data-R3-7A00.asm.
-; $53-$55 point past $9300, the end of c3: not used by level 3.
-; $7680-$76FF: sector slack.
+; level 3 sprite headers, shapes $41-$58 (disk chunk c1, at $7500)
+; defsprite w, h, label: 7 pre-shifted copies; defpicture w, h, label: one copy
+; (defsprite.macro.asm). h bit 7: draw with the LB000/LB200 tables.
+; The bitmaps are in data-R3-7A00.asm.
 ;
 
 		placeAt	$7500
 
-		.hex
-	05 15 00 7A 69 7A D2 7A 3B 7B A4 7B 0D 7C 76 7C
-	05 15 DF 7C 48 7D B1 7D 1A 7E 83 7E EC 7E 55 7F
-	05 18 BE 7F 36 80 AE 80 26 81 9E 81 16 82 8E 82
-	04 08 06 83 26 83 46 83 66 83 86 83 A6 83 C6 83
-	04 08 E6 83 06 84 26 84 46 84 66 84 86 84 A6 84
-	03 07 C6 84 DB 84 F0 84 05 85 1A 85 2F 85 44 85
-	03 07 59 85 6E 85 83 85 98 85 AD 85 C2 85 D7 85
-	03 16 EC 85 2E 86 70 86 B2 86 F4 86 36 87 78 87
-	03 16 BA 87 FC 87 3E 88 80 88 C2 88 04 89 46 89
-	04 8D 88 89 BC 89 F0 89 24 8A 58 8A 8C 8A C0 8A
-	04 91 F4 8A 38 8B 7C 8B C0 8B 04 8C 48 8C 8C 8C
-	02 83 D0 8C D6 8C DC 8C E2 8C E8 8C EE 8C F4 8C
-	02 83 FA 8C 00 8D 06 8D 0C 8D 12 8D 18 8D 1E 8D
-	02 82 24 8D 28 8D 2C 8D 30 8D 34 8D 38 8D 3C 8D
-	03 8F 40 8D 6D 8D 9A 8D C7 8D F4 8D 21 8E 4E 8E
-	03 8F 7B 8E A8 8E D5 8E 02 8F 2F 8F 5C 8F 89 8F
-	03 8F B6 8F E3 8F 10 90 3D 90 6A 90 97 90 C4 90
-	04 8F F1 90 2D 91 69 91 A5 91 E1 91 1D 92 59 92
-	04 8C 95 92 C5 92 F5 92 25 93 55 93 85 93 B5 93
-	04 8B E5 93 11 94 3D 94 69 94 95 94 C1 94 ED 94
-	03 8B 19 95 3A 95 5B 95 7C 95 9D 95 BE 95 DF 95
-	05 90 76 8A C6 8A 16 8B 66 8B B6 8B 06 8C 56 8C
-	04 10 A6 8C E6 8C 26 8D 66 8D A6 8D E6 8D 26 8E
-	05 10 66 8E B6 8E 06 8F 56 8F A6 8F F6 8F 46 90
-	00 00 00 00 84 00 00 C0 00 00 C4 00 00 F5 00 00
-	DD 00 A0 91 82 00 00 00 00 00 00 00 00 00 00 00
-	00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-	00 88 00 00 00 81 00 88 81 00 EA 81 00 BA 81 C0
-	A2 84 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-	00 00 00 00 00 00 00 00 00 00 00 00 00 00 90 00
-	00 00 82 00 90 82 00 D4 83 00 F4 82 00 C5 88 00
-	00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-		.end
+		; $41 - lift going up (SHAPE_LIFT)
+		defsprite	$05, $15, spriteLift
+		; $42 - lift arrived (SHAPE_LIFT_TOP)
+		defsprite	$05, $15, spriteLiftTop
+		; $43 - lift breaking up (SHAPE_LIFT_GONE)
+		defsprite	$05, $18, spriteLiftGone
+		; $44 - monster, $44 / $45 (EOR 1 when turning around)
+		defsprite	$04, $08, spriteMonster1
+		; $45 - monster
+		defsprite	$04, $08, spriteMonster2
+		; $46 - monster, $46 / $47
+		defsprite	$03, $07, spriteMonster3
+		; $47 - monster
+		defsprite	$03, $07, spriteMonster4
+		; $48 - portal, $48 / $49 toggled each frame
+		defsprite	$03, $16, spritePortal1
+		; $49 - portal
+		defsprite	$03, $16, spritePortal2
+		; $4A - bird flying: same bitmap as level 0's $47
+		defsprite	$04, $8D, spriteBirdFlying
+		; $4B - bird landed: same bitmap as level 0's $48
+		defsprite	$04, $91, spriteBirdLanded
+		; $4C - bubble rising (bubbleShapes)
+		defsprite	$02, $83, spriteBubble1
+		; $4D - bubble
+		defsprite	$02, $83, spriteBubble2
+		; $4E - bubble bursting
+		defsprite	$02, $82, spriteBubble3
+		; $4F - player sinking in the pool, $4F-$52 (sinkShapes)
+		defsprite	$03, $8F, spriteSplash1
+		; $50 - splash
+		defsprite	$03, $8F, spriteSplash2
+		; $51 - splash
+		defsprite	$03, $8F, spriteSplash3
+		; $52 - splash
+		defsprite	$04, $8F, spriteSplash4
+		; $53 - unused: points past $9300, the end of c3
+		; defsprite	$04, $8C, $9295
+		; $54 - unused: points past $9300, the end of c3
+		; defsprite	$04, $8B, $93E5
+		; $55 - unused: points past $9300, the end of c3
+		; defsprite	$03, $8B, $9519
+		; $56 - unused: points inside $4A / $4B
+		; defsprite	$05, $90, $8A76
+		; $57 - unused: points inside $4B-$4F
+		; defsprite	$04, $10, $8CA6
+		; $58 - unused: points inside $4F-$51
+		; defsprite	$05, $10, $8E66
+
+; $7680-$76FF: sector slack

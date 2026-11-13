@@ -40,12 +40,15 @@ python3 tools/levelport/hexdump.py $L/L4_c3_7A00.bin 0 <size in hex>   # under "
 Put a short header comment on each file (which shapes, where the slack is).
 Check that c3 fits: `L<n>_DATA` ends at $9BFF (see TODO.md for level 7).
 
-Optional, done for level 0: split c3 into one labelled block per shape (one
-row of `width` bytes per line, one `.hex` block per pre-shifted copy) and write
-the c1 headers as `defprite w, h, label` (7 shifted copies) or
+Then, as done for levels 0 to 8: split c3 into one labelled block per shape
+(one row of `width` bytes per line, one `.hex` block per pre-shifted copy) and
+write the c1 headers as `defsprite w, h, label` (7 shifted copies) or
 `defpicture w, h, label` (one copy, the 7 pointers equal), both in
 `src/includes/defsprite.macro.asm`. The bitmaps can then move, so the bytes no
-header points to can be dropped.
+header points to can be dropped: header slots past the last shape (leftover
+bytes, or headers pointing past c3), the slack after the last bitmap. Tables
+that follow the bitmaps in c3 keep their address with a `placeAt`. Name the
+labels after the `SHAPE_*` constants and shape tables of the level code.
 
 ### 2. R2 ($7900): named variables
 
@@ -184,7 +187,8 @@ python3 tools/levelport/levelcmp.py dist/new_conan.po ../conan-rev-eng/out/level
 It finds `L<n>/DATA` and `L<n>/CODE` in the disk image and lists the bytes that
 differ from c1-c5. Expected:
 
-- DATA: only inside the c2 blocks not referenced (step 2); R1 and R3 identical.
+- DATA: only inside the c2 blocks not referenced (step 2); R1 and R3 identical
+  (before the split of step 1; after it, only the dropped bytes differ).
 - CODE: only operands of the table above (high bytes $E3/$E7/$E8 spritelib,
   $E0 drawSprite / $E0A2 drawSpriteM, $D8 utils, $0A game1, $DC/$DD soundlib),
   the code after the last routine if you replaced a local copy (pad $D5), and
