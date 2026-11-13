@@ -38,8 +38,8 @@ run		lda	#$00
 
                     ; scroll datasoft copyright
 L883c		dec	scrollYpos
-		ldx	#$0a
-		lda	#$17
+		ldx	#SCROLL_X
+		lda	#SCROLL_IMG
 		ldy	scrollYpos
 		cpy	#$c0
 		beq	L8853
@@ -47,9 +47,11 @@ L883c		dec	scrollYpos
 		; bit sys::KBDSTRB
 		; jmp L883c
 
+		; not in the original: a key skips the rest of the scroll
 :		lda	sys::KBD
 		bpl	L883c
 		bit	sys::KBDSTRB
+		jsr	eraseScrollText
 
 
 L8853
@@ -303,6 +305,48 @@ L89cb		jsr	setup_dlg::run
 		pla
 		sec
 		rts
+
+;
+; copyright scroll skipped by a key: erase the text where it is now, as
+; the end of the scroll would have (black, through the hgr2 mask, so the
+; moon, castle and tree stay)
+;
+SCROLL_IMG	.equ	$17
+SCROLL_X	.equ	$0a			; the text spans SCROLL_X..$27
+
+		.proc	eraseScrollText {
+			lda	spritesH+SCROLL_IMG
+			sta	L81F5		; rows left
+			lda	scrollYpos
+			sta	L81F0		; row (wraps like drawImgWithMask)
+row
+			ldy	L81F0
+			cpy	#192
+			bcs	next		; off screen
+			lda	utils::hgrLow,y
+			sta	$1a
+			sta	$1e
+			lda	utils::hgrHigh,y
+			sta	$1b
+			clc
+			adc	#$20
+			sta	$1f
+			ldy	#$27
+col
+			lda	($1e),y
+			bmi	skip
+			lda	#$00
+			sta	($1a),y
+skip
+			dey
+			cpy	#SCROLL_X
+			bcs	col
+next
+			inc	L81F0
+			dec	L81F5
+			bne	row
+			rts
+		}
 
 ;
 ; FLIP DISK
