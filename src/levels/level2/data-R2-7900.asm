@@ -1,24 +1,24 @@
-		.if * < $7900
-			.org $7900
+		.if	* < $7900
+			.org	$7900
 		.end
-		.if * > $7900
-			.error "this needs to be at $7900 !"
+		.if	* > $7900
+			.error	"this needs to be at $7900 !"
 		.end
 
-L7900		.db 0
-L7901		.db 0
-L7902		.db 0
-L7903		.db 1
-L7904		.db 1
-L7905		.db $60
-L7906		.db $20
-L7907		.db 0
+L7900		.db	0
+L7901		.db	0
+L7902		.db	0
+L7903		.db	1
+L7904		.db	1
+L7905		.db	$60
+L7906		.db	$20
+L7907		.db	0
 
 		.hex
 		41 42 43 44 44 43 42 41
 		.end
 
-L7910		.db 00
+L7910		.db	00
 
 		.hex
 		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00

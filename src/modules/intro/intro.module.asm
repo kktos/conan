@@ -1,13 +1,13 @@
-	.MODULE INTRO
+		.MODULE	INTRO
 
-	.segment INTRO
+		.segment	INTRO
 
-	.include "intro.asm"
+		.include	"intro.asm"
 
 
 	; TRACK $0C
 	;
-	.include "sprites.asm"
+		.include	"sprites.asm"
 
 	; TRACK $0D
 	;
@@ -17,7 +17,7 @@
 	;
 	; TRACK $0E
 	;
-	.include "setupKeysDlg/dialog.asm"
+		.include	"setupKeysDlg/dialog.asm"
 	;
 
 	; TRACK $0F

@@ -1,8 +1,8 @@
-		.if * < $7A00
-		.align $7A00
+		.if	* < $7A00
+			.align	$7A00
 		.end
-		.if * > $7A00
-		.error "this needs to be at $7A00 !"
+		.if	* > $7A00
+			.error	"this needs to be at $7A00 !"
 		.end
 
 

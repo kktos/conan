@@ -4,9 +4,9 @@
 ; paths and the key's state, read and written by the level code.
 ;
 
-		placeAt $7A00
+		placeAt	$7A00
 
-	.hex
+		.hex
 	00 00 00 00 00 00 00 03 00 60 0F 00 78 3F 00 1C
 	71 00 20 04 00 0A 50 00 00 00 00 00 06 00 40 1F
 	00 70 7F 00 38 62 01 40 08 00 10 20 00 14 20 01
@@ -400,10 +400,10 @@
 	4F 49 4E 47 D1 A3 86 48 45 53 47 4F 4E DE A3 C6
 	44 4F 49 48 41 4E DF A3 87 45 4E 44 43 52 45 54
 	00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-	.end
+		.end
 
 ; $9290-$937F: leftover memory (assembler symbol table and code)
-	.hex
+		.hex
 	00 00 00 00 00 46 41 4C 4C 49 4E 32 A4 84 4E 4F
 	52 4D 35 A4 84 45 44 47 45 55 A4 86 4E 4F 45 44
 	47 45 60 A4 C6 43 52 45 54 4C 45 6E A4 84 4E 45
@@ -419,38 +419,38 @@
 	1C 8D 7F A0 C8 B1 1C 8D 80 A0 AC F0 B3 B9 00 B4
 	85 1C B9 00 B5 85 1D AE F5 B3 AC F7 B3 F0 07 BD
 	00 B0 A8 4C 7A A0 BD 00 B1 A8 C0 28 B0 05 AD FF
-	.end
+		.end
 
 ; 31 water drops (1..$1F) falling along dropPathX/Y: step of each one on the
 ; path, +1 per frame. dropStep+0 and dropStep+$20 are not used.
 dropStep
-	.hex
+		.hex
 	00 08 10 18 20 28 30 38 40 48 50 58 60 68 70 78
 	80 88 90 98 A0 A8 B0 B8 C0 C8 D0 D8 E0 E8 F0 F8
 	58
-	.end
+		.end
 
 ; the key: hidden until the 2nd gem fills slot 2, then falls from
 ; ($76,$96) to Y=$A3 where the player takes it (checkTakeKey)
-keyX		.db $76
-keyY		.db $96
-keyState	.db $00		; 0 hidden, 1 falling, $FF on the ground (or taken)
-doorOpen	.db $00		; 1 once the key opened the door ($78,$52)
+keyX		.db	$76
+keyY		.db	$96
+keyState	.db	$00			; 0 hidden, 1 falling, $FF on the ground (or taken)
+doorOpen	.db	$00			; 1 once the key opened the door ($78,$52)
 
 ; $93A5-$93FF: leftover memory (code)
-	.hex
+		.hex
 	4C 5A A0 60 8C F0 B3 A8 B9 FF B5 85 1C B9 7F B6
 	85 1D A0 00 8C F7 B3 B1 1C 8D F1 B3 8D F3 B3 C8
 	B1 1C 8D F4 B3 8E F5 B3 10 1E EE F7 B3 29 7F 8D
 	F4 B3 BD 00 B2 0A 18 69 02 A8 B1 1C 8D 25 A1 C8
 	B1 1C 8D 26 A1 4C 00 A1 BD 00 AF 0A 18 69 02 A8
 	B1 1C 8D 25 A1 C8 B1 1C 8D 26 A1
-	.end
+		.end
 
 ; drop paths, 256 steps: 7 arcs, each from the top right (X $84-$87, Y $1C)
 ; down and left to the water (Y $A7-$AF), then the next one
 dropPathX
-	.hex
+		.hex
 	85 81 7D 78 74 72 71 70 6F 6E 6E 6D 6C 6C 6B 6B
 	6B 6B 6A 6A 6A 69 69 68 67 65 63 60 5C 58 54 4F
 	1C 1C 1C 1C 0D 0D 0D 87 83 7F 7B 77 75 73 71 70
@@ -467,9 +467,9 @@ dropPathX
 	6B 6B 6A 6A 6A 6A 69 69 69 68 67 64 62 60 5E 5A
 	58 07 07 07 84 80 7A 76 73 71 70 6E 6E 6D 6D 6C
 	6B 6B 6B 6A 6A 69 69 69 69 68 66 65 64 62 61 60
-	.end
+		.end
 dropPathY
-	.hex
+		.hex
 	1C 1C 1C 1C 1E 20 22 26 2C 31 37 3E 44 4C 54 5D
 	66 6F 79 84 90 9C A7 AB AE AE AC AC AC AC AC AC
 	B4 B2 B0 AE B2 B0 AE 1C 1C 1C 1C 1C 1D 1F 21 25
@@ -486,4 +486,4 @@ dropPathY
 	5A 63 68 71 7A 85 91 9D A6 AA AC AC AB AB AB AB
 	AB B4 B2 AF 1C 1C 1C 1D 1F 22 26 2D 38 41 4A 53
 	5D 65 6F 7D 8A 96 9F A6 AA A9 A8 A5 A3 A3 A4 A7
-	.end
+		.end

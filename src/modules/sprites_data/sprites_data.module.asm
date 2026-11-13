@@ -1,8 +1,8 @@
-	.module "SPRITES.DATA"
+		.module	"SPRITES.DATA"
 
-	.segment SPRITES_DATA
+		.segment	SPRITES_DATA
 
-	.include "sprites.data.asm"
+		.include	"sprites.data.asm"
 
 	;.include "08-data-M4000-4FFF.asm"
 	;

@@ -1,8 +1,8 @@
-		.if * < $A200
-			.org $A200
+		.if	* < $A200
+			.org	$A200
 		.end
-		.if * > $A200
-			.error "this needs to be at $A200 !"
+		.if	* > $A200
+			.error	"this needs to be at $A200 !"
 		.end
 
 La200
@@ -127,7 +127,7 @@ batYposTbl
                     49 49 4b 4e 51 54 56 58 58 57 55 53 51 4e 4b 48
                     48 46 45 45 45 45 45 45 45 45 45 45 45 45 45 45
                     45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45
- 		.end
+		.end
 
 ; bat anim sprite ID
 ; A800

@@ -1,10 +1,10 @@
 
-		.align $100
+		.align	$100
 
 		; .org $AF00
 
 ; $AF00
-LAF00:		.hex {
+LAF00:		.hex	{
 			00 02 04 06 01 03 05 00 02 04 06 01 03 05 00 02
 			04 06 01 03 05 00 02 04 06 01 03 05 00 02 04 06
 			01 03 05 00 02 04 06 01 03 05 00 02 04 06 01 03
@@ -24,7 +24,7 @@ LAF00:		.hex {
 		}
 
 ; $B000
-LB000:		.hex {
+LB000:		.hex	{
 			00 00 00 01 01 01 01 02 02 02 03 03 03 03 04 04
 			04 05 05 05 05 06 06 06 07 07 07 07 08 08 08 09
 			09 09 09 0A 0A 0A 0B 0B 0B 0B 0C 0C 0C 0D 0D 0D
@@ -44,7 +44,7 @@ LB000:		.hex {
 		}
 
 ; $B100
-LB100:		.hex {
+LB100:		.hex	{
 			00 00 00 00 01 01 01 02 02 02 02 03 03 03 04 04
 			04 04 05 05 05 06 06 06 06 07 07 07 08 08 08 08
 			09 09 09 0A 0A 0A 0A 0B 0B 0B 0C 0C 0C 0C 0D 0D
@@ -64,7 +64,7 @@ LB100:		.hex {
 		}
 
 ; $B200
-LB200:		.hex {
+LB200:		.hex	{
 			01 03 05 00 02 04 06 01 03 05 00 02 04 06 01 03
 			05 00 02 04 06 01 03 05 00 02 04 06 01 03 05 00
 			02 04 06 01 03 05 00 02 04 06 01 03 05 00 02 04
@@ -90,16 +90,16 @@ LB200:		.hex {
 
 ; sprites addr lo - $B600
 spriteLo:
-		.list off
-		row = .array()
-		.repeat 16 AS col FROM 0 {
-			row = .push(row, col * 16)
+		.list	off
+row		=	.array()
+		.repeat	16 AS col FROM 0 {
+row			=	.push(row, col * 16)
 		}
-		.list on
+		.list	on
 
-		.repeat 8 {
-			.db ...row
-		}	
+		.repeat	8 {
+			.db	...row
+		}
 		/*	
 		.repeat 128 as idx from 0 {
 			.db  (idx % 16) * 16
@@ -119,15 +119,15 @@ spriteLo:
 
 ; sprites addr hi - $B680
 spriteHi:
-		.repeat 4 AS r FROM 0 {
-			.fill 16, >global_sprites + r
+		.repeat	4 AS r FROM 0 {
+			.fill	16, >global_sprites + r
 		}
 		/*
 		.repeat 16*4 as idx {
 			.db  >global_sprites + .floor((idx-1)/16)
 		}
 		*/
-		.hex {
+		.hex	{
 			; 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C 0C
 			; 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D 0D
 			; 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E

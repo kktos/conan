@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "rimraf ./dist && tsasm conan-conf.yaml",
+    "lint:ci": "tsasm fmt --check conan-conf.yaml",
+    "lint": "tsasm fmt conan-conf.yaml",
     "serve": "serve ./dist --cors"
   },
   "repository": {

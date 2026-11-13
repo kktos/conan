@@ -5,9 +5,9 @@
 ; scripts, read (and $9040 written) by the level code.
 ;
 
-		placeAt $7A00
+		placeAt	$7A00
 
-	.hex
+		.hex
 	3E 00 00 7D 01 00 75 03 00 74 03 00 75 03 00 7D
 	01 00 3E 00 00 7C 00 00 7A 03 00 6A 07 00 68 07
 	00 6A 07 00 7A 03 00 7C 00 00 78 01 00 74 07 00
@@ -295,28 +295,28 @@
 	00 00 00 00 00 00 00 70 7F 01 00 00 00 00 00 00
 	00 00 00 60 7F 03 00 00 00 00 00 00 00 00 00 40
 	7F 07
-	.end
+		.end
 
 ; $8BE2-$8BFF: sector slack
-	.hex
+		.hex
 	00 00 00 50 02 00 00 00 14 02 00 00 00 14 5A 00
 	00 00 0C 58 00 00 00 0C 40 00 00 00 0C 00
-	.end
+		.end
 
 ; the chandelier falling (drawChandelier): 18 lines x 5 bytes, drawn at
 ; screen column $11
 chandelier
-	.hex
+		.hex
 	00 00 00 00 00 00 00 00 00 00 00 C0 80 00 00 00
 	00 00 00 00 00 C0 80 00 00 00 00 00 00 00 00 C0
 	80 00 00 00 D0 82 00 00 81 D0 82 A0 00 84 C2 C0
 	80 81 90 C8 C1 88 80 C4 C0 D3 A2 00 82 D2 C3 90
 	80 82 C1 A0 90 80 9A C5 A9 9C 00 B8 D7 EB 8D 00
 	00 9C 9A 00 00 00 90 82 00 00
-	.end
+		.end
 
 ; $8C5A-$8CFF: leftover memory
-	.hex
+		.hex
 	00 00 00 00 00 A0 00 A9 03 20 D9 03 60 00 86 00
 	81 C0 88 81 C0 88 81 C0 80 81 C0 80 81 C0 80 81
 	C0 80 81 C0 80 81 C0 80 81 C0 80 81 C0 88 81 C0
@@ -328,13 +328,13 @@ chandelier
 	80 A2 84 80 82 84 80 82 84 80 82 84 80 82 84 80
 	82 84 80 82 84 80 82 84 80 A2 84 80 A2 84 80 A2
 	84 C0 AB 87 80 A2
-	.end
+		.end
 
 ; the chandelier crashing on the centre machine (drawCrashFrame): 6 frames
 ; of 25 lines x 5 bytes ($7D), one every $80, drawn at column $10, lines
 ; $41-$59
 crashFrames
-	.hex
+		.hex
 	00 00 90 85 00 00 00 95 81 00 00 00 8C D0 80 00
 	80 94 92 90 00 80 D0 A6 81 00 88 D0 A1 83 00 82
 	C0 EA A8 00 8A C1 9A 88 C0 AA 85 A8 85 C0 AE 81
@@ -383,36 +383,36 @@ crashFrames
 	D0 AA D1 80 80 D0 AA 95 80 80 A0 D5 AA 84 80 C0
 	BE D5 A2 80 C0 BA D5 AA 80 C0 FA D5 AA 80 C0 EA
 	D5 AA 00 00 EA D5 8A 80 00 AA D5 8A 80 00 00 00
-	.end
+		.end
 
 ; where the monsters turn back (checkTurns): X / Y pairs, list ends at Y=0
 turnX
-	.hex
+		.hex
 	05 83 13 3C 4D 83 06 10 19 36 48 83 01 2C 54 81
 	06 27 00 00 00 00 00 00
-	.end
+		.end
 turnY
-	.hex
+		.hex
 	A5 A5 81 81 81 81 57 57 57 57 57 57 2F 2F 2F 2F
 	07 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 	00 00 00 00 00 00 00 00
-	.end
+		.end
 
-onPlatform	.db $00		; $FF while the player rides the lower platform: the monsters don't kill him
+onPlatform	.db	$00			; $FF while the player rides the lower platform: the monsters don't kill him
 
 ; $9041-$9047: leftover memory
-	.hex
+		.hex
 	78 7F 7F 00 00 08 04
-	.end
+		.end
 
 ; WAIT per frame, by the number of monsters out (0..6): the more, the faster
 waitByMonsters
-	.hex
+		.hex
 	50 40 30 20 10 01 01 01
-	.end
+		.end
 
 ; $9050-$90FF: leftover memory
-	.hex
+		.hex
 	01 0A 00 00 00 00 00 00 AA 85 00 00 00 54 02 00
 	AA 85 00 00 00 00 00 D5 82 00 00 00 2A 01 00 D5
 	82 00 00 00 00 00 81 2E 00 00 00 00 00 00 00 00
@@ -424,13 +424,13 @@ waitByMonsters
 	55 0A 00 00 00 00 00 00 AA 85 00 00 00 04 02 00
 	AA 85 00 00 00 00 00 D5 82 00 00 00 02 01 00 D5
 	82 00 00 00 00 00 50 2A 00 00 00 00 00 00 00 00
-	.end
+		.end
 
 ; the mover's 8 scripts, $20 steps each (startMover picks one at random):
 ; per step a shape ($41-$43, 0 ends the script), a move per frame (dX, dY)
 ; and how many frames it lasts
 moverScriptShape
-	.hex
+		.hex
 	43 41 41 43 42 43 41 43 42 42 42 43 43 41 43 42
 	43 41 43 42 43 42 43 41 43 42 42 42 43 42 43 00
 	41 43 41 41 43 42 43 41 43 41 43 42 43 42 43 00
@@ -447,9 +447,9 @@ moverScriptShape
 	42 43 41 43 00 00 00 00 00 00 00 00 00 00 00 00
 	41 43 43 42 42 43 41 41 43 41 42 43 43 41 43 42
 	42 41 42 41 41 43 41 42 42 42 41 42 43 43 00 00
-	.end
+		.end
 moverScriptDX
-	.hex
+		.hex
 	00 FF 00 00 00 00 FF 00 01 01 01 00 00 FF 00 00
 	00 00 00 01 00 00 00 FF 00 02 02 01 00 00 00 00
 	FE 00 FF FF 00 02 00 FE 00 00 00 00 00 01 00 00
@@ -466,9 +466,9 @@ moverScriptDX
 	00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 	FE 00 00 02 02 00 FE FE 00 FE 02 00 00 00 00 02
 	00 FE 03 FF FE 00 FE 02 02 01 FE 02 00 00 00 00
-	.end
+		.end
 moverScriptDY
-	.hex
+		.hex
 	01 00 00 00 00 01 00 01 00 02 00 FF 00 00 FF 00
 	00 00 00 FF FF 00 00 01 01 00 FE FE FE 00 FE 00
 	00 01 01 00 00 00 00 00 FE 00 00 00 00 00 FF 00
@@ -485,9 +485,9 @@ moverScriptDY
 	00 00 00 FF 00 00 00 00 00 00 00 00 00 00 00 00
 	00 02 00 01 00 FF 01 00 02 00 01 03 00 00 00 01
 	00 03 00 FF 00 FE 00 FF 01 FD 00 FF 00 FE 00 00
-	.end
+		.end
 moverScriptTime
-	.hex
+		.hex
 	37 32 04 04 04 28 1E 2C 28 12 2F 0D 11 73 18 07
 	03 04 03 09 2F 06 04 09 05 0E 05 06 0A 05 22 00
 	15 0F 28 0B 05 3A 05 1E 07 05 03 05 08 19 2D 00
@@ -504,4 +504,4 @@ moverScriptTime
 	05 03 05 15 00 00 00 00 00 00 00 00 00 00 00 00
 	1B 10 05 14 12 13 16 0F 0E 13 05 0C 06 05 03 01
 	08 04 25 0C 2E 0E 05 06 0A 0E 19 17 06 17 00 00
-	.end
+		.end
