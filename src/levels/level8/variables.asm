@@ -12,7 +12,7 @@ textY		.db	$94, $94, $94, $94, $94, $94
 		.db	$A0, $A0, $A0, $A0, $A0, $A0
 ; $791C-$791F: not referenced, leftover memory from an align
 		.align	$10
-textShape	.db	$41, $42, $43, $44, $45, $46	; shapes of data-R1-7500.asm
+textShape	.db	$41, $42, $43, $44, $45, $46	; shapes of sprites-definition.asm
 		.db	$47, $48, $48, $48, $48, $49
 ; $792C-$792F: not referenced, leftover memory from an align
 		.align	$10

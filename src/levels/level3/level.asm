@@ -6,9 +6,9 @@
 
 		.module	"L3/DATA"
 		.segment	L3_DATA
-		.include	"data-R1-7500.asm"
-		.include	"data-R2-7900.asm"
-		.include	"data-R3-7A00.asm"
+		.include	"sprites-definition.asm"
+		.include	"variables.asm"
+		.include	"sprites-data.asm"
 
 		.module	"L3/CODE"
 		.segment	L3_CODE

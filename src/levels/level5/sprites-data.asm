@@ -1,6 +1,6 @@
 ;
 ; level 5 sprite bitmaps (disk chunk c3, at $7A00), for the headers
-; $41-$56 of data-R1-7500.asm.
+; $41-$56 of sprites-definition.asm.
 ; A sprite is width x height bytes, rows top to bottom (7 pixels per byte,
 ; bit 0 first), one row per line below. defsprite sprites have 7 copies, one
 ; per X mod 7 shift; defpicture ones a single copy.

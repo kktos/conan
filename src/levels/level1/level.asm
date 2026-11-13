@@ -10,7 +10,7 @@
 		.segment	L1_DATA
 		.include	"sprites-definition.asm"
 		.include	"variables.asm"
-		.include	"sprites.data.asm"
+		.include	"sprites-data.asm"
 
 		.module	"L1/CODE"
 

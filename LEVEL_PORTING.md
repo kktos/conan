@@ -19,9 +19,9 @@ Chunks of level n, loaded by the game at:
 | chunk | address | conan file (in `src/levels/level<n>/`) | segment |
 |---|---|---|---|
 | c0 packed screen | $7500 | `assets/bkgnd/L<n>_c0_7500.bin` (already there) | `L<n>_BKGD` |
-| c1 shape headers ($41-..) | $7500 | `data-R1-7500.asm` | `L<n>_DATA` |
-| c2 level variables | $7900 | `data-R2-7900.asm` | `L<n>_DATA` |
-| c3 shape bitmaps | $7A00 | `data-R3-7A00.asm` | `L<n>_DATA` |
+| c1 shape headers ($41-..) | $7500 | `sprites-definition.asm` | `L<n>_DATA` |
+| c2 level variables | $7900 | `variables.asm` | `L<n>_DATA` |
+| c3 shape bitmaps | $7A00 | `sprites-data.asm` | `L<n>_DATA` |
 | c4 level code, entry $A000 | $A000 | `code.asm` | `L<n>_CODE` |
 | c5 level description | $AC00-$ADFF | `geometry.yaml` + `data-R5-AC00.asm` | `L<n>_CODE` |
 
@@ -62,7 +62,7 @@ memory, not data: don't copy them.
   original source, so the table starts on a boundary. Replace it with the
   `.align` that puts the next label at its address (level 3: `.align $80`,
   `bubblePath` at $7980), with a comment giving the range it skips.
-- one at the end of the page: drop it, `data-R3-7A00.asm` starts with
+- one at the end of the page: drop it, `sprites-data.asm` starts with
   `placeAt $7A00`.
 
 Check in the listing (`dist/new_conan.lst`) that every label is still at its

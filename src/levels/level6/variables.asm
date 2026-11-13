@@ -14,7 +14,7 @@ gateFrame	.db	$00			; 0 / 1, added to the gate shapes
 ; the mover: flies in from below the screen along a script, kills on touch;
 ; hit with the axe, it shrinks away and adds a rung to the ladder at X $23
 moverOn		.db	$00			; flying
-moverStep	.db	$00			; step in the script (moverScript*, data-R3-7A00.asm)
+moverStep	.db	$00			; step in the script (moverScript*, sprites-data.asm)
 moverX		.db	$00			; as drawn
 moverY		.db	$00
 moverShape	.db	$01
