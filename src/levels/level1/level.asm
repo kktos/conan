@@ -3,13 +3,13 @@
 		.module	"L1/BKGD"
 
 		.segment	L1_BKGD
-		.include	"bkgnd.data.asm"
+		.incbin	"../../../assets/bkgnd/L1_c0_7500.bin"
 
 		.module	"L1/DATA"
 
 		.segment	L1_DATA
-		.include	"sprites-dir.data.asm"
-		.include	"data-R2-7900.asm"
+		.include	"sprites-definition.asm"
+		.include	"variables.asm"
 		.include	"sprites.data.asm"
 
 		.module	"L1/CODE"
