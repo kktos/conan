@@ -1,6 +1,6 @@
 ;
 ; level 7 sprite bitmaps (disk chunk c3, at $7A00), for the headers
-; $41-$68 of data-R1-7500.asm.
+; $41-$68 of sprites-definition.asm.
 ; A sprite is width x height bytes, rows top to bottom (7 pixels per byte,
 ; bit 0 first), one row per line below. defsprite sprites have 7 copies, one
 ; per X mod 7 shift; defpicture ones a single copy.
@@ -3958,7 +3958,7 @@ spriteLever
 
 ; $9CAC-$9CFF: leftover bytes, not read
 
-; the bats' routes, with batRouteTime / Shape (data-R1-7500.asm): move per
+; the bats' routes, with batRouteTime / Shape (sprites-definition.asm): move per
 ; frame, by batRoute * 32 + batStep
 		placeAt	$9D00
 

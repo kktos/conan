@@ -2,7 +2,7 @@
 ; level 7 sprite headers, shapes $41-$68 (disk chunk c1, at $7500)
 ; defsprite w, h, label: 7 pre-shifted copies; defpicture w, h, label: one copy
 ; (defsprite.macro.asm). h bit 7: draw with the LB000/LB200 tables.
-; The bitmaps are in data-R3-7A00.asm.
+; The bitmaps are in sprites-data.asm.
 ;
 
 		placeAt	$7500
@@ -92,7 +92,7 @@
 
 ; the bats' routes, read by nextBatStep: 4 routes of 32 steps, by
 ; batRoute * 32 + batStep; a step of batRouteTime frames moving by
-; batRouteDX / DY (data-R3-7A00.asm) with batRouteShape ($42 / $44, EOR 1
+; batRouteDX / DY (sprites-data.asm) with batRouteShape ($42 / $44, EOR 1
 ; every frame), a 0 shape ends the route
 		placeAt	$7800
 

@@ -2,7 +2,7 @@
 ; level 1 sprite headers, shapes $41-$49 (disk chunk c1, at $7500)
 ; defsprite w, h, label: 7 pre-shifted copies; defpicture w, h, label: one copy
 ; (defsprite.macro.asm). h bit 7: draw with the LB000/LB200 tables.
-; The bitmaps are in sprites.data.asm.
+; The bitmaps are in sprites-data.asm.
 ;
 
 		placeAt	$7500

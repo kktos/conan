@@ -6,9 +6,9 @@
 
 		.module	"L8/DATA"
 		.segment	L8_DATA
-		.include	"data-R1-7500.asm"
-		.include	"data-R2-7900.asm"
-		.include	"data-R3-7A00.asm"
+		.include	"sprites-definition.asm"
+		.include	"variables.asm"
+		.include	"sprites-data.asm"
 
 		.module	"L8/CODE"
 		.segment	L8_CODE
