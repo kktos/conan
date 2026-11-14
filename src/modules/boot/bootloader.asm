@@ -81,7 +81,7 @@ RelocateLoop:
 	; add mem region
 	;
 
-		addMemRegion	dosSegment.start, dosSegment.size, regionname, $0000
+		addMemRegion	regionname, dosSegment.start, dosSegment.size, $0000
 ;		BRK
 ;		.db	$03
 ;		.dw	dosSegment.start
