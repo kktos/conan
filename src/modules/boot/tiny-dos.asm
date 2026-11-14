@@ -348,7 +348,7 @@ setFilename:
 		bcc	:+
 		inc	name+1
 :
-	; addMemRegion(filename, addr, len, color)
+	; addMemRegion(filename, addr, len, bank)
 
 		BRK
 		.db	$03
